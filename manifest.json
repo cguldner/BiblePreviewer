@@ -16,6 +16,12 @@
   "browser_action": {
     "default_icon": "icons/bible16.png"
   },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
   "content_scripts": [
     {
       "css": [

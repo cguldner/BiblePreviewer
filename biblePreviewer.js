@@ -1,4 +1,3 @@
-// TODO: Make this work on slow connection, use chrome.tabs with background script
 // TODO: Add version picker customization page
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
@@ -10,7 +9,6 @@ const BIBLE_DIRECT_URL = `https://bibles.org/${DEFAULT_TRANS}/`;
 // Lookup dictionary for verses
 let bibleVerseDict = {};
 
-// TODO: Once finalized, make this not be generated on every run, can just be static, but keep just in case
 // I make a lot of the () non-capturing, so I can capture the chapter/verse numbers more easily later
 let bibleBooks = {
     'Gen(?:esis)?': 'Gen',
@@ -98,14 +96,18 @@ let bibleRegex = /(Gen(?:esis)?\.?|Ex(?:od|odus)?\.?|Le(?:v|viticus)?\.?|Num(?:b
 
 // console.log(bibleRegex);
 
+// Starts the app only once the page has completely finished loading
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    initBiblePreviewer();
+});
+
+/**
+ * Initializes the app
+ */
 function initBiblePreviewer() {
     transformBibleReferences();
     createTooltips();
 }
-
-
-initBiblePreviewer();
-
 
 /**
  * Transform all bible references into links using a TreeWalker
