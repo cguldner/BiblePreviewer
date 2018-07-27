@@ -108,10 +108,10 @@ initBiblePreviewer();
 
 
 /**
- * Transform all bible references into links.
- * Do it using tree walker instead of simple replace so we can not target bible references that are already links.
+ * Transform all bible references into links using a TreeWalker
  */
 function transformBibleReferences() {
+    // Use a TreeWalker instead of simple replace so we can ignore bible references that are already links
     let treeWalker = document.createTreeWalker(document.body,
         NodeFilter.SHOW_TEXT,
         {
@@ -128,8 +128,18 @@ function transformBibleReferences() {
     let nodeList = [];
     // Since the tree walker returns text nodes, get all the elements containing those text nodes in the walker
     while (treeWalker.nextNode()) {
-        if (nodeList.indexOf(treeWalker.currentNode.parentNode) === -1)
-            nodeList.push(treeWalker.currentNode.parentNode);
+        let newNode = treeWalker.currentNode.parentNode, shouldAdd = true;
+        for (let i = nodeList.length - 1; i >= 0; i--) {
+            let prevNode = nodeList[i];
+            // Don't add this node if it has already been added, or it's parent is in the list
+            if (prevNode === newNode || prevNode.contains(newNode)) {
+                shouldAdd = false;
+                break;
+            }
+            // If we found a child of the new node, remove it from the list
+            if (newNode.contains(prevNode)) nodeList.splice(i, 1);
+        }
+        if (shouldAdd) nodeList.push(newNode);
     }
     // console.log(nodeList);
 
@@ -159,8 +169,30 @@ function transformBibleReferences() {
                 '</div>';
         });
     });
+}
 
-    return nodeList;
+function transformUsingReplace() {
+    document.body.innerHTML = document.body.innerHTML.replace(bibleRegex, function (m, b, c, s, e) {
+        let book = '';
+        for (let key in bibleBooks) {
+            if (b.search(key) > -1) {
+                book = bibleBooks[key];
+                // If the book is John, continue searching to verify it isn't 1, 2, 3 John
+                if (book !== 'John')
+                    break;
+            }
+        }
+        if (book === '') {
+            console.error('Couldn\'t match ' + m);
+            return m;
+        }
+        let linkHref = `${BIBLE_DIRECT_URL + book}/${c}/${s}`;
+        if (e) linkHref += `-${e}`;
+        return '<span class="biblePreviewerContainer">' +
+            `<a class="biblePreviewerLink" href="${linkHref}" target="_blank"
+                    data-bible-ref="${createAPILink(book, c, s, e)}">${m}</a>` +
+            '</span>';
+    });
 }
 
 // TODO: Make this dynamically shorten the verse text if too long
@@ -171,7 +203,7 @@ function createTooltips() {
     document.querySelectorAll('.biblePreviewerLink').forEach(function (link) {
         let tool, enterTimeout, exitTimeout;
         // Add listener to biblePreviewerContainer so that we can hover over the tooltip as well
-        link.parentElement.addEventListener('mouseenter', function (e) {
+        link.parentElement.addEventListener('mouseover', function (e) {
             clearTimeout(exitTimeout);
             enterTimeout = setTimeout(function () {
                 if (link.nextSibling === null) {
@@ -212,7 +244,7 @@ function createTooltips() {
             clearTimeout(enterTimeout);
             // Destroy the tooltip to prevent any stray tooltips if mouse is moved fast
             exitTimeout = setTimeout(function () {
-                if (tool) tool.dispose();
+                if (tool) tool.hide();
             }, 750);
         });
     });

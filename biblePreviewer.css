@@ -39,7 +39,8 @@
 
 .biblePreviewerTooltip .tooltip-inner sup {
     font-style: italic;
-    font-size: 60%;
+    font-size: 70%;
+    padding: 0 2px 0 5px;
 }
 
 .biblePreviewerTooltip .tooltip-inner span.nd {
