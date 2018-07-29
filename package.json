@@ -1,0 +1,23 @@
+{
+  "name": "bible-previewer",
+  "version": "0.1.0",
+  "description": "urns every bible verse into a link you can hover over to see the contents of the verse",
+  "main": "biblePreviewer.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cguldner/BiblePreviewer.git"
+  },
+  "author": "Cody Guldner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cguldner/BiblePreviewer/issues"
+  },
+  "homepage": "https://github.com/cguldner/BiblePreviewer#readme",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-cli": "^2.0.1",
+    "gulp-uglify-es": "^1.0.4",
+    "gulp-zip": "^4.2.0"
+  }
+}
