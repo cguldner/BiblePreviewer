@@ -13,11 +13,13 @@
     "url": "https://github.com/cguldner/BiblePreviewer/issues"
   },
   "homepage": "https://github.com/cguldner/BiblePreviewer#readme",
-  "dependencies": {
+  "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-clean": "^0.4.0",
-    "gulp-cli": "^2.0.1",
     "gulp-uglify-es": "^1.0.4",
-    "gulp-zip": "^4.2.0"
+    "gulp-zip": "^4.2.0",
+    "gulp-plumber": "^1.2.0",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-watch": "^5.0.1"
   }
 }

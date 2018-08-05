@@ -88,11 +88,11 @@ let bibleBooks = {
 
 // The regex to match book names
 // TODO: Allow for different start and end chapters
-// let bibleRegex = '(' + Object.keys(bibleBooks).join('\\.?|') + '\\.';
-// bibleRegex += ')\\s([0-9]{0,3})(?:\\s|:)([0-9]{1,2})(?:(?:–|—|-)([0-9]{1,2}))?';
+// let bibleRegex = '(' + Object.keys(bibleBooks).join('\\.?|') + '\\.?';
+// bibleRegex += ')\\s((?:,?\\s?[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)';
 // bibleRegex = new RegExp(bibleRegex, 'gi');
 
-let bibleRegex = /(Gen(?:esis)?\.?|Ex(?:od|odus)?\.?|Le(?:v|viticus)?\.?|Num(?:b|bers)?\.?|(?:Dt|Deut(?:eronomy)?)\.?|Jos(?:h|hua)?\.?|(?:Jdgs?|Judg(?:es)?)\.?|Ru?th\.?|(?:1|1st|I|First)\s*Sam(?:uel)?\.?|(?:2|2nd|II|Second)\s*Sam(?:uel)?\.?|(?:1|1st|I|First)\s*(?:Kings|Kgs)\.?|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)\.?|(?:1|1st|I|First)\s*Chr(?:on|onicles)?\.?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?\.?|Ez(?:r|ra)?\.?|Ne(?:h|hemiah)?\.?|Tob(?:it)?\.?|(?:Jth|Jdt|Jdth|Judith)\.?|Es(?:t|th|ther)\.?|(?:1|1st|I|First)\s*Mac(?:cabees)?\.?|(?:2|2nd|II|Second)\s*Mac(?:cabees)?\.?|Jo?b\.?|Ps(?:a?lms?)?\.?|Pro(?:v|verbs)?\.?|Ecc(?:les?|lesiastes)?\.?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)\.?|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?\.?|Sir(?:ach)?\.?|Bar(?:uch)?\.?|Is(?:a|aiah)?\.?|Jer(?:emiah)?\.?|Lam(?:entations)?\.?|Ez(?:e?k?|ekiel)?\.?|Dan(?:iel)?\.?|Hos(?:ea)?\.?|Joel\.?|Amos\.?|Ob(?:ad|adiah)?\.?|Jon(?:ah)?\.?|Mic(?:ah)?\.?|Nah(?:um)?\.?|Hab(?:akkuk)?\.?|Zep(?:h|haniah)?\.?|Hag(?:gai)?\.?|Zec(?:h|hariah)?\.?|Mal(?:achi)?\.?|(?:Mt|Matt(?:hew)?)\.?|(?:Mk|Mark?)\.?|(?:Lk|Luke?)\.?|J(?:o?h)?n\.?|Acts?\.?|Ro(?:m|mans)?\.?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?\.?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?\.?|Gal(?:atians)?\.?|Eph(?:es|esians)?\.?|Phil(?:ippians)?\.?|Col(?:ossians)?\.?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?\.?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?\.?|(?:1|1st|I|First)\s*Ti(?:m|mothy)?\.?|(?:2|2nd|II|Second)\s*Ti(?:m|mothy)?\.?|Titus\.?|Phil(?:em|emon)?\.?|Heb(?:rews?)?\.?|James\.?|(?:1|1st|I|First)\s*P(?:et|eter|t)?\.?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?\.?|(?:1|1st|I|First)\s*J(?:o?h)?n\.?|(?:2|2nd|II|Second)\s*J(?:o?h)?n\.?|(?:3|3rd|III|Third)\s*J(?:o?h)?n\.?|Jude?\.?|Re(?:v|velation)?\.)\s([0-9]{0,3})(?:\s|:)([0-9]{1,2})(?:[–—-]([0-9]{1,2}))?/gi;
+let bibleRegex = /(Gen(?:esis)?\.?|Ex(?:od|odus)?\.?|Le(?:v|viticus)?\.?|Num(?:b|bers)?\.?|(?:Dt|Deut(?:eronomy)?)\.?|Jos(?:h|hua)?\.?|(?:Jdgs?|Judg(?:es)?)\.?|Ru?th\.?|(?:1|1st|I|First)\s*Sam(?:uel)?\.?|(?:2|2nd|II|Second)\s*Sam(?:uel)?\.?|(?:1|1st|I|First)\s*(?:Kings|Kgs)\.?|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)\.?|(?:1|1st|I|First)\s*Chr(?:on|onicles)?\.?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?\.?|Ez(?:r|ra)?\.?|Ne(?:h|hemiah)?\.?|Tob(?:it)?\.?|(?:Jth|Jdt|Jdth|Judith)\.?|Es(?:t|th|ther)\.?|(?:1|1st|I|First)\s*Mac(?:cabees)?\.?|(?:2|2nd|II|Second)\s*Mac(?:cabees)?\.?|Jo?b\.?|Ps(?:a?lms?)?\.?|Pro(?:v|verbs)?\.?|Ecc(?:les?|lesiastes)?\.?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)\.?|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?\.?|Sir(?:ach)?\.?|Bar(?:uch)?\.?|Is(?:a|aiah)?\.?|Jer(?:emiah)?\.?|Lam(?:entations)?\.?|Ez(?:e?k?|ekiel)?\.?|Dan(?:iel)?\.?|Hos(?:ea)?\.?|Joel\.?|Amos\.?|Ob(?:ad|adiah)?\.?|Jon(?:ah)?\.?|Mic(?:ah)?\.?|Nah(?:um)?\.?|Hab(?:akkuk)?\.?|Zep(?:h|haniah)?\.?|Hag(?:gai)?\.?|Zec(?:h|hariah)?\.?|Mal(?:achi)?\.?|(?:Mt|Matt(?:hew)?)\.?|(?:Mk|Mark?)\.?|(?:Lk|Luke?)\.?|J(?:o?h)?n\.?|Acts?\.?|Ro(?:m|mans)?\.?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?\.?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?\.?|Gal(?:atians)?\.?|Eph(?:es|esians)?\.?|Phil(?:ippians)?\.?|Col(?:ossians)?\.?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?\.?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?\.?|(?:1|1st|I|First)\s*Ti(?:m|mothy)?\.?|(?:2|2nd|II|Second)\s*Ti(?:m|mothy)?\.?|Titus\.?|Phil(?:em|emon)?\.?|Heb(?:rews?)?\.?|James\.?|(?:1|1st|I|First)\s*P(?:et|eter|t)?\.?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?\.?|(?:1|1st|I|First)\s*J(?:o?h)?n\.?|(?:2|2nd|II|Second)\s*J(?:o?h)?n\.?|(?:3|3rd|III|Third)\s*J(?:o?h)?n\.?|Jude?\.?|Re(?:v|velation)?\.?)\s((?:,?\s?[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)/gi;
 
 // console.log(bibleRegex);
 
@@ -146,8 +146,8 @@ function transformBibleReferences() {
     // console.log(nodeList);
 
     nodeList.forEach(function (node) {
-        // m - original text, b - book, c - chapter, s - start verse, e - end verse (optional)
-        node.innerHTML = node.innerHTML.replace(bibleRegex, function (m, b, c, s, e) {
+        // m - original text, b - book, l - verse list match
+        node.innerHTML = node.innerHTML.replace(bibleRegex, function (m, b, l) {
             let book = '';
             // TODO: Figure out a more efficient way to do this
             for (let key in bibleBooks) {
@@ -162,13 +162,22 @@ function transformBibleReferences() {
                 console.error('Couldn\'t match ' + m);
                 return m;
             }
-            let linkHref = `${BIBLE_DIRECT_URL + book}/${c}/${s}`;
-            if (e) linkHref += `-${e}`;
-            // TODO: Make this match a list of verses where the book is the same, e.g. Eph. 2:1, 2:5, 4:18
-            return '<div class="biblePreviewerContainer">' +
-                `<a class="biblePreviewerLink" href="${linkHref}" target="_blank"
-                    data-bible-ref="${createAPILink(book, c, s, e)}">${m}</a>` +
-                '</div>';
+
+            let refList = [], verseList = l.split(/,\s?/g);
+            let splitText = m.split(',');
+            for (let i = 0; i < verseList.length; i++) {
+                let chap = verseList[i].split(':');
+                let verse = chap[1].split('-');
+                let linkHref = `${BIBLE_DIRECT_URL + book}/${chap[0]}/${verse[0]}`;
+                if (verse[1]) linkHref += `-${verse[1]}`;
+                refList.push('<div class="biblePreviewerContainer">' +
+                    `<a class="biblePreviewerLink" href="${linkHref}" target="_blank"
+                            data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1])}">${splitText[i]}</a>` +
+                    '</div>');
+
+            }
+
+            return refList.join(', ');
         });
     });
 }
@@ -255,9 +264,9 @@ function createTooltips() {
 /**
  * Create link to the Bible API
  * @param {string} book - OSIS abbreviation of the book
- * @param {number} chapter - chapter number
- * @param {number} startVerse - what verse to start reading from
- * @param {number} endVerse - what verse to end reading at
+ * @param {string} chapter - chapter number
+ * @param {string} startVerse - what verse to start reading from
+ * @param {string} endVerse - what verse to end reading at
  * @returns {string}
  */
 function createAPILink(book, chapter, startVerse, endVerse) {
