@@ -3,8 +3,10 @@ const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
 const DEFAULT_TRANS = 'eng-NASB';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
-const DEFAULT_DEUTERO_TRANS = 'eng-KJVA';
+const DEFAULT_DEUTERO_TRANS = 'eng-NASB';
 const BIBLE_DIRECT_URL = `https://bibles.org/${DEFAULT_TRANS}/`;
+
+let headElement = document.getElementsByTagName('head')[0];
 
 // Lookup dictionary for verses
 let bibleVerseDict = {};
@@ -105,6 +107,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
  * Initializes the app
  */
 function initBiblePreviewer() {
+    // Load FUMS - copyright stuff
+    let script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = document.location.protocol + '//d2ue49q0mum86x.cloudfront.net/include/fums.c.js';
+    headElement.appendChild(script);
+
     transformBibleReferences();
     createTooltips();
 }
@@ -287,7 +296,14 @@ function sendAPIRequestForVerses(requestLink, cb) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                let verses = JSON.parse(xhr.responseText).response.verses;
+                let res = JSON.parse(xhr.responseText).response;
+                let verses = res.verses;
+                let bapi = document.createElement('script');
+                // Make a call to the FUMS - copyright stuff
+                bapi.text = `_BAPI.t("${res.meta.fums_tid}")`;
+                headElement.appendChild(bapi);
+                headElement.removeChild(bapi);
+
                 if (verses === undefined) {
                     cb(null, 404);
                 }
