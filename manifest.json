@@ -12,7 +12,8 @@
     "128": "icons/bible128.png"
   },
   "permissions": [
-    "https://bibles.org/v2/"
+    "https://bibles.org/v2/",
+    "storage"
   ],
   "browser_action": {
     "default_icon": "icons/bible16.png"
@@ -22,6 +23,10 @@
       "js/background.js"
     ],
     "persistent": false
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
   },
   "web_accessible_resources": [
     "js/*.js.map"

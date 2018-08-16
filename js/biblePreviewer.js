@@ -1,10 +1,9 @@
 // TODO: Add version picker customization page
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
-const DEFAULT_TRANS = 'eng-NASB';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
 const DEFAULT_DEUTERO_TRANS = 'eng-NASB';
-const BIBLE_DIRECT_URL = `https://bibles.org/${DEFAULT_TRANS}/`;
+const BIBLE_DIRECT_URL = `https://bibles.org/`;
 
 let headElement = document.getElementsByTagName('head')[0];
 
@@ -100,13 +99,15 @@ let bibleRegex = /(Gen(?:esis)?\.?|Ex(?:od|odus)?\.?|Le(?:v|viticus)?\.?|Num(?:b
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    initBiblePreviewer();
+    console.log('running real');
+    console.log(request);
+    initBiblePreviewer(request.translation);
 });
 
 /**
  * Initializes the app
  */
-function initBiblePreviewer() {
+function initBiblePreviewer(translation) {
     // Load FUMS - copyright stuff
     let script = document.createElement('script');
     script.type = 'text/javascript';
@@ -114,14 +115,14 @@ function initBiblePreviewer() {
     script.src = document.location.protocol + '//d2ue49q0mum86x.cloudfront.net/include/fums.c.js';
     headElement.appendChild(script);
 
-    transformBibleReferences();
+    transformBibleReferences(translation);
     createTooltips();
 }
 
 /**
  * Transform all bible references into links using a TreeWalker
  */
-function transformBibleReferences() {
+function transformBibleReferences(trans) {
     // Use a TreeWalker instead of simple replace so we can ignore bible references that are already links
     let treeWalker = document.createTreeWalker(document.body,
         NodeFilter.SHOW_TEXT,
@@ -152,7 +153,7 @@ function transformBibleReferences() {
         }
         if (shouldAdd) nodeList.push(newNode);
     }
-    // console.log(nodeList);
+    console.log(nodeList);
 
     nodeList.forEach(function (node) {
         // m - original text, b - book, l - verse list match
@@ -177,41 +178,17 @@ function transformBibleReferences() {
             for (let i = 0; i < verseList.length; i++) {
                 let chap = verseList[i].split(':');
                 let verse = chap[1].split('-');
-                let linkHref = `${BIBLE_DIRECT_URL + book}/${chap[0]}/${verse[0]}`;
-                if (verse[1]) linkHref += `-${verse[1]}`;
+                let directHref = `${BIBLE_DIRECT_URL}${trans}/${book}/${chap[0]}/${verse[0]}`;
+                if (verse[1]) directHref += `-${verse[1]}`;
                 refList.push('<div class="biblePreviewerContainer">' +
-                    `<a class="biblePreviewerLink" href="${linkHref}" target="_blank"
-                            data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1])}">${splitText[i]}</a>` +
+                    `<a class="biblePreviewerLink" href="${directHref}" target="_blank"
+                            data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1], trans)}">${splitText[i]}</a>` +
                     '</div>');
 
             }
 
             return refList.join(', ');
         });
-    });
-}
-
-function transformUsingReplace() {
-    document.body.innerHTML = document.body.innerHTML.replace(bibleRegex, function (m, b, c, s, e) {
-        let book = '';
-        for (let key in bibleBooks) {
-            if (b.search(key) > -1) {
-                book = bibleBooks[key];
-                // If the book is John, continue searching to verify it isn't 1, 2, 3 John
-                if (book !== 'John')
-                    break;
-            }
-        }
-        if (book === '') {
-            console.error('Couldn\'t match ' + m);
-            return m;
-        }
-        let linkHref = `${BIBLE_DIRECT_URL + book}/${c}/${s}`;
-        if (e) linkHref += `-${e}`;
-        return '<span class="biblePreviewerContainer">' +
-            `<a class="biblePreviewerLink" href="${linkHref}" target="_blank"
-                    data-bible-ref="${createAPILink(book, c, s, e)}">${m}</a>` +
-            '</span>';
     });
 }
 
@@ -278,8 +255,8 @@ function createTooltips() {
  * @param {string} endVerse - what verse to end reading at
  * @returns {string}
  */
-function createAPILink(book, chapter, startVerse, endVerse) {
-    let bibleLink = `${BIBLE_API_BASE_URL}chapters/${DEFAULT_TRANS}:${book}.${chapter}/verses.js?start=${startVerse}`;
+function createAPILink(book, chapter, startVerse, endVerse, translation) {
+    let bibleLink = `${BIBLE_API_BASE_URL}chapters/${translation}:${book}.${chapter}/verses.js?start=${startVerse}`;
     let end = endVerse ? endVerse : startVerse;
     bibleLink += '&end=' + end;
     return bibleLink;

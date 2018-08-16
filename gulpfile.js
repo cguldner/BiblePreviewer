@@ -32,6 +32,9 @@ gulp.task('zip', ['build'], () =>
 
 gulp.task('default', ['zip']);
 
+gulp.task('firefox-watch', ['zip'], function () {
+    gulp.watch(['js/*.js', '*.css', 'manifest.json', '*.html', 'icons/**/*'], ['zip']);
+});
 
 gulp.task('watch', ['build'], function () {
     gulp.watch(['js/*.js', '*.css', 'manifest.json', '*.html', 'icons/**/*'], ['build']);
