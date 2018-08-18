@@ -11,18 +11,27 @@
     z-index: 9999;
     width: 350px;
     margin: 10px;
+    box-shadow: 2px 2px 5px grey;
+    border-radius: 5px;
 }
 
 .biblePreviewerTooltip .tooltip-inner {
     max-width: none;
-    padding: 10px 20px;
+    padding: 0 20px 10px;
     text-align: left;
     background-color: whitesmoke;
     color: black;
-    box-shadow: 2px 2px 5px grey;
     max-height: 300px;
     overflow: auto;
     font-style: normal;
+}
+
+.biblePreviewerTooltip .translation {
+    background-color: whitesmoke;
+    padding: 3px 20px;
+    text-align:right;
+    font-variant: small-caps;
+    font-size: 10px;
 }
 
 .biblePreviewerTooltip .tooltip-inner h3 {

@@ -6,29 +6,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
     <style>
         body {
-            /*padding-bottom: 20px;*/
+            min-height: 250px;
         }
 
         #save-status {
-            font-size: 1em;
+            font-size: 14px;
             color: green;
+        }
+
+        .dropdown-content li {
+            min-height: initial;
+        }
+
+        ul.dropdown-content li > span {
+            font-size: 12px;
+            line-height: initial;
+            padding: 7px 10px;
         }
     </style>
 
 <body>
 <div class="container">
     <div class="row">
-        <div class="input-field col s12">
+        <div class="input-field col s12 m6">
             <select disabled id="language">
                 <option value="eng">English</option>
             </select>
             <label>Language</label>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="input-field col s12">
-            <select id="bible-version">
+        <div class="input-field col s12 m6">
+            <select disabled id="bible-version">
                 <option disabled selected value>--- Select a version ---</option>
             </select>
             <label>Bible Version (English Only)</label>
@@ -38,13 +46,13 @@
     <div class="row valign-wrapper">
         <div class="col s6" id="save-status"></div>
         <div class="col s6 right-align">
-            <div class=" waves-effect waves-light btn disabled" id="save">Save</div>
+            <div class=" waves-effect waves-light btn disabled" id="save-button">Save</div>
         </div>
     </div>
     <div class="clearfix"></div>
 </div>
 
-<script src="js/materialize.min.js"></script>
+<script src="js/libraries/materialize.min.js"></script>
 <script src="js/options.js"></script>
 
 </body>

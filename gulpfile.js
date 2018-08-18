@@ -4,12 +4,12 @@ const zip = require('gulp-zip');
 const clean = require('gulp-clean');
 const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
-const packageFile = require('./package.json');
+const manifestFile = require('./manifest.json');
 
 const distFolder = 'dist';
 
 gulp.task('uglify', () =>
-    gulp.src('js/*')
+    gulp.src('js/**/*')
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(uglify({mangle: true}))
@@ -26,18 +26,14 @@ gulp.task('build', ['uglify', 'move']);
 
 gulp.task('zip', ['build'], () =>
     gulp.src(distFolder + '/**/*')
-        .pipe(zip('BiblePreview.v' + packageFile.version + '.zip'))
+        .pipe(zip('BiblePreview.v' + manifestFile.version + '.zip'))
         .pipe(gulp.dest(''))
 );
 
 gulp.task('default', ['zip']);
 
-gulp.task('firefox-watch', ['zip'], function () {
-    gulp.watch(['js/*.js', '*.css', 'manifest.json', '*.html', 'icons/**/*'], ['zip']);
-});
-
 gulp.task('watch', ['build'], function () {
-    gulp.watch(['js/*.js', '*.css', 'manifest.json', '*.html', 'icons/**/*'], ['build']);
+    gulp.watch(['js/**/*.js', '*.css', 'manifest.json', '*.html', 'icons/**/*'], ['build']);
 });
 
 

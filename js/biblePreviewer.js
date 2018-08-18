@@ -1,4 +1,3 @@
-// TODO: Add version picker customization page
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
 const DEFAULT_TRANS = 'eng-NASB';
@@ -100,8 +99,9 @@ let bibleRegex = /(Gen(?:esis)?\.?|Ex(?:od|odus)?\.?|Le(?:v|viticus)?\.?|Num(?:b
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.translation.length === 0) {
+    if (Object.keys(request).length === 0) {
         request.translation = DEFAULT_TRANS;
+        request.language = "eng";
     }
     initBiblePreviewer(request.translation);
 });
@@ -118,7 +118,7 @@ function initBiblePreviewer(translation) {
     headElement.appendChild(script);
 
     transformBibleReferences(translation);
-    createTooltips();
+    createTooltips(translation);
 }
 
 /**
@@ -198,7 +198,7 @@ function transformBibleReferences(trans) {
 /**
  * Create the tooltip popups that will show the verse text above the link on hover
  */
-function createTooltips() {
+function createTooltips(trans) {
     document.querySelectorAll('.biblePreviewerLink').forEach(function (link) {
         let tool, enterTimeout, exitTimeout;
         // Add listener to biblePreviewerContainer so that we can hover over the tooltip as well
@@ -214,6 +214,7 @@ function createTooltips() {
                         // arrowSelector: '.bpTooltipArrow',
                         // innerSelector: '.bpTooltipInner',
                         template: '<div class="biblePreviewerTooltip" role="tooltip">' +
+                            `<div class="translation">${trans.split('-')[1]}</div>` +
                             '<div class="tooltip-inner"></div>' +
                             '<div class="tooltip-arrow"></div>' +
                             '</div>',
@@ -223,6 +224,7 @@ function createTooltips() {
                 }
                 if (bibleVerseDict[link.dataset.bibleRef] === undefined) {
                     sendAPIRequestForVerses(link.dataset.bibleRef, function (verseObj) {
+                        console.log(bibleVerseDict);
                         if (verseObj) {
                             let verseText = verseObj.join('');
                             tool.updateTitleContent(verseText);
@@ -243,7 +245,10 @@ function createTooltips() {
             clearTimeout(enterTimeout);
             // Destroy the tooltip to prevent any stray tooltips if mouse is moved fast
             exitTimeout = setTimeout(function () {
-                if (tool) tool.hide();
+                if (tool) {
+                    tool.hide();
+                    tool.updateTitleContent('Loading');
+                }
             }, 750);
         });
     });

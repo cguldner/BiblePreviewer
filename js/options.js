@@ -2,10 +2,15 @@
 let xhr = new XMLHttpRequest();
 
 xhr.open('GET', 'https://omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex@bibles.org/v2/versions.js', true);
-xhr.onreadystatechange = get_versions;
+xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200)
+        get_versions();
+};
 xhr.send();
 
 let version_select = document.getElementById("bible-version");
+let language_select = document.getElementById("language");
+let status = document.getElementById('save-status');
 
 document.addEventListener('DOMContentLoaded', function () {
     let instances = M.FormSelect.init(document.querySelectorAll('select'), {});
@@ -30,10 +35,10 @@ function get_versions() {
 // Saves options to chrome.storage
 function save_options() {
     chrome.storage.sync.set({
+        "language": language_select.options[language_select.selectedIndex].value,
         "translation": version_select.options[version_select.selectedIndex].value
     }, function () {
         // Update status to let user know options were saved.
-        let status = document.getElementById('save-status');
         status.textContent = 'Options saved.';
         setTimeout(function () {
             status.textContent = '';
@@ -45,13 +50,16 @@ function save_options() {
 // stored in chrome.storage.
 function restore_options() {
     chrome.storage.sync.get({
+        "language": "eng",
         "translation": "eng-NASB"
     }, function (items) {
+        language_select.value = items["language"];
         version_select.value = items["translation"];
+        version_select.removeAttribute("disabled");
         // Reinitialize the select to show the new options
-        M.FormSelect.init(document.querySelectorAll('select'), {});
-        document.getElementById("save").classList.remove("disabled");
+        M.FormSelect.init(version_select, {});
+        document.getElementById("save-button").classList.remove("disabled");
     });
 }
 
-document.getElementById('save').addEventListener('click', save_options);
+document.getElementById('save-button').addEventListener('click', save_options);
