@@ -7,6 +7,10 @@ xhr.send();
 
 let version_select = document.getElementById("bible-version");
 
+document.addEventListener('DOMContentLoaded', function () {
+    let instances = M.FormSelect.init(document.querySelectorAll('select'), {});
+});
+
 function get_versions() {
     let versions = JSON.parse(xhr.responseText).response.versions;
     // Reduce the versions to english ones, with only the translation name and the abbreviation
@@ -40,11 +44,13 @@ function save_options() {
 // Restores select box and checkbox state using the preferences
 // stored in chrome.storage.
 function restore_options() {
-    // Use default value color = 'red' and likesColor = true.
     chrome.storage.sync.get({
         "translation": "eng-NASB"
     }, function (items) {
         version_select.value = items["translation"];
+        // Reinitialize the select to show the new options
+        M.FormSelect.init(document.querySelectorAll('select'), {});
+        document.getElementById("save").classList.remove("disabled");
     });
 }
 

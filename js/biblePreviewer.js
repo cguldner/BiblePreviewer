@@ -1,6 +1,7 @@
 // TODO: Add version picker customization page
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
+const DEFAULT_TRANS = 'eng-NASB';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
 const DEFAULT_DEUTERO_TRANS = 'eng-NASB';
 const BIBLE_DIRECT_URL = `https://bibles.org/`;
@@ -99,8 +100,9 @@ let bibleRegex = /(Gen(?:esis)?\.?|Ex(?:od|odus)?\.?|Le(?:v|viticus)?\.?|Num(?:b
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    console.log('running real');
-    console.log(request);
+    if (request.translation.length === 0) {
+        request.translation = DEFAULT_TRANS;
+    }
     initBiblePreviewer(request.translation);
 });
 
@@ -153,7 +155,7 @@ function transformBibleReferences(trans) {
         }
         if (shouldAdd) nodeList.push(newNode);
     }
-    console.log(nodeList);
+    // console.log(nodeList);
 
     nodeList.forEach(function (node) {
         // m - original text, b - book, l - verse list match
