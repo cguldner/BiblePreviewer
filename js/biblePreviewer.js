@@ -179,14 +179,13 @@ function transformBibleReferences(trans) {
             let splitText = m.split(',');
             for (let i = 0; i < verseList.length; i++) {
                 let chap = verseList[i].split(':');
-                let verse = chap[1].split('-');
+                let verse = chap[1].split(/[–—-]/);
                 let directHref = `${BIBLE_DIRECT_URL}${trans}/${book}/${chap[0]}/${verse[0]}`;
                 if (verse[1]) directHref += `-${verse[1]}`;
                 refList.push('<div class="biblePreviewerContainer">' +
                     `<a class="biblePreviewerLink" href="${directHref}" target="_blank"
                             data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1], trans)}">${splitText[i]}</a>` +
                     '</div>');
-
             }
 
             return refList.join(', ');
@@ -214,7 +213,8 @@ function createTooltips(trans) {
                         // arrowSelector: '.bpTooltipArrow',
                         // innerSelector: '.bpTooltipInner',
                         template: '<div class="biblePreviewerTooltip" role="tooltip">' +
-                            `<div class="translation">${trans.split('-')[1]}</div>` +
+                            `<div class="bpHeaderBar"><div class="bpVerse">${link.textContent}</div>` +
+                            `<div class="bpTranslation">${trans.split('-')[1]}</div></div>` +
                             '<div class="tooltip-inner"></div>' +
                             '<div class="tooltip-arrow"></div>' +
                             '</div>',
@@ -224,9 +224,17 @@ function createTooltips(trans) {
                 }
                 if (bibleVerseDict[link.dataset.bibleRef] === undefined) {
                     sendAPIRequestForVerses(link.dataset.bibleRef, function (verseObj) {
-                        console.log(bibleVerseDict);
+                        console.log(tool);
                         if (verseObj) {
-                            let verseText = verseObj.join('');
+                            let verseSel = tool.popperInstance.popper.querySelectorAll(".bpVerse")[0];
+                            verseSel.innerText = verseObj[0].reference;
+                            if (verseObj.length > 1) {
+                                verseSel.innerText += ' - ' + verseObj[verseObj.length - 1].reference;
+                            }
+
+                            let verseText = verseObj.map(function (verse) {
+                                return verse.text;
+                            }).join('');
                             tool.updateTitleContent(verseText);
                             // Store into a dictionary for quick access later
                             bibleVerseDict[link.dataset.bibleRef] = verseText;
@@ -292,9 +300,7 @@ function sendAPIRequestForVerses(requestLink, cb) {
                     cb(null, 404);
                 }
                 else {
-                    cb(verses.map(function (verse) {
-                        return verse.text;
-                    }));
+                    cb(verses);
                 }
             }
             else {

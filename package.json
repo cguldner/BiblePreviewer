@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git+https://github.com/cguldner/BiblePreviewer.git"
   },
+  "scripts": {
+    "test": "node_modules/.bin/cypress open"
+  },
   "author": "Cody Guldner",
   "license": "ISC",
   "bugs": {
@@ -14,12 +17,15 @@
   },
   "homepage": "https://github.com/cguldner/BiblePreviewer#readme",
   "devDependencies": {
+    "cypress": "^3.1.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.4.0",
-    "gulp-uglify-es": "^1.0.4",
-    "gulp-zip": "^4.2.0",
     "gulp-plumber": "^1.2.0",
+    "gulp-sass": "^4.0.1",
     "gulp-sourcemaps": "^2.6.4",
-    "gulp-watch": "^5.0.1"
-  }
+    "gulp-uglify-es": "^1.0.4",
+    "gulp-watch": "^5.0.1",
+    "gulp-zip": "^4.2.0"
+  },
+  "dependencies": {}
 }
