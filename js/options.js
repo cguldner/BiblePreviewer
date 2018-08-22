@@ -8,8 +8,8 @@ xhr.onreadystatechange = function () {
 };
 xhr.send();
 
-let version_select = document.getElementById("bible-version");
-let language_select = document.getElementById("language");
+let version_select = document.getElementById('bible-version');
+let language_select = document.getElementById('language');
 let status = document.getElementById('save-status');
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -20,8 +20,8 @@ function get_versions() {
     let versions = JSON.parse(xhr.responseText).response.versions;
     // Reduce the versions to english ones, with only the translation name and the abbreviation
     versions = versions.reduce(function (filtered, version) {
-        if (version.lang.match('eng') && version["name"].length !== 0) {
-            filtered.push({'full_name': version['name'], 'abbrev': "eng-" + version['abbreviation']});
+        if (version.lang.match('eng') && version['name'].length !== 0) {
+            filtered.push({'full_name': version['name'], 'abbrev': 'eng-' + version['abbreviation']});
         }
         return filtered;
     }, []);
@@ -35,8 +35,8 @@ function get_versions() {
 // Saves options to chrome.storage
 function save_options() {
     chrome.storage.sync.set({
-        "language": language_select.options[language_select.selectedIndex].value,
-        "translation": version_select.options[version_select.selectedIndex].value
+        'language': language_select.options[language_select.selectedIndex].value,
+        'translation': version_select.options[version_select.selectedIndex].value
     }, function () {
         // Update status to let user know options were saved.
         status.textContent = 'Options saved.';
@@ -50,15 +50,15 @@ function save_options() {
 // stored in chrome.storage.
 function restore_options() {
     chrome.storage.sync.get({
-        "language": "eng",
-        "translation": "eng-NASB"
+        'language': 'eng',
+        'translation': 'eng-NASB'
     }, function (items) {
-        language_select.value = items["language"];
-        version_select.value = items["translation"];
-        version_select.removeAttribute("disabled");
+        language_select.value = items['language'];
+        version_select.value = items['translation'];
+        version_select.removeAttribute('disabled');
         // Reinitialize the select to show the new options
         M.FormSelect.init(version_select, {});
-        document.getElementById("save-button").classList.remove("disabled");
+        document.getElementById('save-button').classList.remove('disabled');
     });
 }
 

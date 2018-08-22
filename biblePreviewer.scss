@@ -16,19 +16,28 @@ $arrow-color: #b9b9b9;
   margin: 10px;
   box-shadow: 2px 2px 5px grey;
   border-radius: 5px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
 
   .bpHeaderBar {
     background-color: $popup-color;
     padding: 3px 20px;
+    color: black;
+    text-align: left;
+
+    .bpVerse {
+      font-size: 16px;
+    }
   }
 
   .tooltip-inner {
     max-width: none;
+    max-height: 300px;
     padding: 0 20px 10px;
     text-align: left;
     color: black;
     background-color: $popup-color;
-    max-height: 300px;
     overflow: auto;
     font-style: normal;
 
@@ -41,7 +50,8 @@ $arrow-color: #b9b9b9;
     p {
       margin: 0;
       display: inline;
-      font-size: 0.9em;
+      font-size: 18pz;
+      line-height: 1;
     }
 
     sup {
@@ -63,9 +73,9 @@ $arrow-color: #b9b9b9;
     background-color: whitesmoke;
     text-align: right;
     font-variant: small-caps;
-    display:inline-block;
+    display: inline-block;
     padding-left: 10px;
-    font-size:12px;
+    font-size: 12px;
   }
 
   .tooltip-arrow {

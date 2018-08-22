@@ -1,9 +1,13 @@
+// TODO: Make clicking on the toolbar button re-run the script
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
 const DEFAULT_TRANS = 'eng-NASB';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
-const DEFAULT_DEUTERO_TRANS = 'eng-NASB';
+const DEFAULT_DEUTERO_TRANS = 'eng-KJVA';
 const BIBLE_DIRECT_URL = `https://bibles.org/`;
+
+let versions_with_deutero = ['eng-KJVA'];
+let deutero_books = ['1Macc', '2Macc', 'Wis', 'Sir', 'Bar', 'Tob', 'Jdt'];
 
 let headElement = document.getElementsByTagName('head')[0];
 
@@ -31,8 +35,8 @@ let bibleBooks = {
     'Tob(?:it)?': 'Tob',
     '(?:Jth|Jdt|Jdth|Judith)': 'Jdt',
     'Es(?:t|th|ther)': 'Esth',
-    '(?:1|1st|I|First)\\s*Mac(?:cabees)?': '1 Macc',
-    '(?:2|2nd|II|Second)\\s*Mac(?:cabees)?': '2 Macc',
+    '(?:1|1st|I|First)\\s*Mac(?:cabees)?': '1Macc',
+    '(?:2|2nd|II|Second)\\s*Mac(?:cabees)?': '2Macc',
     'Jo?b': 'Job',
     'Ps(?:a?lms?)?': 'Ps',
     'Pro(?:v|verbs)?': 'Prov',
@@ -72,8 +76,8 @@ let bibleBooks = {
     'Col(?:ossians)?': 'Col',
     '(?:1|1st|I|First)\\s*Thes(?:s|salonians)?': '1Thess',
     '(?:2|2nd|II|Second)\\s*Thes(?:s|salonians)?': '2Thess',
-    '(?:1|1st|I|First)\\s*Ti(?:m|mothy)?': '1Tim',
-    '(?:2|2nd|II|Second)\\s*Ti(?:m|mothy)?': '2Tim',
+    '(?:1|1st|I|First)\\s*T(?:i|m|imothy)': '1Tim',
+    '(?:2|2nd|II|Second)\\s*T(?:i|m|imothy)': '2Tim',
     'Titus': 'Titus',
     'Phil(?:em|emon)?': 'Phil',
     'Heb(?:rews?)?': 'Heb',
@@ -101,7 +105,6 @@ let bibleRegex = /(Gen(?:esis)?\.?|Ex(?:od|odus)?\.?|Le(?:v|viticus)?\.?|Num(?:b
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (Object.keys(request).length === 0) {
         request.translation = DEFAULT_TRANS;
-        request.language = "eng";
     }
     initBiblePreviewer(request.translation);
 });
@@ -123,6 +126,7 @@ function initBiblePreviewer(translation) {
 
 /**
  * Transform all bible references into links using a TreeWalker
+ * @param {string} trans - Which bible translation to use
  */
 function transformBibleReferences(trans) {
     // Use a TreeWalker instead of simple replace so we can ignore bible references that are already links
@@ -160,7 +164,7 @@ function transformBibleReferences(trans) {
     nodeList.forEach(function (node) {
         // m - original text, b - book, l - verse list match
         node.innerHTML = node.innerHTML.replace(bibleRegex, function (m, b, l) {
-            let book = '';
+            let book = '', actual_trans = trans;
             // TODO: Figure out a more efficient way to do this
             for (let key in bibleBooks) {
                 if (b.search(key) > -1) {
@@ -174,17 +178,21 @@ function transformBibleReferences(trans) {
                 console.error('Couldn\'t match ' + m);
                 return m;
             }
+            // Change translation if it is a deuterocannonical book and an unsupported translation is selected
+            if (versions_with_deutero.indexOf(actual_trans) < 0 && deutero_books.indexOf(book) >= 0) {
+                actual_trans = DEFAULT_DEUTERO_TRANS;
+            }
 
             let refList = [], verseList = l.split(/,\s?/g);
             let splitText = m.split(',');
             for (let i = 0; i < verseList.length; i++) {
                 let chap = verseList[i].split(':');
                 let verse = chap[1].split(/[–—-]/);
-                let directHref = `${BIBLE_DIRECT_URL}${trans}/${book}/${chap[0]}/${verse[0]}`;
+                let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}/${chap[0]}/${verse[0]}`;
                 if (verse[1]) directHref += `-${verse[1]}`;
                 refList.push('<div class="biblePreviewerContainer">' +
                     `<a class="biblePreviewerLink" href="${directHref}" target="_blank"
-                            data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1], trans)}">${splitText[i]}</a>` +
+                            data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1], actual_trans)}">${splitText[i]}</a>` +
                     '</div>');
             }
 
@@ -214,7 +222,7 @@ function createTooltips(trans) {
                         // innerSelector: '.bpTooltipInner',
                         template: '<div class="biblePreviewerTooltip" role="tooltip">' +
                             `<div class="bpHeaderBar"><div class="bpVerse">${link.textContent}</div>` +
-                            `<div class="bpTranslation">${trans.split('-')[1]}</div></div>` +
+                            `<div class="bpTranslation">${link.dataset.bibleRef.split('-')[1].split(':')[0]}</div></div>` +
                             '<div class="tooltip-inner"></div>' +
                             '<div class="tooltip-arrow"></div>' +
                             '</div>',
@@ -224,9 +232,8 @@ function createTooltips(trans) {
                 }
                 if (bibleVerseDict[link.dataset.bibleRef] === undefined) {
                     sendAPIRequestForVerses(link.dataset.bibleRef, function (verseObj) {
-                        console.log(tool);
                         if (verseObj) {
-                            let verseSel = tool.popperInstance.popper.querySelectorAll(".bpVerse")[0];
+                            let verseSel = tool.popperInstance.popper.querySelectorAll('.bpVerse')[0];
                             verseSel.innerText = verseObj[0].reference;
                             if (verseObj.length > 1) {
                                 verseSel.innerText += ' - ' + verseObj[verseObj.length - 1].reference;
@@ -268,7 +275,8 @@ function createTooltips(trans) {
  * @param {string} chapter - chapter number
  * @param {string} startVerse - what verse to start reading from
  * @param {string} endVerse - what verse to end reading at
- * @returns {string}
+ * @param {string} translation - Which bible translation to use
+ * @returns {string} The link to the API for this bible passage
  */
 function createAPILink(book, chapter, startVerse, endVerse, translation) {
     let bibleLink = `${BIBLE_API_BASE_URL}chapters/${translation}:${book}.${chapter}/verses.js?start=${startVerse}`;
