@@ -16,7 +16,8 @@
     "storage"
   ],
   "browser_action": {
-    "default_icon": "icons/bible16.png"
+    "default_icon": "icons/bible16.png",
+    "default_popup": "popup.html"
   },
   "background": {
     "scripts": [

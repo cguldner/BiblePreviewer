@@ -1,4 +1,3 @@
-// TODO: Make clicking on the toolbar button re-run the script
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
 const DEFAULT_TRANS = 'eng-NASB';
@@ -120,8 +119,10 @@ function initBiblePreviewer(translation) {
     script.src = document.location.protocol + '//d2ue49q0mum86x.cloudfront.net/include/fums.c.js';
     headElement.appendChild(script);
 
-    transformBibleReferences(translation);
-    createTooltips(translation);
+    let node_length = transformBibleReferences(translation);
+    if (node_length) {
+        createTooltips();
+    }
 }
 
 /**
@@ -135,7 +136,8 @@ function transformBibleReferences(trans) {
         {
             acceptNode: function (node) {
                 // Check for a book of the bible, and that the text isn't already a link
-                if (node.textContent.match(bibleRegex) && node.parentElement.closest('a') === null) {
+                if (node.textContent.match(bibleRegex) && node.parentElement.closest('a') === null
+                    && node.parentElement.closest('.biblePreviewerTooltip') === null) {
                     return NodeFilter.FILTER_ACCEPT;
                 }
             }
@@ -199,13 +201,14 @@ function transformBibleReferences(trans) {
             return refList.join(', ');
         });
     });
+    return nodeList.length
 }
 
 // TODO: Make this dynamically shorten the verse text if too long
 /**
  * Create the tooltip popups that will show the verse text above the link on hover
  */
-function createTooltips(trans) {
+function createTooltips() {
     document.querySelectorAll('.biblePreviewerLink').forEach(function (link) {
         let tool, enterTimeout, exitTimeout;
         // Add listener to biblePreviewerContainer so that we can hover over the tooltip as well
