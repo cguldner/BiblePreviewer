@@ -47,7 +47,7 @@ let bibleBooks = {
     'Is(?:a|aiah)?': 'Isa',
     'Jer(?:emiah)?': 'Jer',
     'Lam(?:entations)?': 'Lam',
-    'Ez(?:e?k?|ekiel)?': 'Ezek',
+    'Ez(?:e|k|ek|ekiel)': 'Ezek',
     'Dan(?:iel)?': 'Dan',
     'Hos(?:ea)?': 'Hos',
     'Joel': 'Joel',
@@ -61,7 +61,7 @@ let bibleBooks = {
     'Hag(?:gai)?': 'Hag',
     'Zec(?:h|hariah)?': 'Zech',
     'Mal(?:achi)?': 'Mal',
-    '(?:Mt|Matt(?:hew)?)': 'Matt',
+    '(?:Mt|Matt(?:h|hew)?)': 'Matt',
     '(?:Mk|Mark?)': 'Mark',
     '(?:Lk|Luke?)': 'Luke',
     'J(?:o?h)?n': 'John',
@@ -92,13 +92,12 @@ let bibleBooks = {
 
 // The regex to match book names
 // TODO: Allow for different start and end chapters
-// let bibleRegex = '(' + Object.keys(bibleBooks).join('\\.?|') + '\\.?';
-// bibleRegex += ')\\s((?:,?\\s?[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)';
+// let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
+// bibleRegex += '\\.?\\s((?:,?\\s?[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)';
 // bibleRegex = new RegExp(bibleRegex, 'gi');
-
-let bibleRegex = /(Gen(?:esis)?\.?|Ex(?:od|odus)?\.?|Le(?:v|viticus)?\.?|Num(?:b|bers)?\.?|(?:Dt|Deut(?:eronomy)?)\.?|Jos(?:h|hua)?\.?|(?:Jdgs?|Judg(?:es)?)\.?|Ru?th\.?|(?:1|1st|I|First)\s*Sam(?:uel)?\.?|(?:2|2nd|II|Second)\s*Sam(?:uel)?\.?|(?:1|1st|I|First)\s*(?:Kings|Kgs)\.?|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)\.?|(?:1|1st|I|First)\s*Chr(?:on|onicles)?\.?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?\.?|Ez(?:r|ra)?\.?|Ne(?:h|hemiah)?\.?|Tob(?:it)?\.?|(?:Jth|Jdt|Jdth|Judith)\.?|Es(?:t|th|ther)\.?|(?:1|1st|I|First)\s*Mac(?:cabees)?\.?|(?:2|2nd|II|Second)\s*Mac(?:cabees)?\.?|Jo?b\.?|Ps(?:a?lms?)?\.?|Pro(?:v|verbs)?\.?|Ecc(?:les?|lesiastes)?\.?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)\.?|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?\.?|Sir(?:ach)?\.?|Bar(?:uch)?\.?|Is(?:a|aiah)?\.?|Jer(?:emiah)?\.?|Lam(?:entations)?\.?|Ez(?:e?k?|ekiel)?\.?|Dan(?:iel)?\.?|Hos(?:ea)?\.?|Joel\.?|Amos\.?|Ob(?:ad|adiah)?\.?|Jon(?:ah)?\.?|Mic(?:ah)?\.?|Nah(?:um)?\.?|Hab(?:akkuk)?\.?|Zep(?:h|haniah)?\.?|Hag(?:gai)?\.?|Zec(?:h|hariah)?\.?|Mal(?:achi)?\.?|(?:Mt|Matt(?:hew)?)\.?|(?:Mk|Mark?)\.?|(?:Lk|Luke?)\.?|J(?:o?h)?n\.?|Acts?\.?|Ro(?:m|mans)?\.?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?\.?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?\.?|Gal(?:atians)?\.?|Eph(?:es|esians)?\.?|Phil(?:ippians)?\.?|Col(?:ossians)?\.?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?\.?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?\.?|(?:1|1st|I|First)\s*Ti(?:m|mothy)?\.?|(?:2|2nd|II|Second)\s*Ti(?:m|mothy)?\.?|Titus\.?|Phil(?:em|emon)?\.?|Heb(?:rews?)?\.?|James\.?|(?:1|1st|I|First)\s*P(?:et|eter|t)?\.?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?\.?|(?:1|1st|I|First)\s*J(?:o?h)?n\.?|(?:2|2nd|II|Second)\s*J(?:o?h)?n\.?|(?:3|3rd|III|Third)\s*J(?:o?h)?n\.?|Jude?\.?|Re(?:v|velation)?\.?)\s((?:,?\s?[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)/gi;
-
 // console.log(bibleRegex);
+
+let bibleRegex = /(Gen(?:esis)?|Ex(?:od|odus)?|Le(?:v|viticus)?|Num(?:b|bers)?|(?:Dt|Deut(?:eronomy)?)|Jos(?:h|hua)?|(?:Jdgs?|Judg(?:es)?)|Ru?th|(?:1|1st|I|First)\s*Sam(?:uel)?|(?:2|2nd|II|Second)\s*Sam(?:uel)?|(?:1|1st|I|First)\s*(?:Kings|Kgs)|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)|(?:1|1st|I|First)\s*Chr(?:on|onicles)?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?|Ez(?:r|ra)?|Ne(?:h|hemiah)?|Tob(?:it)?|(?:Jth|Jdt|Jdth|Judith)|Es(?:t|th|ther)|(?:1|1st|I|First)\s*Mac(?:cabees)?|(?:2|2nd|II|Second)\s*Mac(?:cabees)?|Jo?b|Ps(?:a?lms?)?|Pro(?:v|verbs)?|Ecc(?:les?|lesiastes)?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a|aiah)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e|k|ek|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad|adiah)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h|haniah)?|Hag(?:gai)?|Zec(?:h|hariah)?|Mal(?:achi)?|(?:Mt|Matt(?:h|hew)?)|(?:Mk|Mark?)|(?:Lk|Luke?)|J(?:o?h)?n|Acts?|Ro(?:m|mans)?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?|Gal(?:atians)?|Eph(?:es|esians)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?|(?:1|1st|I|First)\s*T(?:i|m|imothy)|(?:2|2nd|II|Second)\s*T(?:i|m|imothy)|Titus|Phil(?:em|emon)?|Heb(?:rews?)?|James|(?:1|1st|I|First)\s*P(?:et|eter|t)?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?|(?:1|1st|I|First)\s*J(?:o?h)?n|(?:2|2nd|II|Second)\s*J(?:o?h)?n|(?:3|3rd|III|Third)\s*J(?:o?h)?n|Jude?|Re(?:v|velation)?)\.?\s((?:,?\s?[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)/gi;
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -161,7 +160,6 @@ function transformBibleReferences(trans) {
         }
         if (shouldAdd) nodeList.push(newNode);
     }
-    // console.log(nodeList);
 
     nodeList.forEach(function (node) {
         // m - original text, b - book, l - verse list match
@@ -169,7 +167,7 @@ function transformBibleReferences(trans) {
             let book = '', actual_trans = trans;
             // TODO: Figure out a more efficient way to do this
             for (let key in bibleBooks) {
-                if (b.search(key) > -1) {
+                if (b.search('^' + key + '$') > -1) {
                     book = bibleBooks[key];
                     // If the book is John, continue searching to verify it isn't 1, 2, 3 John
                     if (book !== 'John')
@@ -265,7 +263,7 @@ function createTooltips() {
             exitTimeout = setTimeout(function () {
                 if (tool) {
                     tool.hide();
-                    tool.updateTitleContent('Loading');
+                    if (bibleVerseDict[link.dataset.bibleRef] === undefined) tool.updateTitleContent('Loading');
                 }
             }, 750);
         });

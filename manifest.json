@@ -39,7 +39,7 @@
       ],
       "js": [
         "js/libraries/popper.js",
-        "js/libraries/tooltip1.2.0.js",
+        "js/libraries/tooltip.js",
         "js/biblePreviewer.js"
       ],
       "matches": [
