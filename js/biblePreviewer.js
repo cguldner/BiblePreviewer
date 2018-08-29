@@ -37,7 +37,7 @@ let bibleBooks = {
     '(?:1|1st|I|First)\\s*Mac(?:cabees)?': '1Macc',
     '(?:2|2nd|II|Second)\\s*Mac(?:cabees)?': '2Macc',
     'Jo?b': 'Job',
-    'Ps(?:a?lms?)?': 'Ps',
+    'Ps(?:a|alms?)?': 'Ps',
     'Pro(?:v|verbs)?': 'Prov',
     'Ecc(?:les?|lesiastes)?': 'Eccl',
     '(?:SOS|Song(?:\\s*of\\s*(?:Sol(?:omon)?|Songs?))?)': 'Song',
@@ -202,7 +202,6 @@ function transformBibleReferences(trans) {
     return nodeList.length
 }
 
-// TODO: Make this dynamically shorten the verse text if too long
 /**
  * Create the tooltip popups that will show the verse text above the link on hover
  */
@@ -219,16 +218,16 @@ function createTooltips() {
                         title: 'Loading',
                         trigger: 'manual',
                         html: true,
-                        // arrowSelector: '.bpTooltipArrow',
-                        // innerSelector: '.bpTooltipInner',
+                        arrowSelector: '.bpTooltipArrow',
+                        innerSelector: '.bpTooltipInner',
                         template: '<div class="biblePreviewerTooltip" role="tooltip">' +
                             `<div class="bpHeaderBar"><div class="bpVerse">${link.textContent}</div>` +
                             `<div class="bpTranslation">${link.dataset.bibleRef.split('-')[1].split(':')[0]}</div></div>` +
-                            '<div class="tooltip-inner"></div>' +
-                            '<div class="tooltip-arrow"></div>' +
+                            '<div class="bpTooltipInner"></div>' +
+                            '<div class="bpTooltipArrow"></div>' +
                             '</div>',
                         // TODO: Figure out why sometimes this makes tooltip appear way above link
-                        // boundariesElement: document.body
+                        boundariesElement: document.body
                     });
                 }
                 if (bibleVerseDict[link.dataset.bibleRef] === undefined) {

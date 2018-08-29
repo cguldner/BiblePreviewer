@@ -16,9 +16,7 @@ $arrow-color: #b9b9b9;
   margin: 10px;
   box-shadow: 2px 2px 5px grey;
   border-radius: 5px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
+  font: normal 18px "Segoe UI", Tahoma, sans-serif;
 
   .bpHeaderBar {
     background-color: $popup-color;
@@ -31,7 +29,7 @@ $arrow-color: #b9b9b9;
     }
   }
 
-  .tooltip-inner {
+  .bpTooltipInner {
     max-width: none;
     max-height: 300px;
     padding: 0 20px 10px;
@@ -50,7 +48,7 @@ $arrow-color: #b9b9b9;
     p {
       margin: 0;
       display: inline;
-      font-size: 18pz;
+      font-size: 18px;
       line-height: 1;
     }
 
@@ -78,7 +76,7 @@ $arrow-color: #b9b9b9;
     font-size: 12px;
   }
 
-  .tooltip-arrow {
+  .bpTooltipArrow {
     width: 0;
     height: 0;
     border: 10px solid transparent;
@@ -87,25 +85,25 @@ $arrow-color: #b9b9b9;
   }
 }
 
-.biblePreviewerTooltip[x-placement^="top"] .tooltip-arrow {
+.biblePreviewerTooltip[x-placement^="top"] .bpTooltipArrow {
   border-bottom-width: 0;
   border-top-color: $arrow-color;
   bottom: -10px;
 }
 
-.biblePreviewerTooltip[x-placement^="bottom"] .tooltip-arrow {
+.biblePreviewerTooltip[x-placement^="bottom"] .bpTooltipArrow {
   border-top-width: 0;
   border-bottom-color: $arrow-color;
   top: -10px;
 }
 
-.biblePreviewerTooltip[x-placement^="right"] .tooltip-arrow {
+.biblePreviewerTooltip[x-placement^="right"] .bpTooltipArrow {
   border-left-width: 0;
   border-right-color: $arrow-color;
   left: -10px;
 }
 
-.biblePreviewerTooltip[x-placement^="left"] .tooltip-arrow {
+.biblePreviewerTooltip[x-placement^="left"] .bpTooltipArrow {
   border-right-width: 0;
   border-left-color: $arrow-color;
   right: -10px;

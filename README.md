@@ -5,3 +5,13 @@ adds a link to that text that can be hovered, showing the text of the verse abov
 
 ## Building
 Run `gulp zip` to compile a build to the `dist` directory and create a zip of the necessary files
+
+## Debugging in Firefox
+To get the extension to work properly, add the `extensions` key temporarily to the manifest file
+ 
+    "applications": {
+      "gecko": {
+        "id": "addon@example.com",
+        "strict_min_version": "42.0"
+      }
+    }
