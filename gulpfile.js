@@ -37,11 +37,15 @@ gulp.task('move', () =>
 
 gulp.task('build', ['uglify', 'move', 'sass']);
 
-gulp.task('zip', ['build'], () =>
+gulp.task('zip', ['build'], () => {
     gulp.src(distFolder + '/**/*')
         .pipe(zip('BiblePreview.v' + manifestFile.version + '.zip'))
-        .pipe(gulp.dest(''))
-);
+        .pipe(gulp.dest(''));
+
+    gulp.src(['js/*', '*.scss', 'manifest.json', '*.html', 'icons/*'], {base: './'})
+        .pipe(zip('BiblePreviewSource.zip'))
+        .pipe(gulp.dest(''));
+});
 
 gulp.task('default', ['zip']);
 

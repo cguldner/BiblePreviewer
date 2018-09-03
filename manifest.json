@@ -13,7 +13,8 @@
   },
   "permissions": [
     "https://bibles.org/v2/",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "browser_action": {
     "default_icon": "icons/bible16.png",

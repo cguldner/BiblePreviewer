@@ -101,16 +101,16 @@ let bibleRegex = /(Gen(?:esis)?|Ex(?:od|odus)?|Le(?:v|viticus)?|Num(?:b|bers)?|(
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (Object.keys(request).length === 0) {
+    if (request.translation === undefined) {
         request.translation = DEFAULT_TRANS;
     }
-    initBiblePreviewer(request.translation);
+    initBiblePreviewer(request.translation, request.url);
 });
 
 /**
  * Initializes the app
  */
-function initBiblePreviewer(translation) {
+function initBiblePreviewer(translation, url) {
     // Load FUMS - copyright stuff
     let script = document.createElement('script');
     script.type = 'text/javascript';
@@ -120,7 +120,7 @@ function initBiblePreviewer(translation) {
 
     let node_length = transformBibleReferences(translation);
     if (node_length) {
-        createTooltips();
+        createTooltips(url);
     }
 }
 
@@ -205,68 +205,74 @@ function transformBibleReferences(trans) {
 /**
  * Create the tooltip popups that will show the verse text above the link on hover
  */
-function createTooltips() {
+function createTooltips(url) {
     document.querySelectorAll('.biblePreviewerLink').forEach(function (link) {
-        let tool, enterTimeout, exitTimeout;
-        // Add listener to biblePreviewerContainer so that we can hover over the tooltip as well
-        link.parentElement.addEventListener('mouseover', function (e) {
-            clearTimeout(exitTimeout);
-            enterTimeout = setTimeout(function () {
-                if (link.nextSibling === null) {
-                    tool = new Tooltip(link, {
-                        placement: 'top',
-                        title: 'Loading',
-                        trigger: 'manual',
-                        html: true,
-                        arrowSelector: '.bpTooltipArrow',
-                        innerSelector: '.bpTooltipInner',
-                        template: '<div class="biblePreviewerTooltip" role="tooltip">' +
-                            `<div class="bpHeaderBar"><div class="bpVerse">${link.textContent}</div>` +
-                            `<div class="bpTranslation">${link.dataset.bibleRef.split('-')[1].split(':')[0]}</div></div>` +
-                            '<div class="bpTooltipInner"></div>' +
-                            '<div class="bpTooltipArrow"></div>' +
-                            '</div>',
-                        // TODO: Figure out why sometimes this makes tooltip appear way above link
-                        boundariesElement: document.body
-                    });
-                }
-                if (bibleVerseDict[link.dataset.bibleRef] === undefined) {
-                    sendAPIRequestForVerses(link.dataset.bibleRef, function (verseObj) {
-                        if (verseObj) {
-                            let verseSel = tool.popperInstance.popper.querySelectorAll('.bpVerse')[0];
-                            verseSel.innerText = verseObj[0].reference;
-                            if (verseObj.length > 1) {
-                                verseSel.innerText += ' - ' + verseObj[verseObj.length - 1].reference;
-                            }
+            let tool, enterTimeout, exitTimeout;
+            // Add listener to biblePreviewerContainer so that we can hover over the tooltip as well
+            link.parentElement.addEventListener('mouseenter', function (e) {
+                clearTimeout(exitTimeout);
+                enterTimeout = setTimeout(function () {
+                    // If there isn't a div following the link, then this is the first time hovering this link
+                    if (link.nextSibling === null) {
+                        let boundElem = document.body;
+                        if (url.match('docs.google')) boundElem = document.getElementsByClassName('kix-paginateddocumentplugin')[0];
 
-                            let verseText = verseObj.map(function (verse) {
-                                return verse.text;
-                            }).join('');
-                            tool.updateTitleContent(verseText);
-                            // Store into a dictionary for quick access later
-                            bibleVerseDict[link.dataset.bibleRef] = verseText;
-                        } else {
-                            tool.updateTitleContent('Couldn\'t find verse');
+                        tool = new Tooltip(link, {
+                            placement: 'top',
+                            title: 'Loading',
+                            trigger: 'manual',
+                            html: true,
+                            arrowSelector: '.bpTooltipArrow',
+                            innerSelector: '.bpTooltipInner',
+                            template: '<div class="biblePreviewerTooltip" role="tooltip">' +
+                                `<div class="bpHeaderBar"><div class="bpVerse">${link.textContent}</div>` +
+                                `<div class="bpTranslation">${link.dataset.bibleRef.split('-')[1].split(':')[0]}</div></div>` +
+                                '<div class="bpTooltipInner"></div>' +
+                                '<div class="bpTooltipArrow"></div>' +
+                                '</div>',
+                            boundariesElement: boundElem
+                        });
+                    }
+                    // Can remove some of this stuff later, once google docs works
+                    if (tool) {
+                        if (bibleVerseDict[link.dataset.bibleRef] === undefined) {
+                            sendAPIRequestForVerses(link.dataset.bibleRef, function (verseObj) {
+                                if (verseObj) {
+                                    let verseSel = tool.popperInstance.popper.querySelectorAll('.bpVerse')[0];
+                                    verseSel.innerText = verseObj[0].reference;
+                                    if (verseObj.length > 1) {
+                                        verseSel.innerText += ' - ' + verseObj[verseObj.length - 1].reference;
+                                    }
+
+                                    let verseText = verseObj.map(function (verse) {
+                                        return verse.text;
+                                    }).join('');
+                                    tool.updateTitleContent(verseText);
+                                    // Store into a dictionary for quick access later
+                                    bibleVerseDict[link.dataset.bibleRef] = verseText;
+                                } else {
+                                    tool.updateTitleContent('Couldn\'t find verse');
+                                    bibleVerseDict[link.dataset.bibleRef] = null;
+                                }
+                            });
                         }
-                    });
-                }
-                else {
-                    tool.updateTitleContent(bibleVerseDict[link.dataset.bibleRef]);
-                }
-                tool.show();
-            }, 250);
-        });
-        link.parentElement.addEventListener('mouseleave', function (e) {
-            clearTimeout(enterTimeout);
-            // Destroy the tooltip to prevent any stray tooltips if mouse is moved fast
-            exitTimeout = setTimeout(function () {
-                if (tool) {
-                    tool.hide();
-                    if (bibleVerseDict[link.dataset.bibleRef] === undefined) tool.updateTitleContent('Loading');
-                }
-            }, 750);
-        });
-    });
+                        tool.show();
+                    }
+                }, 250);
+            });
+            link.parentElement.addEventListener('mouseleave', function (e) {
+                clearTimeout(enterTimeout);
+                // Destroy the tooltip to prevent any stray tooltips if mouse is moved fast
+                exitTimeout = setTimeout(function () {
+                    if (tool) {
+                        tool.hide();
+                        // if (bibleVerseDict[link.dataset.bibleRef] === undefined) tool.updateTitleContent('Loading');
+                    }
+                }, 750);
+            });
+        }
+    )
+    ;
 }
 
 /**

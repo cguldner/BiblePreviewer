@@ -10,13 +10,16 @@ $arrow-color: #b9b9b9;
 }
 
 .biblePreviewerTooltip {
+  min-width: 350px;
   max-width: 100%;
-  z-index: 9999;
+  z-index: 999999999999;
   width: 350px;
   margin: 10px;
   box-shadow: 2px 2px 5px grey;
   border-radius: 5px;
   font: normal 18px "Segoe UI", Tahoma, sans-serif;
+  white-space: normal;
+  word-wrap: break-word;
 
   .bpHeaderBar {
     background-color: $popup-color;
@@ -36,7 +39,8 @@ $arrow-color: #b9b9b9;
     text-align: left;
     color: black;
     background-color: $popup-color;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     font-style: normal;
 
     h3 {
