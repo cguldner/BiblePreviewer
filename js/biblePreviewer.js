@@ -255,6 +255,9 @@ function createTooltips(url) {
                                     bibleVerseDict[link.dataset.bibleRef] = null;
                                 }
                             });
+                        } else {
+                            // If there is another link to the same verse on the page, then set that verse text
+                            tool.updateTitleContent(bibleVerseDict[link.dataset.bibleRef]);
                         }
                         tool.show();
                     }
@@ -266,7 +269,6 @@ function createTooltips(url) {
                 exitTimeout = setTimeout(function () {
                     if (tool) {
                         tool.hide();
-                        // if (bibleVerseDict[link.dataset.bibleRef] === undefined) tool.updateTitleContent('Loading');
                     }
                 }, 750);
             });
