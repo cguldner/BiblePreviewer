@@ -31,7 +31,7 @@ gulp.task('sass', function () {
 });
 
 gulp.task('move', () =>
-    gulp.src(['manifest.json', '*.html', 'icons/**/*'], {base: '.'})
+    gulp.src(['manifest.json', 'html/*', 'icons/**/*'], {base: '.'})
         .pipe(gulp.dest(distFolder))
 );
 
@@ -42,7 +42,7 @@ gulp.task('zip', ['build'], () => {
         .pipe(zip('BiblePreview.v' + manifestFile.version + '.zip'))
         .pipe(gulp.dest(''));
 
-    gulp.src(['js/*', '*.scss', 'manifest.json', '*.html', 'icons/*'], {base: './'})
+    gulp.src(['js/*', '*.scss', 'manifest.json', 'html/*', 'icons/*'], {base: './'})
         .pipe(zip('BiblePreviewSource.zip'))
         .pipe(gulp.dest(''));
 });
@@ -52,7 +52,7 @@ gulp.task('default', ['zip']);
 gulp.task('watch', ['build'], function () {
     gulp.watch('js/**/*.js', ['uglify']);
     gulp.watch('*.scss', ['sass']);
-    gulp.watch(['manifest.json', '*.html', 'icons/**/*'], ['move']);
+    gulp.watch(['manifest.json', 'html/*', 'icons/**/*'], ['move']);
 });
 
 

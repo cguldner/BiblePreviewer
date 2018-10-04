@@ -1,3 +1,5 @@
+
+// TODO: This adds the link, but doesn't seem to add the popup
 document.getElementById('reload-button').addEventListener('click', function () {
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         chrome.storage.sync.get(null, function (settings) {
