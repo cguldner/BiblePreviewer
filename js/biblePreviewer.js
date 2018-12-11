@@ -31,7 +31,7 @@ let bibleBooks = {
     '(?:2|2nd|II|Second)\\s*Chr(?:on|onicles)?': '2Chr',
     'Ez(?:r|ra)?': 'Ezra',
     'Ne(?:h|hemiah)?': 'Neh',
-    'Tob(?:it)?': 'Tob',
+    'Tob(?:it|ias)?': 'Tob',
     '(?:Jth|Jdt|Jdth|Judith)': 'Jdt',
     'Es(?:t|th|ther)': 'Esth',
     '(?:1|1st|I|First)\\s*Mac(?:cabees)?': '1Macc',
