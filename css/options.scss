@@ -1,0 +1,22 @@
+@import "~materialize-css/dist/css/materialize.min.css";
+
+body {
+  min-height: 250px;
+  background-color: white;
+  padding-top: 10px;
+}
+
+#save-status {
+  font-size: 14px;
+  color: green;
+}
+
+.dropdown-content li {
+  min-height: initial;
+
+  & > span {
+    font-size: 12px;
+    line-height: initial;
+    padding: 7px 10px;
+  }
+}

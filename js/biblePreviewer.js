@@ -1,3 +1,7 @@
+import '../css/biblePreviewer.scss';
+import Tooltip from 'tooltip.js';
+import $ from "jquery";
+
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
 const DEFAULT_TRANS = 'eng-NASB';
@@ -31,7 +35,7 @@ let bibleBooks = {
     '(?:2|2nd|II|Second)\\s*Chr(?:on|onicles)?': '2Chr',
     'Ez(?:r|ra)?': 'Ezra',
     'Ne(?:h|hemiah)?': 'Neh',
-    'Tob(?:it)?': 'Tob',
+    'Tob(?:it|ias)?': 'Tob',
     '(?:Jth|Jdt|Jdth|Judith)': 'Jdt',
     'Es(?:t|th|ther)': 'Esth',
     '(?:1|1st|I|First)\\s*Mac(?:cabees)?': '1Macc',
@@ -87,7 +91,7 @@ let bibleBooks = {
     '(?:2|2nd|II|Second)\\s*J(?:o?h)?n': '2John',
     '(?:3|3rd|III|Third)\\s*J(?:o?h)?n': '3John',
     'Jude?': 'Jud',
-    'Re(?:v|velation)?': 'Rev'
+    'R(?:v|ev|evelation)?': 'Rev'
 };
 
 // The regex to match book names
@@ -97,7 +101,7 @@ bibleRegex += '\\.?\\s+((?:,?\\s*[0-9]{1,3}(?:\\s+|:\\s*)[0-9]{1,2}(?:[–—-][
 bibleRegex = new RegExp(bibleRegex, 'gi');
 console.log(bibleRegex);
 
-// let bibleRegex = /(Gen(?:esis)?|Ex(?:od|odus)?|Le(?:v|viticus)?|Num(?:b|bers)?|(?:Dt|Deut(?:eronomy)?)|Jos(?:h|hua)?|(?:Jdgs?|Judg(?:es)?)|Ru?th|(?:1|1st|I|First)\s*Sam(?:uel)?|(?:2|2nd|II|Second)\s*Sam(?:uel)?|(?:1|1st|I|First)\s*(?:Kings|Kgs)|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)|(?:1|1st|I|First)\s*Chr(?:on|onicles)?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?|Ez(?:r|ra)?|Ne(?:h|hemiah)?|Tob(?:it)?|(?:Jth|Jdt|Jdth|Judith)|Es(?:t|th|ther)|(?:1|1st|I|First)\s*Mac(?:cabees)?|(?:2|2nd|II|Second)\s*Mac(?:cabees)?|Jo?b|Ps(?:a|alms?)?|Pro(?:v|verbs)?|Ecc(?:les?|lesiastes)?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a|aiah)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e|k|ek|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad|adiah)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h|haniah)?|Hag(?:gai)?|Zec(?:h|hariah)?|Mal(?:achi)?|(?:Mt|Matt(?:h|hew)?)|(?:Mk|Mark?)|(?:Lk|Luke?)|J(?:o?h)?n|Acts?|Ro(?:m|mans)?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?|Gal(?:atians)?|Eph(?:es|esians)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?|(?:1|1st|I|First)\s*T(?:i|m|imothy)|(?:2|2nd|II|Second)\s*T(?:i|m|imothy)|Titus|Phil(?:em|emon)?|Heb(?:rews?)?|James|(?:1|1st|I|First)\s*P(?:et|eter|t)?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?|(?:1|1st|I|First)\s*J(?:o?h)?n|(?:2|2nd|II|Second)\s*J(?:o?h)?n|(?:3|3rd|III|Third)\s*J(?:o?h)?n|Jude?|Re(?:v|velation)?)\.?\s+((?:,?\s*[0-9]{1,3}(?:\s+|:\s*)[0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)/gi;
+// let bibleRegex = /(Gen(?:esis)?|Ex(?:od|odus)?|Le(?:v|viticus)?|Num(?:b|bers)?|(?:Dt|Deut(?:eronomy)?)|Jos(?:h|hua)?|(?:Jdgs?|Judg(?:es)?)|Ru?th|(?:1|1st|I|First)\s*Sam(?:uel)?|(?:2|2nd|II|Second)\s*Sam(?:uel)?|(?:1|1st|I|First)\s*(?:Kings|Kgs)|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)|(?:1|1st|I|First)\s*Chr(?:on|onicles)?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?|Ez(?:r|ra)?|Ne(?:h|hemiah)?|Tob(?:it|ias)?|(?:Jth|Jdt|Jdth|Judith)|Es(?:t|th|ther)|(?:1|1st|I|First)\s*Mac(?:cabees)?|(?:2|2nd|II|Second)\s*Mac(?:cabees)?|Jo?b|Ps(?:a|alms?)?|Pro(?:v|verbs)?|Ecc(?:les?|lesiastes)?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a|aiah)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e|k|ek|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad|adiah)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h|haniah)?|Hag(?:gai)?|Zec(?:h|hariah)?|Mal(?:achi)?|(?:Mt|Matt(?:h|hew)?)|(?:Mk|Mark?)|(?:Lk|Luke?)|J(?:o?h)?n|Acts?|Ro(?:m|mans)?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?|Gal(?:atians)?|Eph(?:es|esians)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?|(?:1|1st|I|First)\s*T(?:i|m|imothy)|(?:2|2nd|II|Second)\s*T(?:i|m|imothy)|Titus|Phil(?:em|emon)?|Heb(?:rews?)?|James|(?:1|1st|I|First)\s*P(?:et|eter|t)?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?|(?:1|1st|I|First)\s*J(?:o?h)?n|(?:2|2nd|II|Second)\s*J(?:o?h)?n|(?:3|3rd|III|Third)\s*J(?:o?h)?n|Jude?|R(?:v|ev|evelation)?)\.?\s((?:,?\s?[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)/gi;
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
