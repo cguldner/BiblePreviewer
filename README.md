@@ -8,7 +8,9 @@ adds a link to that text that can be hovered, showing the text of the verse abov
 * [Firefox 57+](https://addons.mozilla.org/en-US/firefox/addon/bible-previewer/)
 
 ## Building
-Run `gulp zip` to compile a build to the `dist` directory and create a zip of the necessary files
+Run `npm run watch` to have webpack watch the files for changes.
+
+Run `npm run zip` to compile a production build to the `dist` directory and create a zip of the necessary files
 
 ## Debugging in Firefox
 To get the extension to work properly, add the `extensions` key temporarily to the manifest file

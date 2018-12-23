@@ -8,7 +8,11 @@
     "url": "git+https://github.com/cguldner/BiblePreviewer.git"
   },
   "scripts": {
-    "test": "node_modules/.bin/cypress open"
+    "build:prod": "node_modules/.bin/webpack -p --env.NODE_ENV=production",
+    "build:dev": "node_modules/.bin/webpack",
+    "clean": "rm -rf dist *.zip",
+    "zip": "npm run build:prod && gulp zip",
+    "watch": "node_modules/.bin/webpack --watch"
   },
   "author": "Cody Guldner",
   "license": "ISC",
@@ -17,14 +21,18 @@
   },
   "homepage": "https://github.com/cguldner/BiblePreviewer#readme",
   "devDependencies": {
+    "autoprefixer": "^9.4.3",
+    "clean-webpack-plugin": "^1.0.0",
+    "copy-webpack-plugin": "^4.6.0",
+    "css-loader": "^2.0.2",
     "gulp": "^4.0.0",
-    "gulp-clean": "^0.4.0",
-    "gulp-plumber": "^1.2.1",
-    "gulp-sass": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-uglify-es": "^1.0.4",
-    "gulp-watch": "^5.0.1",
-    "gulp-zip": "^4.2.0"
+    "gulp-zip": "^4.2.0",
+    "mini-css-extract-plugin": "^0.5.0",
+    "node-sass": "^4.11.0",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "webpack": "^4.28.2",
+    "webpack-cli": "^3.1.2"
   },
   "dependencies": {
     "materialize-css": "^1.0.0-rc.2",

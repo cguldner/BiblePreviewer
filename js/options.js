@@ -1,7 +1,12 @@
+import 'materialize-css';
+import '../css/options.scss';
+
+const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
+
 // TODO: Allow ability for non english versions
 let xhr = new XMLHttpRequest();
 
-xhr.open('GET', 'https://omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex@bibles.org/v2/versions.js', true);
+xhr.open('GET', `https://${BIBLE_API_KEY}@bibles.org/v2/versions.js`, true);
 xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200)
         get_versions();
