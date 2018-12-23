@@ -1,4 +1,4 @@
-import 'materialize-css';
+// import 'materialize-css';
 import '../css/options.scss';
 
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';

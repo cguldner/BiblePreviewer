@@ -13,7 +13,7 @@ let pathsToClean = [
 ];
 
 module.exports = env => {
-    let devMode = env.NODE_ENV !== 'production';
+    let devMode = env === undefined || env.NODE_ENV !== 'production';
 
     return {
         mode: devMode ? 'development' : 'production',
