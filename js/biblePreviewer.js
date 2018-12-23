@@ -193,10 +193,10 @@ function transformBibleReferences(trans) {
                 let verse = chap[1].split(/[–—-]/);
                 let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}/${chap[0]}/${verse[0]}`;
                 if (verse[1]) directHref += `-${verse[1]}`;
-                refList.push('<div class="biblePreviewerContainer">' +
+                refList.push('<span class="biblePreviewerContainer">' +
                     `<a class="biblePreviewerLink" href="${directHref}" target="_blank"
                             data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1], actual_trans)}">${splitText[i]}</a>` +
-                    '</div>');
+                    '</span>');
             }
 
             return refList.join(', ');
