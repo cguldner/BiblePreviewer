@@ -9,51 +9,57 @@ const sass = require('gulp-sass');
 
 const distFolder = 'dist';
 
-gulp.task('uglify', () =>
-    gulp.src('js/**/*')
+function taskUglify () {
+    return gulp.src('js/**/*')
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(uglify({mangle: true}))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(distFolder + '/js'))
-);
+};
 
-gulp.task('sass', function () {
+function taskSass () {
     let sassOptions = {
         errLogToConsole: true,
         outputStyle: 'compressed'
     };
-    gulp.src('*.scss')
+    return gulp.src('*.scss')
         .pipe(sourcemaps.init())
         .pipe(sass(sassOptions).on('error', sass.logError))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(distFolder));
-});
+};
 
-gulp.task('move', () =>
-    gulp.src(['manifest.json', '*.html', 'icons/**/*'], {base: '.'})
+function taskMove () {
+    return gulp.src(['manifest.json', '*.html', 'icons/**/*'], {base: '.'})
         .pipe(gulp.dest(distFolder))
-);
+};
 
-gulp.task('build', ['uglify', 'move', 'sass']);
-
-gulp.task('zip', ['build'], () => {
+function taskZip () {
     gulp.src(distFolder + '/**/*')
         .pipe(zip('BiblePreview.v' + manifestFile.version + '.zip'))
-        .pipe(gulp.dest(''));
+        .pipe(gulp.dest('./'));
 
-    gulp.src(['js/*', '*.scss', 'manifest.json', '*.html', 'icons/*'], {base: './'})
+    return gulp.src(['js/*', '*.scss', 'manifest.json', '*.html', 'icons/*'], {base: './'})
         .pipe(zip('BiblePreviewSource.zip'))
-        .pipe(gulp.dest(''));
-});
+        .pipe(gulp.dest('./'));
+};
 
-gulp.task('default', ['zip']);
+function taskWatch () {
+    gulp.watch('js/**/*.js', gulp.series('uglify'));
+    gulp.watch('*.scss', gulp.series('sass'));
+    gulp.watch(['manifest.json', '*.html', 'icons/**/*'], gulp.series('move'));
+};
 
-gulp.task('watch', ['build'], function () {
-    gulp.watch('js/**/*.js', ['uglify']);
-    gulp.watch('*.scss', ['sass']);
-    gulp.watch(['manifest.json', '*.html', 'icons/**/*'], ['move']);
-});
+function taskClean () {
+    return gulp.src([distFolder, '*.zip'], { allowEmpty: true }).pipe(clean())
+};
 
-
-gulp.task('clean', () => gulp.src([distFolder, '*.zip']).pipe(clean()));
+gulp.task('uglify', taskUglify);
+gulp.task('sass', taskSass);
+gulp.task('move', taskMove);
+gulp.task('build', gulp.parallel(['uglify', 'move', 'sass']));
+gulp.task('zip', gulp.series('build', taskZip));
+gulp.task('watch', gulp.series('build', taskWatch));
+gulp.task('clean', taskClean);
+gulp.task('default', taskZip);
