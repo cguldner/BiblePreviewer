@@ -217,7 +217,7 @@ function createTooltips(url) {
                 enterTimeout = setTimeout(function () {
                     // If there isn't a div following the link, then this is the first time hovering this link
                     if (link.nextSibling === null) {
-                        let boundElem = document.body;
+                        let boundElem = document;
                         if (url.match('docs.google')) boundElem = document.getElementsByClassName('kix-paginateddocumentplugin')[0];
 
                         tool = new Tooltip(link, {
@@ -236,6 +236,7 @@ function createTooltips(url) {
                             boundariesElement: boundElem
                         });
                     }
+                    console.log(tool);
                     // Can remove some of this stuff later, once google docs works
                     if (tool) {
                         if (bibleVerseDict[link.dataset.bibleRef] === undefined) {
