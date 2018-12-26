@@ -21,1940 +21,904 @@ To get the extension to work properly, add the `extensions` key temporarily to t
         "strict_min_version": "42.0"
       }
     }
-
+    
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
+---
 John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
-John 1:10
+---
