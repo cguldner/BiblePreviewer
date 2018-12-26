@@ -96,7 +96,7 @@ let bibleBooks = {
 // The regex to match book names
 // TODO: Allow for different start and end chapters
 // let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
-// bibleRegex += '\\.?\\s((?:,?\\s?[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)';
+// bibleRegex += '\\.?\\s((?:(?:,|;)?\\s?[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)';
 // bibleRegex = new RegExp(bibleRegex, 'gi');
 // console.log(bibleRegex);
 
@@ -107,6 +107,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.translation === undefined) {
         request.translation = DEFAULT_TRANS;
     }
+
     initBiblePreviewer(request.translation, request.url);
 });
 
@@ -123,7 +124,9 @@ function initBiblePreviewer(translation, url) {
 
     let node_length = transformBibleReferences(translation);
     if (node_length) {
+        console.time('Create Tooltips');
         createTooltips(url);
+        console.timeEnd('Create Tooltips');
     }
 }
 
@@ -132,6 +135,7 @@ function initBiblePreviewer(translation, url) {
  * @param {string} trans - Which bible translation to use
  */
 function transformBibleReferences(trans) {
+    console.time('TreeWalker');
     // Use a TreeWalker instead of simple replace so we can ignore bible references that are already links
     let treeWalker = document.createTreeWalker(document.body,
         NodeFilter.SHOW_TEXT,
@@ -159,11 +163,15 @@ function transformBibleReferences(trans) {
                 break;
             }
             // If we found a child of the new node, remove it from the list
-            if (newNode.contains(prevNode)) nodeList.splice(i, 1);
+            if (newNode.contains(prevNode)) {
+                nodeList.splice(i, 1);
+            }
         }
         if (shouldAdd) nodeList.push(newNode);
     }
+    console.timeEnd('TreeWalker');
 
+    console.time('Change to links');
     nodeList.forEach(function (node) {
         // m - original text, b - book, l - verse list match
         node.innerHTML = node.innerHTML.replace(bibleRegex, function (m, b, l) {
@@ -192,23 +200,27 @@ function transformBibleReferences(trans) {
                 let chap = verseList[i].split(':');
                 let verse = chap[1].split(/[–—-]/);
                 let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}/${chap[0]}/${verse[0]}`;
-                if (verse[1]) directHref += `-${verse[1]}`;
+                if (verse[1]) {
+                    directHref += `-${verse[1]}`;
+                }
                 refList.push('<span class="biblePreviewerContainer">' +
                     `<a class="biblePreviewerLink" href="${directHref}" target="_blank"
-                            data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1], actual_trans)}">${splitText[i]}</a>` +
+                            data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1], actual_trans)}"
+                            data-bible-trans="${actual_trans}">${splitText[i]}</a>` +
                     '</span>');
             }
 
             return refList.join(', ');
         });
     });
+    console.timeEnd('Change to links');
     return nodeList.length
 }
 
 /**
  * Create the tooltip popups that will show the verse text above the link on hover
  */
-function createTooltips(url) {
+function createTooltips(webpageUrl) {
     document.querySelectorAll('.biblePreviewerLink').forEach(function (link) {
         let tool, enterTimeout, exitTimeout;
         // Add listener to biblePreviewerContainer so that we can hover over the tooltip as well
@@ -218,8 +230,8 @@ function createTooltips(url) {
                 // If there isn't a div following the link, then this is the first time hovering this link
                 if (link.nextSibling === null) {
                     let boundElem = document;
-                    if (url.match('docs.google')) {
-                        boundElem = document.getElementsByClassName('kix-paginateddocumentplugin')[0];
+                    if (webpageUrl.match('docs.google')) {
+                        boundElem = document.getElementsByClassName('kix-page-compact-first')[0];
                     }
 
                     tool = new Tooltip(link, {
@@ -231,7 +243,7 @@ function createTooltips(url) {
                         innerSelector: '.bpTooltipInner',
                         template: '<div class="biblePreviewerTooltip" role="tooltip">' +
                             `<div class="bpHeaderBar"><div class="bpVerse">${link.textContent}</div>` +
-                            `<div class="bpTranslation">${link.dataset.bibleRef.split('-')[1].split(':')[0]}</div></div>` +
+                            `<div class="bpTranslation">${link.dataset.bibleTrans.split('-')[1]}</div></div>` +
                             '<div class="bpTooltipInner"></div>' +
                             '<div class="bpTooltipArrow"></div>' +
                             '</div>',
@@ -306,24 +318,22 @@ function sendAPIRequestForVerses(requestLink, cb) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', requestLink, true);
     xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                let res = JSON.parse(xhr.responseText).response;
-                let verses = res.verses;
-                let bapi = document.createElement('script');
-                // Make a call to the FUMS - copyright stuff
-                bapi.text = `_BAPI.t("${res.meta.fums_tid}")`;
-                headElement.appendChild(bapi);
-                headElement.removeChild(bapi);
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            let res = JSON.parse(xhr.responseText).response;
+            let verses = res.verses;
+            let bapi = document.createElement('script');
+            // Make a call to the FUMS - copyright stuff
+            bapi.text = `_BAPI.t("${res.meta.fums_tid}")`;
+            headElement.appendChild(bapi);
+            headElement.removeChild(bapi);
 
-                if (verses === undefined) {
-                    cb(null, 404);
-                } else {
-                    cb(verses);
-                }
+            if (verses === undefined) {
+                cb(null, 404);
             } else {
-                cb(null, xhr.status);
+                cb(verses);
             }
+        } else {
+            cb(null, xhr.status);
         }
     };
     xhr.send();
