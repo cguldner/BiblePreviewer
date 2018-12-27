@@ -1,5 +1,6 @@
 import '../css/biblePreviewer.scss';
 import Tooltip from 'tooltip.js';
+import Parallel from 'paralleljs';
 
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
@@ -172,14 +173,29 @@ function transformBibleReferences(trans) {
     console.timeEnd('TreeWalker');
 
     console.time('Change to links');
-    nodeList.forEach(function (node) {
-        // m - original text, b - book, l - verse list match
-        node.innerHTML = node.innerHTML.replace(bibleRegex, function (m, b, l) {
-            let book = '', actual_trans = trans;
+    let parEnv = {
+        env: {
+            bibleRegex: bibleRegex,
+            trans: trans,
+            bibleBooks: bibleBooks,
+            versions_with_deutero: versions_with_deutero,
+            deutero_books: deutero_books,
+            BIBLE_DIRECT_URL: BIBLE_DIRECT_URL,
+            DEFAULT_DEUTERO_TRANS: DEFAULT_DEUTERO_TRANS
+        },
+        envNamespace: 'bible'
+    };
+    let par = new Parallel(nodeList.map(function (node) {
+        return node.innerHTML
+    }, parEnv)).require(createAPILink);
+
+    function replace_with_links(nodeHTML) {
+        return nodeHTML.replace(global.bible.bibleRegex, function replace_links(m, b, l) {
+            let book = '', actual_trans = global.bible.trans;
             // TODO: Figure out a more efficient way to do this
-            for (let key in bibleBooks) {
+            for (let key in global.bible.bibleBooks) {
                 if (b.search('^' + key + '$') > -1) {
-                    book = bibleBooks[key];
+                    book = global.bible.bibleBooks[key];
                     // If the book is John, continue searching to verify it isn't 1, 2, 3 John
                     if (book !== 'John')
                         break;
@@ -190,8 +206,8 @@ function transformBibleReferences(trans) {
                 return m;
             }
             // Change translation if it is a deuterocannonical book and an unsupported translation is selected
-            if (versions_with_deutero.indexOf(actual_trans) < 0 && deutero_books.indexOf(book) >= 0) {
-                actual_trans = DEFAULT_DEUTERO_TRANS;
+            if (global.bible.versions_with_deutero.indexOf(actual_trans) < 0 && global.bible.deutero_books.indexOf(book) >= 0) {
+                actual_trans = global.bible.DEFAULT_DEUTERO_TRANS;
             }
 
             let refList = [], verseList = l.split(/,\s?/g);
@@ -199,7 +215,7 @@ function transformBibleReferences(trans) {
             for (let i = 0; i < verseList.length; i++) {
                 let chap = verseList[i].split(':');
                 let verse = chap[1].split(/[–—-]/);
-                let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}/${chap[0]}/${verse[0]}`;
+                let directHref = `${global.bible.BIBLE_DIRECT_URL}${actual_trans}/${book}/${chap[0]}/${verse[0]}`;
                 if (verse[1]) {
                     directHref += `-${verse[1]}`;
                 }
@@ -212,7 +228,19 @@ function transformBibleReferences(trans) {
 
             return refList.join(', ');
         });
+    }
+
+    par.map(replace_with_links).then(function () {
+        console.log(444444);
+        let parResults = arguments;
+        nodeList.forEach(function (node, i) {
+            // m - original text, b - book, l - verse list match
+            console.log(parResults[i]);
+            node.innerHTML = parResults[i];
+        })
     });
+
+
     console.timeEnd('Change to links');
     return nodeList.length
 }
