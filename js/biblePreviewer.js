@@ -10,7 +10,7 @@ const BIBLE_DIRECT_URL = `https://bibles.org/`;
 
 let versions_with_deutero = ['eng-KJVA'];
 let deutero_books = ['1Macc', '2Macc', 'Wis', 'Sir', 'Bar', 'Tob', 'Jdt'];
-let books_start_with_num = '[12](?:Sam|Kgs|Chr|Macc|Cor|Thess|Tim|Pet)|[123]John';
+let books_start_with_num = '(?:Sam(?:uel)?|(?:Kings|Kgs)|Chr(?:on|onicles)?|Mac(?:c|cabees)?|Co(?:r|rinthians)?|Thes(?:s|salonians)?|T(?:i?m?|imothy)|P(?:et|eter|t)?|Jo?h?n)';
 
 let headElement = document.getElementsByTagName('head')[0];
 
@@ -68,7 +68,7 @@ let bibleBooks = {
     '(?:Mt|Matt(?:h|hew)?)': 'Matt',
     '(?:Mk|Mark?)': 'Mark',
     '(?:Lk|Luke?)': 'Luke',
-    'J(?:o?h)?n': 'John',
+    'Jo?h?n': 'John',
     'Acts?': 'Acts',
     'Ro(?:m|mans)?': 'Rom',
     '(?:1|1st|I|First)\\s*Co(?:r|rinthians)?': '1Cor',
@@ -87,28 +87,28 @@ let bibleBooks = {
     'James': 'Jas',
     '(?:1|1st|I|First)\\s*P(?:et|eter|t)?': '1Pet',
     '(?:2|2nd|II|Second)\\s*P(?:et|eter|t)?': '2Pet',
-    '(?:1|1st|I|First)\\s*J(?:o?h)?n': '1John',
-    '(?:2|2nd|II|Second)\\s*J(?:o?h)?n': '2John',
-    '(?:3|3rd|III|Third)\\s*J(?:o?h)?n': '3John',
+    '(?:1|1st|I|First)\\s*Jo?h?n': '1John',
+    '(?:2|2nd|II|Second)\\s*Jo?h?n': '2John',
+    '(?:3|3rd|III|Third)\\s*Jo?h?n': '3John',
     'Jude?': 'Jude',
     'R(?:e?v|evelation)': 'Rev'
 };
 
 // The regex to match book names
 // TODO: Allow for different start and end chapters
-let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
-// Matches the first chapter:verse
-bibleRegex += '\\.?\\s*((?:[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)';
-// After the first, can leave off the chapter, so then a single verse will match to the last listed chapter
-bibleRegex += '(?:(?:,|;)?\\s*(?:(?:[0-9]{1,3}(?:[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))';
-// But don't match a single verse if it is right before a book that has a number before it
-bibleRegex += '|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?:,|;)(?!' + books_start_with_num + ')))*)';//(?:,|;)(?!' + books_start_with_num + ')))*)'; instead of ))*)
-// Add Jude separately because Jude only has 1 chapter, so people usually don't put a chapter with the verse
-bibleRegex += '|(?:Jude\\s*([0-9]{1,2}(?:(?:,|;)?\\s*[0-9]{1,2})*))';
-bibleRegex = new RegExp(bibleRegex, 'gi');
-console.log(bibleRegex);
+// let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
+// // Matches the first chapter:verse
+// bibleRegex += '\\.?\\s*((?:[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)';
+// // After the first, can leave off the chapter, so then a single verse will match to the last listed chapter
+// bibleRegex += '(?:[,;]?\\s*(?:(?:[0-9]{1,3}(?:[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))';
+// // But don't match a single verse if it is right before a book that has a number before it
+// bibleRegex += '|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?![,;]\\s*' + books_start_with_num + ')))*)';
+// // Add Jude separately because Jude only has 1 chapter, so people usually don't put a chapter with the verse
+// bibleRegex += '|(?:Jude\\s*([0-9]{1,2}(?:[,;]?\\s*[0-9]{1,2})*))';
+// bibleRegex = new RegExp(bibleRegex, 'gi');
+// console.log(bibleRegex);
 
-// let bibleRegex = /(Gen(?:esis)?|Ex(?:od|odus)?|Le(?:v|viticus)?|Num(?:b|bers)?|(?:Dt|Deut(?:eronomy)?)|Jos(?:h|hua)?|(?:Jdgs?|Judg(?:es)?)|Ru?th|(?:1|1st|I|First)\s*Sam(?:uel)?|(?:2|2nd|II|Second)\s*Sam(?:uel)?|(?:1|1st|I|First)\s*(?:Kings|Kgs)|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)|(?:1|1st|I|First)\s*Chr(?:on|onicles)?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?|Ez(?:r|ra)?|Ne(?:h|hemiah)?|Tob(?:it|ias)?|(?:Jth|Jdt|Jdth|Judith)|Es(?:t|th|ther)|(?:1|1st|I|First)\s*Mac(?:c|cabees)?|(?:2|2nd|II|Second)\s*Mac(?:c|cabees)?|Jo?b|Ps(?:a|alms?)?|Pro(?:v|verbs)?|Ecc(?:les?|lesiastes)?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a|aiah)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e|k|ek|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad|adiah)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h|haniah)?|Hag(?:gai)?|Zec(?:h|hariah)?|Mal(?:achi)?|(?:Mt|Matt(?:h|hew)?)|(?:Mk|Mark?)|(?:Lk|Luke?)|J(?:o?h)?n|Acts?|Ro(?:m|mans)?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?|Gal(?:atians)?|Eph(?:es|esians)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?|(?:1|1st|I|First)\s*T(?:i?m?|imothy)|(?:2|2nd|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em|emon)?|Heb(?:rews?)?|James|(?:1|1st|I|First)\s*P(?:et|eter|t)?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?|(?:1|1st|I|First)\s*J(?:o?h)?n|(?:2|2nd|II|Second)\s*J(?:o?h)?n|(?:3|3rd|III|Third)\s*J(?:o?h)?n|Jude?|R(?:v|ev|evelation)?)\.?\s*((?:(?:,|;)?\s?[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)|(?:Jude\s*([0-9]{1,2}(?:(?:,|;)?\s*[0-9]{1,2})*))/gi;
+let bibleRegex = /(Gen(?:esis)?|Ex(?:od|odus)?|Le(?:v|viticus)?|Num(?:b|bers)?|(?:Dt|Deut(?:eronomy)?)|Jos(?:h|hua)?|(?:Jdgs?|Judg(?:es)?)|Ru?th|(?:1|1st|I|First)\s*Sam(?:uel)?|(?:2|2nd|II|Second)\s*Sam(?:uel)?|(?:1|1st|I|First)\s*(?:Kings|Kgs)|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)|(?:1|1st|I|First)\s*Chr(?:on|onicles)?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?|Ez(?:r|ra)?|Ne(?:h|hemiah)?|Tob(?:it|ias)?|(?:Jth|Jdt|Jdth|Judith)|Es(?:t|th|ther)|(?:1|1st|I|First)\s*Mac(?:c|cabees)?|(?:2|2nd|II|Second)\s*Mac(?:c|cabees)?|Jo?b|Ps(?:a|alms?)?|Pro(?:v|verbs)?|Ecc(?:les?|lesiastes)?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a|aiah)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e|k|ek|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad|adiah)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h|haniah)?|Hag(?:gai)?|Zec(?:h|hariah)?|Mal(?:achi)?|(?:Mt|Matt(?:h|hew)?)|(?:Mk|Mark?)|(?:Lk|Luke?)|Jo?h?n|Acts?|Ro(?:m|mans)?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?|Gal(?:atians)?|Eph(?:es|esians)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?|(?:1|1st|I|First)\s*T(?:i?m?|imothy)|(?:2|2nd|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em|emon)?|Heb(?:rews?)?|James|(?:1|1st|I|First)\s*P(?:et|eter|t)?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?|(?:1|1st|I|First)\s*Jo?h?n|(?:2|2nd|II|Second)\s*Jo?h?n|(?:3|3rd|III|Third)\s*Jo?h?n|Jude?|R(?:e?v|evelation))\.?\s*((?:[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)(?:[,;]?\s*(?:(?:[0-9]{1,3}(?:[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?![,;]\s*(?:Sam(?:uel)?|(?:Kings|Kgs)|Chr(?:on|onicles)?|Mac(?:c|cabees)?|Co(?:r|rinthians)?|Thes(?:s|salonians)?|T(?:i?m?|imothy)|P(?:et|eter|t)?|Jo?h?n))))*)|(?:Jude\s*([0-9]{1,2}(?:[,;]?\s*[0-9]{1,2})*))/gi;
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
