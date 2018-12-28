@@ -46,6 +46,22 @@ module.exports = env => {
                             }
                         }
                     ]
+                },
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    loader: 'babel-loader',
+                    query: {
+                        'presets': [[
+                            '@babel/preset-env', {
+                                'targets':
+                                    {
+                                        'chrome': '58',
+                                        'firefox': '57'
+                                    }
+                            }
+                        ]]
+                    }
                 }
             ]
         },
@@ -63,6 +79,12 @@ module.exports = env => {
                 'icons/**/*',
                 'icons/**/*'
             ], {})
-        ]
-    };
+        ],
+        stats:
+            {
+                colors: true
+            }
+    }
+        ;
 };
+
