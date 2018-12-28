@@ -231,6 +231,9 @@ function createTooltips(webpageUrl) {
         let tool, enterTimeout, exitTimeout;
         // Add listener to biblePreviewerContainer so that we can hover over the tooltip as well
         link.parentElement.addEventListener('mouseenter', function (e) {
+            if (tool) {
+                link.nextSibling.style.zIndex = '999';
+            }
             clearTimeout(exitTimeout);
             enterTimeout = setTimeout(function () {
                 // If there isn't a div following the link, then this is the first time hovering this link
@@ -288,6 +291,9 @@ function createTooltips(webpageUrl) {
             }, 250);
         });
         link.parentElement.addEventListener('mouseleave', function (e) {
+            if (tool) {
+                link.nextSibling.style.zIndex = '998';
+            }
             clearTimeout(enterTimeout);
             // Destroy the tooltip to prevent any stray tooltips if mouse is moved fast
             exitTimeout = setTimeout(function () {
