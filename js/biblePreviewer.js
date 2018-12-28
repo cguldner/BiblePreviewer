@@ -89,7 +89,7 @@ let bibleBooks = {
     '(?:1|1st|I|First)\\s*J(?:o?h)?n': '1John',
     '(?:2|2nd|II|Second)\\s*J(?:o?h)?n': '2John',
     '(?:3|3rd|III|Third)\\s*J(?:o?h)?n': '3John',
-    'Jude?': 'Jud',
+    'Jude?': 'Jude',
     'R(?:v|ev|evelation)?': 'Rev'
 };
 
