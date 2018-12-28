@@ -10,6 +10,7 @@ const BIBLE_DIRECT_URL = `https://bibles.org/`;
 
 let versions_with_deutero = ['eng-KJVA'];
 let deutero_books = ['1Macc', '2Macc', 'Wis', 'Sir', 'Bar', 'Tob', 'Jdt'];
+let books_start_with_num = '[12](?:Sam|Kgs|Chr|Macc|Cor|Thess|Tim|Pet)|[123]John';
 
 let headElement = document.getElementsByTagName('head')[0];
 
@@ -90,19 +91,24 @@ let bibleBooks = {
     '(?:2|2nd|II|Second)\\s*J(?:o?h)?n': '2John',
     '(?:3|3rd|III|Third)\\s*J(?:o?h)?n': '3John',
     'Jude?': 'Jude',
-    'R(?:v|ev|evelation)?': 'Rev'
+    'R(?:e?v|evelation)': 'Rev'
 };
 
 // The regex to match book names
 // TODO: Allow for different start and end chapters
-// let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
+let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
+// Matches the first chapter:verse
+bibleRegex += '\\.?\\s*((?:[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)';
+// After the first, can leave off the chapter, so then a single verse will match to the last listed chapter
+bibleRegex += '(?:(?:,|;)?\\s*(?:(?:[0-9]{1,3}(?:[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))';
+// But don't match a single verse if it is right before a book that has a number before it
+bibleRegex += '|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?:,|;)(?!' + books_start_with_num + ')))*)';//(?:,|;)(?!' + books_start_with_num + ')))*)'; instead of ))*)
 // Add Jude separately because Jude only has 1 chapter, so people usually don't put a chapter with the verse
-// bibleRegex += '\\.?\\s*((?:(?:,|;)?\\s?[0-9]{1,3}(?:[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)?)+)|(?:Jude\\s*([0-9]{1,2}))';
-// bibleRegex += '\\.?\\s*((?:(?:,|;)?\\s?[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)|(?:Jude\\s*([0-9]{1,2}(?:(?:,|;)?\\s*[0-9]{1,2})*))';
-// bibleRegex = new RegExp(bibleRegex, 'gi');
-// console.log(bibleRegex);
+bibleRegex += '|(?:Jude\\s*([0-9]{1,2}(?:(?:,|;)?\\s*[0-9]{1,2})*))';
+bibleRegex = new RegExp(bibleRegex, 'gi');
+console.log(bibleRegex);
 
-let bibleRegex = /(Gen(?:esis)?|Ex(?:od|odus)?|Le(?:v|viticus)?|Num(?:b|bers)?|(?:Dt|Deut(?:eronomy)?)|Jos(?:h|hua)?|(?:Jdgs?|Judg(?:es)?)|Ru?th|(?:1|1st|I|First)\s*Sam(?:uel)?|(?:2|2nd|II|Second)\s*Sam(?:uel)?|(?:1|1st|I|First)\s*(?:Kings|Kgs)|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)|(?:1|1st|I|First)\s*Chr(?:on|onicles)?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?|Ez(?:r|ra)?|Ne(?:h|hemiah)?|Tob(?:it|ias)?|(?:Jth|Jdt|Jdth|Judith)|Es(?:t|th|ther)|(?:1|1st|I|First)\s*Mac(?:c|cabees)?|(?:2|2nd|II|Second)\s*Mac(?:c|cabees)?|Jo?b|Ps(?:a|alms?)?|Pro(?:v|verbs)?|Ecc(?:les?|lesiastes)?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a|aiah)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e|k|ek|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad|adiah)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h|haniah)?|Hag(?:gai)?|Zec(?:h|hariah)?|Mal(?:achi)?|(?:Mt|Matt(?:h|hew)?)|(?:Mk|Mark?)|(?:Lk|Luke?)|J(?:o?h)?n|Acts?|Ro(?:m|mans)?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?|Gal(?:atians)?|Eph(?:es|esians)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?|(?:1|1st|I|First)\s*T(?:i?m?|imothy)|(?:2|2nd|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em|emon)?|Heb(?:rews?)?|James|(?:1|1st|I|First)\s*P(?:et|eter|t)?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?|(?:1|1st|I|First)\s*J(?:o?h)?n|(?:2|2nd|II|Second)\s*J(?:o?h)?n|(?:3|3rd|III|Third)\s*J(?:o?h)?n|Jude?|R(?:v|ev|evelation)?)\.?\s*((?:(?:,|;)?\s?[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)|(?:Jude\s*([0-9]{1,2}(?:(?:,|;)?\s*[0-9]{1,2})*))/gi;
+// let bibleRegex = /(Gen(?:esis)?|Ex(?:od|odus)?|Le(?:v|viticus)?|Num(?:b|bers)?|(?:Dt|Deut(?:eronomy)?)|Jos(?:h|hua)?|(?:Jdgs?|Judg(?:es)?)|Ru?th|(?:1|1st|I|First)\s*Sam(?:uel)?|(?:2|2nd|II|Second)\s*Sam(?:uel)?|(?:1|1st|I|First)\s*(?:Kings|Kgs)|(?:2|2nd|II|Second)\s*(?:Kings|Kgs)|(?:1|1st|I|First)\s*Chr(?:on|onicles)?|(?:2|2nd|II|Second)\s*Chr(?:on|onicles)?|Ez(?:r|ra)?|Ne(?:h|hemiah)?|Tob(?:it|ias)?|(?:Jth|Jdt|Jdth|Judith)|Es(?:t|th|ther)|(?:1|1st|I|First)\s*Mac(?:c|cabees)?|(?:2|2nd|II|Second)\s*Mac(?:c|cabees)?|Jo?b|Ps(?:a|alms?)?|Pro(?:v|verbs)?|Ecc(?:les?|lesiastes)?|(?:SOS|Song(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a|aiah)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e|k|ek|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad|adiah)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h|haniah)?|Hag(?:gai)?|Zec(?:h|hariah)?|Mal(?:achi)?|(?:Mt|Matt(?:h|hew)?)|(?:Mk|Mark?)|(?:Lk|Luke?)|J(?:o?h)?n|Acts?|Ro(?:m|mans)?|(?:1|1st|I|First)\s*Co(?:r|rinthians)?|(?:2|2nd|II|Second)\s*Co(?:r|rinthians)?|Gal(?:atians)?|Eph(?:es|esians)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1|1st|I|First)\s*Thes(?:s|salonians)?|(?:2|2nd|II|Second)\s*Thes(?:s|salonians)?|(?:1|1st|I|First)\s*T(?:i?m?|imothy)|(?:2|2nd|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em|emon)?|Heb(?:rews?)?|James|(?:1|1st|I|First)\s*P(?:et|eter|t)?|(?:2|2nd|II|Second)\s*P(?:et|eter|t)?|(?:1|1st|I|First)\s*J(?:o?h)?n|(?:2|2nd|II|Second)\s*J(?:o?h)?n|(?:3|3rd|III|Third)\s*J(?:o?h)?n|Jude?|R(?:v|ev|evelation)?)\.?\s*((?:(?:,|;)?\s?[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)+)|(?:Jude\s*([0-9]{1,2}(?:(?:,|;)?\s*[0-9]{1,2})*))/gi;
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -125,6 +131,7 @@ function initBiblePreviewer(translation, url) {
     headElement.appendChild(script);
 
     let node_length = transformBibleReferences(translation);
+    console.log(node_length);
     if (node_length) {
         console.time('Create Tooltips');
         createTooltips(url);
@@ -176,12 +183,12 @@ function transformBibleReferences(trans) {
     console.time('Change to links');
     nodeList.forEach(node => {
         // m - original text, b - book, l - verse list match, jv - Jude verse (if applicable)
-        node.innerHTML = node.innerHTML.replace(bibleRegex, function (m, b, verseListStr, jv) {
+        node.innerHTML = node.innerHTML.replace(bibleRegex, function (orig, matchedBook, verseListStr, judeVerse) {
             let book = '', actual_trans = trans;
-            if (jv === undefined) {
+            if (judeVerse === undefined) {
                 // TODO: Figure out a more efficient way to do this
                 for (let key in bibleBooks) {
-                    if (b.search('^' + key + '$') > -1) {
+                    if (matchedBook.search('^' + key + '$') > -1) {
                         book = bibleBooks[key];
                         // If the book is John, continue searching to verify it isn't 1, 2, 3 John
                         if (book !== 'John')
@@ -189,8 +196,8 @@ function transformBibleReferences(trans) {
                     }
                 }
                 if (book === '') {
-                    console.error('Couldn\'t match ' + m);
-                    return m;
+                    console.error('Couldn\'t match ' + orig);
+                    return orig;
                 }
                 // Change translation if it is a deuterocannonical book and an unsupported translation is selected
                 if (!versions_with_deutero.includes(actual_trans) && deutero_books.includes(book)) {
@@ -198,25 +205,31 @@ function transformBibleReferences(trans) {
                 }
             } else {
                 book = 'Jude';
-                verseListStr = jv.split(/[,;]\s*/g);
+                verseListStr = judeVerse.split(/[,;]\s*/g);
                 for (let i = 0; i < verseListStr.length; i++) {
                     verseListStr[i] = '1:' + verseListStr[i];
                 }
                 verseListStr = verseListStr.join(',');
             }
 
+            let prevChap;
             let refList = [], verseList = verseListStr.split(/[,;]\s*/g);
-            let splitText = m.split(/[,;]/g);
+            let splitText = orig.split(/[,;]/g);
             for (let i = 0; i < verseList.length; i++) {
-                let chap = verseList[i].split(':');
-                let verse = chap[1].split(/[–—-]/);
-                let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}/${chap[0]}/${verse[0]}`;
+                let [chap, verse] = verseList[i].split(':');
+                if (verse !== undefined) {
+                    prevChap = chap;
+                    verse = verse.split(/[–—-]/);
+                } else {
+                    verse = chap.split(/[–—-]/);
+                }
+                let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}/${prevChap}/${verse[0]}`;
                 if (verse[1]) {
                     directHref += `-${verse[1]}`;
                 }
                 refList.push('<span class="biblePreviewerContainer">' +
                     `<a class="biblePreviewerLink" href="${directHref}" target="_blank"
-                            data-bible-ref="${createAPILink(book, chap[0], verse[0], verse[1], actual_trans)}"
+                            data-bible-ref="${createAPILink(book, prevChap, verse[0], verse[1], actual_trans)}"
                             data-bible-trans="${actual_trans}">${splitText[i]}</a>` +
                     '</span>');
             }
