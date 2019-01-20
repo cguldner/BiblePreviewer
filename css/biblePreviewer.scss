@@ -1,5 +1,6 @@
+$toolbar-color: #40f1be;
 $popup-color: whitesmoke;
-$arrow-color: #b9b9b9;
+$arrow-color: $toolbar-color;
 
 .biblePreviewerContainer {
   display: inline-block;
@@ -15,17 +16,18 @@ $arrow-color: #b9b9b9;
   z-index: 999999999999;
   width: 350px;
   margin: 10px;
-  box-shadow: 2px 2px 5px grey;
-  border-radius: 5px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 5px grey;
   font: normal 18px "Segoe UI", Tahoma, sans-serif;
   white-space: normal;
   word-wrap: break-word;
 
   .bpHeaderBar {
-    background-color: $popup-color;
+    background-color: $toolbar-color;
     padding: 3px 20px;
     color: black;
     text-align: left;
+    border-radius: 10px 10px 0 0;
 
     .bpVerse {
       font-size: 16px;
@@ -35,13 +37,15 @@ $arrow-color: #b9b9b9;
   .bpTooltipInner {
     max-width: none;
     max-height: 300px;
-    padding: 0 20px 10px;
+    padding: 10px 20px;
     text-align: left;
     color: black;
     background-color: $popup-color;
     overflow-x: hidden;
     overflow-y: auto;
     font-style: normal;
+    border-radius: 0 0 10px 10px;
+    border: 2px solid $toolbar-color;
 
     h3 {
       margin: 0 0 5px;
@@ -72,7 +76,7 @@ $arrow-color: #b9b9b9;
   }
 
   .bpTranslation {
-    background-color: whitesmoke;
+    background-color: $toolbar-color;
     text-align: right;
     font-variant: small-caps;
     display: inline-block;
