@@ -9,7 +9,7 @@ function taskZip () {
         .pipe(zip('BiblePreview.v' + manifestFile.version + '.zip'))
         .pipe(gulp.dest('./'));
 
-    return gulp.src(['js/*', '*.scss', 'manifest.json', '*.html', 'icons/*'], {base: './'})
+    return gulp.src(['js/*', 'css/*', 'html/*', 'icons/*', '*.js*', '!package-lock.json', 'README.md'], {base: './'})
         .pipe(zip('BiblePreviewSource.zip'))
         .pipe(gulp.dest('./'));
 }
