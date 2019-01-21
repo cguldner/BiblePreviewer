@@ -1,6 +1,8 @@
-$toolbar-color: #40f1be;
+$toolbar-bg-color: #0871D7;
+$toolbar-fg-color: white;
+$popup-fg-color: black;
 $popup-color: whitesmoke;
-$arrow-color: $toolbar-color;
+$arrow-color: $toolbar-bg-color;
 
 .biblePreviewerContainer {
   display: inline-block;
@@ -23,9 +25,9 @@ $arrow-color: $toolbar-color;
   word-wrap: break-word;
 
   .bpHeaderBar {
-    background-color: $toolbar-color;
+    background-color: $toolbar-bg-color;
     padding: 3px 20px;
-    color: black;
+    color: $toolbar-fg-color;
     text-align: left;
     border-radius: 10px 10px 0 0;
 
@@ -39,13 +41,13 @@ $arrow-color: $toolbar-color;
     max-height: 300px;
     padding: 10px 20px;
     text-align: left;
-    color: black;
+    color: $popup-fg-color;
     background-color: $popup-color;
     overflow-x: hidden;
     overflow-y: auto;
     font-style: normal;
     border-radius: 0 0 10px 10px;
-    border: 2px solid $toolbar-color;
+    border: 2px solid $toolbar-bg-color;
 
     h3 {
       margin: 0 0 5px;
@@ -76,7 +78,7 @@ $arrow-color: $toolbar-color;
   }
 
   .bpTranslation {
-    background-color: $toolbar-color;
+    background-color: $toolbar-bg-color;
     text-align: right;
     font-variant: small-caps;
     display: inline-block;
