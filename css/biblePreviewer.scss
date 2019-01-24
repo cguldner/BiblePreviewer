@@ -20,7 +20,7 @@ $arrow-color: $toolbar-bg-color;
   margin: 10px;
   border-radius: 10px;
   box-shadow: 4px 4px 5px grey;
-  font: normal 18px "Segoe UI", Tahoma, sans-serif;
+  font: normal 1em "Segoe UI", Tahoma, sans-serif;
   white-space: normal;
   word-wrap: break-word;
 
@@ -48,6 +48,12 @@ $arrow-color: $toolbar-bg-color;
     font-style: normal;
     border-radius: 0 0 10px 10px;
     border: 2px solid $toolbar-bg-color;
+
+    h2 {
+      margin: 5px 0;
+      font-size: 1.4em;
+      font-weight: 600;
+    }
 
     h3 {
       margin: 0 0 5px;

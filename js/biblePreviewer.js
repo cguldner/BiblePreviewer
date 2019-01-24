@@ -1,3 +1,4 @@
+// TODO: Add font size selector to the option panel
 import '../css/biblePreviewer.scss';
 import Tooltip from 'tooltip.js';
 
@@ -14,6 +15,7 @@ const books_start_with_num = '(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?
 const firstPrefix = '(?:1(?:st)?|I|First)\\s*';
 const secondPrefix = '(?:2(?:nd)?|II|Second)\\s*';
 const thirdPrefix = '(?:3(?:rd)?|III|Third)\\s*';
+const dashes = /[–—-]/;
 
 let headElement = document.getElementsByTagName('head')[0];
 
@@ -27,7 +29,7 @@ const bibleBooks = {
     'Le(?:v(?:viticus)?)?': 'Lev',
     'Num(?:b(?:ers)?)?': 'Num',
     'D(?:t|eut(?:eronomy)?)': 'Deut',
-    'Jos(?:h(?:ua)?)?': 'Josh',
+    'Jo(?:s(?:h(?:ua)?)?)?': 'Josh',
     'J(?:dgs?|udg(?:es)?)': 'Judg',
     'Ru?th': 'Ruth',
     [firstPrefix + 'Sam(?:uel)?']: '1Sam',
@@ -99,19 +101,19 @@ const bibleBooks = {
 
 // The regex to match book names
 // TODO: Allow for different start and end chapters
-// let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
-// // Matches the first chapter:verse
-// bibleRegex += '\\.?\\s*((?:[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)';
-// // After the first, can leave off the chapter, so then a single verse will match to the last listed chapter
-// bibleRegex += '(?:[,;]?\\s*(?:(?:[0-9]{1,3}(?:[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))';
-// // But don't match a single verse if it is right before a book that has a number before it
-// bibleRegex += '|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?![,;]?\\s*' + books_start_with_num + ')))*)';
-// // Add Jude separately because Jude only has 1 chapter, so people usually don't put a chapter with the verse
-// bibleRegex += '|(?:Jude?\\s*([0-9]{1,2}(?:[,;]?\\s*[0-9]{1,2})*))';
-// bibleRegex = new RegExp(bibleRegex, 'gi');
-// console.log(bibleRegex);
+let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
+// Matches the first chapter:verse, and optionally an endchapter:verse
+bibleRegex += '\\.?\\s*((?:[0-9]{1,3}[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2}(?:[\\s:][0-9]{1,2})?)?)';
+// After the first, can leave off the chapter, so then a single verse will match to the last listed chapter
+bibleRegex += '(?:[,;]?\\s*(?:(?:[0-9]{1,3}(?:[\\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))';
+// But don't match a single verse if it is right before a book that has a number before it
+bibleRegex += '|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?![,;]?\\s*' + books_start_with_num + ')))*)';
+// Add Jude separately because Jude only has 1 chapter, so people usually don't put a chapter with the verse
+bibleRegex += '|(?:Jude?\\s*([0-9]{1,2}(?:[,;]?\\s*[0-9]{1,2})*))';
+bibleRegex = new RegExp(bibleRegex, 'gi');
+console.log(bibleRegex);
 
-let bibleRegex = /(Gen(?:esis)?|Ex(?:od(?:us)?)?|Le(?:v(?:viticus)?)?|Num(?:b(?:ers)?)?|D(?:t|eut(?:eronomy)?)|Jos(?:h(?:ua)?)?|J(?:dgs?|udg(?:es)?)|Ru?th|(?:1(?:st)?|I|First)\s*Sam(?:uel)?|(?:2(?:nd)?|II|Second)\s*Sam(?:uel)?|(?:1(?:st)?|I|First)\s*K(?:(?:in)?gs)|(?:2(?:nd)?|II|Second)\s*K(?:(?:in)?gs)|(?:1(?:st)?|I|First)\s*Chr(?:on(?:icles)?)?|(?:2(?:nd)?|II|Second)\s*Chr(?:on(?:icles)?)?|Ez(?:ra?)?|Ne(?:h(?:emiah)?)?|Tob(?:it|ias)?|J(?:d?th?|udith)|Est(?:h(?:er)?)?|(?:1(?:st)?|I|First)\s*Mac(?:c(?:abees)?)?|(?:2(?:nd)?|II|Second)\s*Mac(?:c(?:abees)?)?|Jo?b|Ps(?:a(?:lms?)?)?|Pro(?:v(?:erbs)?)?|Ecc(?:les?|lesiastes)?|So(?:S|ng(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a(?:iah)?)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e?k?|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad(?:iah)?)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h(?:aniah)?)?|Hag(?:gai)?|Zec(?:h(?:ariah)?)?|Mal(?:achi)?|M(?:t|att(?:h(?:ew)?)?)|M(?:k|ark?)|L(?:k|uke?)|Jo?h?n|Acts?|Ro(?:m(?:ans)?)?|(?:1(?:st)?|I|First)\s*Co(?:r(?:inthians)?)?|(?:2(?:nd)?|II|Second)\s*Co(?:r(?:inthians)?)?|Gal(?:atians)?|Eph(?:es(?:ians)?)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1(?:st)?|I|First)\s*Thes(?:s(?:alonians)?)?|(?:2(?:nd)?|II|Second)\s*Thes(?:s(?:alonians)?)?|(?:1(?:st)?|I|First)\s*T(?:i?m?|imothy)|(?:2(?:nd)?|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em(?:on)?)?|Heb(?:rews?)?|James|(?:1(?:st)?|I|First)\s*Pe?t(?:er)?|(?:2(?:nd)?|II|Second)\s*Pe?t(?:er)?|(?:1(?:st)?|I|First)\s*Jo?h?n|(?:2(?:nd)?|II|Second)\s*Jo?h?n|(?:3(?:rd)?|III|Third)\s*Jo?h?n|Jude?|R(?:e?v|evelation))\.?\s*((?:[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)(?:[,;]?\s*(?:(?:[0-9]{1,3}(?:[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?![,;]?\s*(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c|cabees)?|Co(?:r(?:inthians)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n))))*)|(?:Jude?\s*([0-9]{1,2}(?:[,;]?\s*[0-9]{1,2})*))/gi;
+// let bibleRegex = /(Gen(?:esis)?|Ex(?:od(?:us)?)?|Le(?:v(?:viticus)?)?|Num(?:b(?:ers)?)?|D(?:t|eut(?:eronomy)?)|Jos(?:h(?:ua)?)?|J(?:dgs?|udg(?:es)?)|Ru?th|(?:1(?:st)?|I|First)\s*Sam(?:uel)?|(?:2(?:nd)?|II|Second)\s*Sam(?:uel)?|(?:1(?:st)?|I|First)\s*K(?:(?:in)?gs)|(?:2(?:nd)?|II|Second)\s*K(?:(?:in)?gs)|(?:1(?:st)?|I|First)\s*Chr(?:on(?:icles)?)?|(?:2(?:nd)?|II|Second)\s*Chr(?:on(?:icles)?)?|Ez(?:ra?)?|Ne(?:h(?:emiah)?)?|Tob(?:it|ias)?|J(?:d?th?|udith)|Est(?:h(?:er)?)?|(?:1(?:st)?|I|First)\s*Mac(?:c(?:abees)?)?|(?:2(?:nd)?|II|Second)\s*Mac(?:c(?:abees)?)?|Jo?b|Ps(?:a(?:lms?)?)?|Pro(?:v(?:erbs)?)?|Ecc(?:les?|lesiastes)?|So(?:S|ng(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a(?:iah)?)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e?k?|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad(?:iah)?)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h(?:aniah)?)?|Hag(?:gai)?|Zec(?:h(?:ariah)?)?|Mal(?:achi)?|M(?:t|att(?:h(?:ew)?)?)|M(?:k|ark?)|L(?:k|uke?)|Jo?h?n|Acts?|Ro(?:m(?:ans)?)?|(?:1(?:st)?|I|First)\s*Co(?:r(?:inthians)?)?|(?:2(?:nd)?|II|Second)\s*Co(?:r(?:inthians)?)?|Gal(?:atians)?|Eph(?:es(?:ians)?)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1(?:st)?|I|First)\s*Thes(?:s(?:alonians)?)?|(?:2(?:nd)?|II|Second)\s*Thes(?:s(?:alonians)?)?|(?:1(?:st)?|I|First)\s*T(?:i?m?|imothy)|(?:2(?:nd)?|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em(?:on)?)?|Heb(?:rews?)?|James|(?:1(?:st)?|I|First)\s*Pe?t(?:er)?|(?:2(?:nd)?|II|Second)\s*Pe?t(?:er)?|(?:1(?:st)?|I|First)\s*Jo?h?n|(?:2(?:nd)?|II|Second)\s*Jo?h?n|(?:3(?:rd)?|III|Third)\s*Jo?h?n|Jude?|R(?:e?v|evelation))\.?\s*((?:[0-9]{1,3}[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?)(?:[,;]?\s*(?:(?:[0-9]{1,3}(?:[\s:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?![,;]?\s*(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c|cabees)?|Co(?:r(?:inthians)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n))))*)|(?:Jude?\s*([0-9]{1,2}(?:[,;]?\s*[0-9]{1,2})*))/gi;
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -214,26 +216,16 @@ function transformBibleReferences(trans) {
                 verseListStr = verseListStr.join(',');
             }
 
-            let prevChap;
+            let startChap, startVerse, endChap, endVerse, prevChap = null;
             let refList = [], verseList = verseListStr.split(/[,;]\s*/g);
             let splitText = orig.split(/[,;]/g);
             for (let i = 0; i < verseList.length; i++) {
-                let [chap, verse] = verseList[i].split(':');
-                if (verse !== undefined) {
-                    prevChap = chap;
-                    verse = verse.split(/[–—-]/);
-                } else {
-                    verse = chap.split(/[–—-]/);
-                }
-                let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}/${prevChap}/${verse[0]}`;
-                if (verse[1]) {
-                    directHref += `-${verse[1]}`;
-                }
+                [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(verseList[i], prevChap);
+                let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}/${prevChap}/${startVerse}`;
+                let apiLink = `${startChap}:${startVerse}-${endChap}:${endVerse}`;
                 refList.push('<span class="biblePreviewerContainer">' +
-                    `<a class="biblePreviewerLink" href="${directHref}" target="_blank"
-                            data-bible-ref="${createAPILink(book, prevChap, verse[0], verse[1], actual_trans)}"
-                            data-bible-trans="${actual_trans}">${splitText[i]}</a>` +
-                    '</span>');
+                    `<a class="biblePreviewerLink" href="${directHref}" target="_blank" data-bible-ref="${apiLink}"
+                            data-bible-book="${book}" data-bible-trans="${actual_trans}">${splitText[i]}</a></span>`);
             }
 
             return refList.join(', ');
@@ -241,6 +233,34 @@ function transformBibleReferences(trans) {
     });
     // console.timeEnd('Change to links');
     return nodeList.length
+}
+
+function getVerseFromString(verseStr, prevChap) {
+    let startChap, startVerse, endChap, endVerse;
+    let [start, end] = verseStr.split(dashes);
+
+    [startChap, startVerse] = start.split(':');
+    if (startVerse === undefined) {
+        startVerse = startChap;
+        startChap = prevChap;
+    } else {
+        prevChap = startChap;
+    }
+
+    if (end !== undefined) {
+        [endChap, endVerse] = end.split(':');
+        if (endVerse === undefined) {
+            endVerse = endChap;
+            endChap = startChap;
+        } else {
+            prevChap = endChap;
+        }
+    } else {
+        endVerse = startVerse;
+        endChap = startChap;
+    }
+
+    return [startChap, startVerse, endChap, endVerse, prevChap];
 }
 
 /**
@@ -280,31 +300,31 @@ function createTooltips(webpageUrl) {
                     });
                 }
 
+                let fullRef = link.dataset.bibleBook + ' ' + link.dataset.bibleRef;
                 // Can remove some of this stuff later, once google docs works
                 if (tool) {
-                    if (bibleVerseDict[link.dataset.bibleRef] === undefined) {
-                        sendAPIRequestForVerses(link.dataset.bibleRef, function (verseObj) {
-                            if (verseObj) {
+                    if (bibleVerseDict[fullRef] === undefined) {
+                        tool.updateTitleContent('Loading');
+                        let [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(link.dataset.bibleRef, null);
+                        sendAPIRequestForVersesMultiChapter(link.dataset.bibleBook, startChap, startVerse, endChap, endVerse, link.dataset.bibleTrans, function (verseText, verseRef, status) {
+                            if (verseText && status === 200) {
                                 let verseSel = tool.popperInstance.popper.querySelectorAll('.bpVerse')[0];
-                                verseSel.innerText = verseObj[0].reference;
-                                if (verseObj.length > 1) {
-                                    verseSel.innerText += ' - ' + verseObj[verseObj.length - 1].reference;
-                                }
-
-                                let verseText = verseObj.map(function (verse) {
-                                    return verse.text;
-                                }).join('');
+                                verseSel.innerText = verseRef;
                                 tool.updateTitleContent(verseText);
                                 // Store into a dictionary for quick access later
-                                bibleVerseDict[link.dataset.bibleRef] = verseText;
+                                bibleVerseDict[fullRef] = verseText;
+                            } else if (status === 404) {
+                                tool.updateTitleContent('Verse does not exist');
+                                bibleVerseDict[fullRef] = 'Verse does not exist';
+                            } else if (status === 0) {
+                                tool.updateTitleContent('Request couldn\'t be completed, try again later');
                             } else {
-                                tool.updateTitleContent('Couldn\'t find verse');
-                                bibleVerseDict[link.dataset.bibleRef] = null;
+                                tool.updateTitleContent('Something weird happened, try again later');
                             }
                         });
                     } else {
                         // If there is another link to the same verse on the page, then set that verse text
-                        tool.updateTitleContent(bibleVerseDict[link.dataset.bibleRef]);
+                        tool.updateTitleContent(bibleVerseDict[fullRef]);
                     }
                     tool.show();
                 }
@@ -326,33 +346,24 @@ function createTooltips(webpageUrl) {
 }
 
 /**
- * Create link to the Bible API
+ * Sends a request to the bible API for the specified verses
  * @param {string} book - OSIS abbreviation of the book
- * @param {string} chapter - chapter number
+ * @param {string} startChapter - chapter number
  * @param {string} startVerse - what verse to start reading from
  * @param {string} endVerse - what verse to end reading at
  * @param {string} translation - Which bible translation to use
- * @returns {string} The link to the API for this bible passage
- */
-function createAPILink(book, chapter, startVerse, endVerse, translation) {
-    let bibleLink = `${BIBLE_API_BASE_URL}chapters/${translation}:${book}.${chapter}/verses.js?start=${startVerse}`;
-    let end = endVerse ? endVerse : startVerse;
-    bibleLink += '&end=' + end;
-    return bibleLink;
-}
-
-/**
- * Sends a request to the bible API for the specified verses
- * @param requestLink - The link to get the verse from
  * @param cb - What to do after the API returns the verse
  */
-function sendAPIRequestForVerses(requestLink, cb) {
+function sendAPIRequestForVerses(book, startChapter, startVerse, endVerse, translation, cb) {
+    let requestLink = `${BIBLE_API_BASE_URL}chapters/${translation}:${book}.${startChapter}/verses.js?start=${startVerse}&end=${endVerse}`;
+
     let xhr = new XMLHttpRequest();
     xhr.open('GET', requestLink, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             let res = JSON.parse(xhr.responseText).response;
             let verses = res.verses;
+            let startChapterLastVerse = verses[0].previous.verse.id.split('.')[2];
             let bapi = document.createElement('script');
             // Make a call to the FUMS - copyright stuff
             bapi.text = `_BAPI.t("${res.meta.fums_tid}")`;
@@ -360,13 +371,55 @@ function sendAPIRequestForVerses(requestLink, cb) {
             headElement.removeChild(bapi);
 
             if (verses === undefined) {
-                cb(null, 404);
+                cb(null, null, 404);
             } else {
-                cb(verses);
+                cb(verses, startChapterLastVerse, 200);
             }
         } else {
-            cb(null, xhr.status);
+            cb(null, null, xhr.status);
         }
     };
     xhr.send();
+}
+
+
+function sendAPIRequestForVersesMultiChapter(book, startChapter, startVerse, endChapter, endVerse, translation, cb) {
+    if (startChapter !== endChapter) {
+        sendAPIRequestForVerses(book, endChapter, 1, endVerse, translation, function (endChapterVerses, startChapterLastVerse, err1) {
+            if (endChapterVerses !== null && err1 === 200) {
+                sendAPIRequestForVerses(book, startChapter, startVerse, startChapterLastVerse, translation, function (startChapterVerses, startChapterLastVerse, err2) {
+                    if (startChapterVerses !== null && err2 === 200) {
+                        let verseText = startChapterVerses.map(function (verse) {
+                            return verse.text;
+                        }).join('');
+                        verseText += `<h2>Chapter ${endChapter}</h2>`;
+                        verseText += endChapterVerses.map(function (verse) {
+                            return verse.text;
+                        }).join('');
+                        let verseRef = startChapterVerses[0].reference + ' - ' + endChapterVerses[endChapterVerses.length - 1].reference;
+                        cb(verseText, verseRef, 200);
+                    } else {
+                        cb(null, null, err2);
+                    }
+                });
+            } else {
+                cb(null, err1);
+            }
+        });
+    } else {
+        sendAPIRequestForVerses(book, startChapter, startVerse, endVerse, translation, function (verseObj, startChapterLastVerse, err) {
+            if (verseObj !== null && err === 200) {
+                let verseText = verseObj.map(function (verse) {
+                    return verse.text;
+                }).join('');
+                let verseRef = verseObj[0].reference;
+                if (startVerse !== endVerse) {
+                    verseRef += ' - ' + verseObj[verseObj.length - 1].reference;
+                }
+                cb(verseText, verseRef, 200);
+            } else {
+                cb(null, null, err);
+            }
+        });
+    }
 }
