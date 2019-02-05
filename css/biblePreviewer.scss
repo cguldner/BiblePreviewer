@@ -30,9 +30,23 @@ $arrow-color: $toolbar-bg-color;
     color: $toolbar-fg-color;
     text-align: left;
     border-radius: 10px 10px 0 0;
+    display: flex;
+    align-items: center;
 
     .bpVerse {
       font-size: 16px;
+      display: inline-block;
+      flex: 1 0 auto;
+    }
+
+    .bpTranslation {
+      background-color: $toolbar-bg-color;
+      text-align: right;
+      font-variant: small-caps;
+      display: inline-block;
+      padding-left: 10px;
+      font-size: 12px;
+      flex: 0 1 auto;
     }
   }
 
@@ -77,19 +91,6 @@ $arrow-color: $toolbar-bg-color;
     span.nd {
       font-variant: small-caps;
     }
-  }
-
-  .bpVerse {
-    display: inline-block;
-  }
-
-  .bpTranslation {
-    background-color: $toolbar-bg-color;
-    text-align: right;
-    font-variant: small-caps;
-    display: inline-block;
-    padding-left: 10px;
-    font-size: 12px;
   }
 
   .bpTooltipArrow {

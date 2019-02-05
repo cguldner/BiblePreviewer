@@ -3,6 +3,8 @@ import '../css/biblePreviewer.scss';
 import Tooltip from 'tooltip.js';
 
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
+const ESV_API_KEY = '52ca2a57f09495325d251464d417edc1cfe94834';
+
 const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
 const DEFAULT_TRANS = 'eng-NASB';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
@@ -291,7 +293,7 @@ function createTooltips(webpageUrl) {
                         innerSelector: '.bpTooltipInner',
                         template: '<div class="biblePreviewerTooltip" role="tooltip">' +
                             `<div class="bpHeaderBar"><div class="bpVerse">${link.textContent}</div>` +
-                            `<div class="bpTranslation">${link.dataset.bibleTrans.split('-')[1]}</div></div>` +
+                            `<div class="bpTranslation">${link.dataset.bibleTrans}</div></div>` +
                             '<div class="bpTooltipInner"></div>' +
                             '<div class="bpTooltipArrow"></div>' +
                             '</div>',
@@ -318,7 +320,7 @@ function createTooltips(webpageUrl) {
                             } else if (status === 0) {
                                 tool.updateTitleContent('Request couldn\'t be completed, try again later');
                             } else {
-                                tool.updateTitleContent('Something weird happened, try again later');
+                                tool.updateTitleContent('Try again later');
                             }
                         });
                     } else {
@@ -421,4 +423,8 @@ function sendAPIRequestForVersesMultiChapter(book, startChapter, startVerse, end
             }
         });
     }
+}
+
+export {
+    BIBLE_API_KEY
 }
