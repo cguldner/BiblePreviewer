@@ -2,19 +2,21 @@
 import '../css/options.scss';
 import {BIBLE_API_KEY} from './biblePreviewer';
 
-
-// TODO: Allow ability for non english versions
 let xhr = new XMLHttpRequest();
-let elems = document.querySelectorAll('select');
 
 let version_select = document.getElementById('bible-version');
 let language_select = document.getElementById('language');
 let status = document.getElementById('save-status');
 
 document.addEventListener('DOMContentLoaded', function () {
-    M.FormSelect.init(elems, {});
-    restore_options(function () {
-        get_versions();
+    restore_options(function (version_value) {
+        M.FormSelect.init(language_select, {});
+        get_versions(false, function () {
+            version_select.value = version_value;
+            version_select.removeAttribute('disabled');
+            // Reinitialize the select to show the new options
+            M.FormSelect.init(version_select, {});
+        });
         // get_languages();
     });
     document.getElementById('language').onchange = get_versions;
@@ -34,11 +36,14 @@ document.addEventListener('DOMContentLoaded', function () {
     xhr.send();
 }*/
 
-function get_versions() {
+function get_versions(is_event, cb) {
     xhr.open('GET', `https://${BIBLE_API_KEY}@bibles.org/v2/versions.js?language=${language_select.options[language_select.selectedIndex].value}`, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             populate();
+            if (!is_event) {
+                cb();
+            }
         }
     };
     xhr.send();
@@ -55,7 +60,6 @@ function populate() {
             version_select.add(new Option(versions[v]['name'], versions[v]['abbreviation']));
         }
     }
-    M.FormSelect.init(elems, {});
 }
 
 // Saves options to chrome.storage
@@ -77,15 +81,11 @@ function save_options() {
 function restore_options(cb) {
     chrome.storage.sync.get({
         'language': 'eng-US',
-        'translation': 'eng-NASB'
+        'translation': 'NASB'
     }, function (items) {
         language_select.value = items['language'];
-        version_select.value = items['translation'];
-        version_select.removeAttribute('disabled');
-        // Reinitialize the select to show the new options
-        M.FormSelect.init(version_select, {});
         document.getElementById('save-button').classList.remove('disabled');
-        cb();
+        cb(items['translation']);
     });
 }
 
