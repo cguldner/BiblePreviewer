@@ -1,19 +1,38 @@
 body {
-  min-height: 250px;
+  height: 300px;
   background-color: white;
   padding-top: 10px;
 }
 
-#save-status {
-  font-size: 14px;
-  color: green;
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .options {
+    flex: 1 0 auto;
+
+    label {
+      font-size: 14px;
+    }
+  }
+
+  footer {
+    flex-shrink: 0;
+    text-align: center;
+
+    #save-status {
+      font-size: 14px;
+      color: green;
+    }
+  }
 }
 
 .dropdown-content li {
   min-height: initial;
 
   & > span {
-    //font-size: 12px;
-    padding: 11px 10px;
+    font-size: 16px;
+    padding: 8px 10px;
   }
 }

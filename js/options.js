@@ -50,7 +50,6 @@ function populate() {
     for (let op in version_select.options) {
         version_select.remove(op);
     }
-    console.log(versions);
     for (let v in versions) {
         if (versions[v]['name'] !== '') {
             version_select.add(new Option(versions[v]['name'], versions[v]['abbreviation']));

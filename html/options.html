@@ -8,42 +8,45 @@
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <div class="input-field col s12 m6">
-            <select id="language">
-                <option value="eng-US">English (US)</option>
-                <option value="eng-GB">English (British)</option>
-                <option value="hrv">Croatian</option>
-                <option value="fra">French</option>
-                <option value="hwc">Hawaiian Pidgin</option>
-                <option value="por">Portuguese</option>
-                <option value="spa">Spanish</option>
-            </select>
-            <label>Language</label>
-        </div>
+    <div class="options">
+        <div class="row">
+            <div class="input-field col s12 m6">
+                <select id="language">
+                    <option value="eng-US">English (US)</option>
+                    <option value="eng-GB">English (British)</option>
+                    <option value="hrv">Croatian</option>
+                    <option value="fra">French</option>
+                    <option value="hwc">Hawaiian Pidgin</option>
+                    <option value="por">Portuguese</option>
+                    <option value="spa">Spanish</option>
+                </select>
+                <label>Language</label>
+            </div>
 
-        <div class="input-field col s12 m6">
-            <select disabled id="bible-version">
-                <option disabled selected value>--- Select a version ---</option>
-            </select>
-            <label>Bible Version (English Only)</label>
-        </div>
-    </div>
-
-    <div class="row valign-wrapper">
-        <div class="col s6" id="save-status"></div>
-        <div class="col s6 right-align">
-            <div class="waves-effect waves-light btn disabled" id="save-button">Save</div>
+            <div class="input-field col s12 m6">
+                <select disabled id="bible-version">
+                    <option disabled selected value>--- Select a version ---</option>
+                </select>
+                <label>Bible Version</label>
+            </div>
         </div>
     </div>
-    <div class="clearfix"></div>
 
-    <div class="row">Icons made by <a href="https://www.flaticon.com/authors/roundicons"
-                                      title="Roundicons">Roundicons</a> from <a
-            href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a
-            href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0
-        BY</a>
-    </div>
+    <footer>
+        <div class="row valign-wrapper">
+            <div class="col s6" id="save-status"></div>
+            <div class="col s6 right-align">
+                <div class="waves-effect waves-light btn disabled" id="save-button">Save</div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            Icons made by <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from
+            <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+            <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0
+                BY</a>
+        </div>
+    </footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
