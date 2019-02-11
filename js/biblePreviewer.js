@@ -339,7 +339,8 @@ function createTooltips(webpageUrl) {
             // Destroy the tooltip to prevent any stray tooltips if mouse is moved fast
             exitTimeout = setTimeout(function () {
                 if (tool) {
-                    tool.hide();
+                    tool.dispose();
+                    tool = null;
                 }
             }, 750);
         });
@@ -384,9 +385,19 @@ function sendAPIRequestForVerses(book, startChapter, startVerse, endVerse, trans
 }
 
 
+/**
+ * Sends a request to the bible API for the specified verses
+ * @param {string} book - OSIS abbreviation of the book
+ * @param {string} startChapter - starting chapter number
+ * @param {string} startVerse - what verse to start reading from
+ * @param {string} endChapter - ending chapter number
+ * @param {string} endVerse - what verse to end reading at
+ * @param {string} translation - Which bible translation to use
+ * @param cb - What to do after the API returns the verse
+ */
 function sendAPIRequestForVersesMultiChapter(book, startChapter, startVerse, endChapter, endVerse, translation, cb) {
     if (startChapter !== endChapter) {
-        sendAPIRequestForVerses(book, endChapter, 1, endVerse, translation, function (endChapterVerses, startChapterLastVerse, err1) {
+        sendAPIRequestForVerses(book, endChapter, '1', endVerse, translation, function (endChapterVerses, startChapterLastVerse, err1) {
             if (endChapterVerses !== null && err1 === 200) {
                 sendAPIRequestForVerses(book, startChapter, startVerse, startChapterLastVerse, translation, function (startChapterVerses, startChapterLastVerse, err2) {
                     if (startChapterVerses !== null && err2 === 200) {
