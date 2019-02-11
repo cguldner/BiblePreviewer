@@ -14,8 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
         get_versions(false, function () {
             version_select.value = version_value;
             version_select.removeAttribute('disabled');
-            // Reinitialize the select to show the new options
-            M.FormSelect.init(version_select, {});
         });
         // get_languages();
     });
@@ -44,6 +42,8 @@ function get_versions(is_event, cb) {
             if (!is_event) {
                 cb();
             }
+            // Reinitialize the select to show the new options
+            M.FormSelect.init(version_select, {});
         }
     };
     xhr.send();
