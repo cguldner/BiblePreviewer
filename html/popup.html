@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Options</title>
     <style>
-        #reload-button {
+        .button {
             background: #00c600;
             border-radius: 10px;
             color: white;
@@ -13,11 +13,18 @@
             cursor: pointer;
             font: bold 18px "Segoe UI", Tahoma, sans-serif;
         }
+
+        #blacklist-button {
+            margin-top: 15px;
+        }
     </style>
 
 <body>
-<div id="reload-button" title="Click to re-run the link finding">
+<div class="button" id="reload-button" title="Click to re-run the link finding">
     Reload Extension
+</div>
+<div class="button" id="blacklist-button" title="Click to prevent the extension from running on this website">
+    Blacklist Website
 </div>
 
 <script src="../js/popup.js"></script>
