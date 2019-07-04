@@ -16,3 +16,15 @@ function run_content_script(tabId, tabURL) {
         });
     });
 }
+
+chrome.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
+        if (request.contentScriptQuery === 'getVerses') {
+            fetch(request.url)
+                .then(response => response.text())
+                .then(res => sendResponse(res))
+                .catch(error => {
+                });
+            return true;  // Will respond asynchronously.
+        }
+    });

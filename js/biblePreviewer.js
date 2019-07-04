@@ -7,7 +7,7 @@ import Tooltip from 'tooltip.js';
 const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 const ESV_API_KEY = '52ca2a57f09495325d251464d417edc1cfe94834';
 
-const BIBLE_API_BASE_URL = `https://${BIBLE_API_KEY}@bibles.org/v2/`;
+const BIBLE_API_BASE_URL = `https://bibles.org/v2/`;
 const ESV_API_BASE_URL = `https://api.esv.org/v3/passage/text/?q=`;
 const DEFAULT_TRANS = 'eng-NASB';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
@@ -363,27 +363,22 @@ function sendAPIRequestForVerses(book, startChapter, startVerse, endVerse, trans
 
     let xhr = new XMLHttpRequest();
     xhr.open('GET', requestLink, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            let res = JSON.parse(xhr.responseText).response;
-            let verses = res.verses;
-            let startChapterLastVerse = verses[0].previous.verse.id.split('.')[2];
-            let bapi = document.createElement('script');
-            // Make a call to the FUMS - copyright stuff
-            bapi.text = `_BAPI.t("${res.meta.fums_tid}")`;
-            headElement.appendChild(bapi);
-            headElement.removeChild(bapi);
+    chrome.runtime.sendMessage({contentScriptQuery: 'getVerses', url: requestLink}, response => {
+        let res = JSON.parse(response).response;
+        let verses = res.verses;
+        let startChapterLastVerse = verses[0].previous.verse.id.split('.')[2];
+        let bapi = document.createElement('script');
+        // Make a call to the FUMS - copyright stuff
+        bapi.text = `_BAPI.t("${res.meta.fums_tid}")`;
+        headElement.appendChild(bapi);
+        headElement.removeChild(bapi);
 
-            if (verses === undefined) {
-                cb(null, null, 404);
-            } else {
-                cb(verses, startChapterLastVerse, 200);
-            }
+        if (verses === undefined) {
+            cb(null, null, 404);
         } else {
-            cb(null, null, xhr.status);
+            cb(verses, startChapterLastVerse, 200);
         }
-    };
-    xhr.send();
+    });
 }
 
 
@@ -440,7 +435,7 @@ function sendAPIRequestForVersesMultiChapter(book, startChapter, startVerse, end
 
 let xhr = new XMLHttpRequest();
 xhr.open('GET', ESV_API_BASE_URL, true);
-xhr.setRequestHeader('Authorization','Token ' + ESV_API_KEY);
+xhr.setRequestHeader('Authorization', 'Token ' + ESV_API_KEY);
 xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
         let res = JSON.parse(xhr.responseText).response;
