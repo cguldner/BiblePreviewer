@@ -16,7 +16,8 @@ module.exports = env => {
     let devMode = env === undefined || env.NODE_ENV !== 'production';
 
     return {
-        mode: devMode ? 'development' : 'production',
+        // mode: devMode ? 'development' : 'production',
+        mode: 'development',
         entry: {
             'background': './js/background.js',
             'biblePreviewer': './js/biblePreviewer.js',

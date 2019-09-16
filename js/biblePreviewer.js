@@ -433,19 +433,15 @@ function sendAPIRequestForVersesMultiChapter(book, startChapter, startVerse, end
     }
 }
 
-let xhr = new XMLHttpRequest();
-xhr.open('GET', ESV_API_BASE_URL, true);
-xhr.setRequestHeader('Authorization', 'Token ' + ESV_API_KEY);
-xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-        let res = JSON.parse(xhr.responseText).response;
-        console.log(res)
-    } else {
-        console.log(xhr.status);
-    }
-};
-xhr.send();
-
-export {
-    BIBLE_API_KEY
-}
+// let xhr = new XMLHttpRequest();
+// xhr.open('GET', ESV_API_BASE_URL, true);
+// xhr.setRequestHeader('Authorization', 'Token ' + ESV_API_KEY);
+// xhr.onreadystatechange = function () {
+//     if (xhr.readyState === 4 && xhr.status === 200) {
+//         let res = JSON.parse(xhr.responseText).response;
+//         console.log(res)
+//     } else {
+//         console.log(xhr.status);
+//     }
+// };
+// xhr.send();

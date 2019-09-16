@@ -1,6 +1,7 @@
 // import 'materialize-css';
 import '../css/options.scss';
-import {BIBLE_API_KEY} from './biblePreviewer';
+
+const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
 
 let xhr = new XMLHttpRequest();
 
