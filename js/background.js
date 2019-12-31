@@ -1,4 +1,4 @@
-const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
+const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
 
 // Runs the script once the page has been fully loaded
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.contentScriptQuery === 'getVerses') {
         fetch(request.url, {
             headers: new Headers({
-                'Authorization': 'Basic ' + btoa(`${BIBLE_API_KEY}:X`),
+                'api-key': BIBLE_API_KEY,
             }),
         })
             .then(response => response.text())

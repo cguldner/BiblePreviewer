@@ -1,7 +1,7 @@
 // import 'materialize-css';
 import '../css/options.scss';
 
-const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
+const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
 
 let xhr = new XMLHttpRequest();
 

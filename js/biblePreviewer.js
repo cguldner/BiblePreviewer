@@ -4,12 +4,12 @@
 import '../css/biblePreviewer.scss';
 import Tooltip from 'tooltip.js';
 
-const BIBLE_API_KEY = 'omci89GV7FQlNgTIzDULkB16SyEuOr27xC49GEex';
+const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
 const ESV_API_KEY = '52ca2a57f09495325d251464d417edc1cfe94834';
 
-const BIBLE_API_BASE_URL = `https://bibles.org/v2/`;
+const BIBLE_API_BASE_URL = `https://api.scripture.api.bible/v1/`;
 const ESV_API_BASE_URL = `https://api.esv.org/v3/passage/text/?q=`;
-const DEFAULT_TRANS = 'eng-NASB';
+const DEFAULT_TRANS = 'de4e12af7f28f599-02';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
 const DEFAULT_DEUTERO_TRANS = 'eng-KJVA';
 const BIBLE_DIRECT_URL = `https://bibles.org/`;
@@ -30,77 +30,77 @@ let bibleVerseDict = {};
 // I make a lot of the () non-capturing, so I can capture the chapter/verse numbers more easily later
 const bibleBooks = {
     'Gen(?:esis)?': 'Gen',
-    'Ex(?:od(?:us)?)?': 'Exod',
+    'Ex(?:od(?:us)?)?': 'Exo',
     'Le(?:v(?:iticus)?)?': 'Lev',
     'Num(?:b(?:ers)?)?': 'Num',
-    'D(?:t|eut(?:eronomy)?)': 'Deut',
-    'Jo(?:s(?:h(?:ua)?)?)?': 'Josh',
-    'J(?:dgs?|udg(?:es)?)': 'Judg',
-    'Ru?th': 'Ruth',
-    [firstPrefix + 'Sam(?:uel)?']: '1Sam',
-    [secondPrefix + 'Sam(?:uel)?']: '2Sam',
-    [firstPrefix + 'K(?:(?:in)?gs)']: '1Kgs',
-    [secondPrefix + 'K(?:(?:in)?gs)']: '2Kgs',
-    [firstPrefix + 'Chr(?:on(?:icles)?)?']: '1Chr',
-    [secondPrefix + 'Chr(?:on(?:icles)?)?']: '2Chr',
-    'Ez(?:ra?)?': 'Ezra',
+    'D(?:t|eut(?:eronomy)?)': 'Deu',
+    'Jo(?:s(?:h(?:ua)?)?)?': 'Jos',
+    'J(?:dgs?|udg(?:es)?)': 'Jdg',
+    'Ru?th': 'Rut',
+    [firstPrefix + 'Sam(?:uel)?']: '1Sa',
+    [secondPrefix + 'Sam(?:uel)?']: '2Sa',
+    [firstPrefix + 'K(?:(?:in)?gs)']: '1Ki',
+    [secondPrefix + 'K(?:(?:in)?gs)']: '2Ki',
+    [firstPrefix + 'Chr(?:on(?:icles)?)?']: '1Ch',
+    [secondPrefix + 'Chr(?:on(?:icles)?)?']: '2Ch',
+    'Ez(?:ra?)?': 'Ezr',
     'Ne(?:h(?:emiah)?)?': 'Neh',
     'Tob(?:it|ias)?': 'Tob',
     'J(?:d?th?|udith)': 'Jdt',
-    'Est(?:h(?:er)?)?': 'Esth',
-    [firstPrefix + 'Mac(?:c(?:abees)?)?']: '1Macc',
-    [secondPrefix + 'Mac(?:c(?:abees)?)?']: '2Macc',
+    'Est(?:h(?:er)?)?': 'Est',
+    [firstPrefix + 'Mac(?:c(?:abees)?)?']: '1Ma',
+    [secondPrefix + 'Mac(?:c(?:abees)?)?']: '2Ma',
     'Jo?b': 'Job',
-    'Ps(?:a(?:lms?)?)?': 'Ps',
-    'Pro(?:v(?:erbs)?)?': 'Prov',
-    'Ecc(?:les?|lesiastes)?': 'Eccl',
-    'So(?:S|ng(?:\\s*of\\s*(?:Sol(?:omon)?|Songs?))?)': 'Song',
+    'Ps(?:a(?:lms?)?)?': 'Psa',
+    'Pro(?:v(?:erbs)?)?': 'Pro',
+    'Ecc(?:les?|lesiastes)?': 'Ecc',
+    'So(?:S|ng(?:\\s*of\\s*(?:Sol(?:omon)?|Songs?))?)': 'Sng',
     'Wis(?:dom)?(?:\\s*of\\s*Sol(?:omon)?)?': 'Wis',
     'Sir(?:ach)?': 'Sir',
     'Bar(?:uch)?': 'Bar',
     'Is(?:a(?:iah)?)?': 'Isa',
     'Jer(?:emiah)?': 'Jer',
     'Lam(?:entations)?': 'Lam',
-    'Ez(?:e?k?|ekiel)': 'Ezek',
+    'Ez(?:e?k?|ekiel)': 'Ezk',
     'Dan(?:iel)?': 'Dan',
     'Hos(?:ea)?': 'Hos',
-    'Joel': 'Joel',
-    'Amos': 'Amos',
-    'Ob(?:ad(?:iah)?)?': 'Obad',
-    'Jon(?:ah)?': 'Jonah',
+    'Joel': 'Jol',
+    'Amos': 'Amo',
+    'Ob(?:ad(?:iah)?)?': 'Oba',
+    'Jon(?:ah)?': 'Jon',
     'Mic(?:ah)?': 'Mic',
-    'Nah(?:um)?': 'Nah',
+    'Nah(?:um)?': 'Nam',
     'Hab(?:akkuk)?': 'Hab',
-    'Zep(?:h(?:aniah)?)?': 'Zeph',
+    'Zep(?:h(?:aniah)?)?': 'Zep',
     'Hag(?:gai)?': 'Hag',
-    'Zec(?:h(?:ariah)?)?': 'Zech',
+    'Zec(?:h(?:ariah)?)?': 'Zec',
     'Mal(?:achi)?': 'Mal',
-    'M(?:t|att(?:h(?:ew)?)?)': 'Matt',
-    'M(?:k|ark?)': 'Mark',
-    'L(?:k|uke?)': 'Luke',
-    'Jo?h?n': 'John',
-    'Acts?': 'Acts',
+    'M(?:t|att(?:h(?:ew)?)?)': 'Mat',
+    'M(?:k|ark?)': 'Mrk',
+    'L(?:k|uke?)': 'Luk',
+    'Jo?h?n': 'Jhn',
+    'Acts?': 'Act',
     'Ro(?:m(?:ans)?)?': 'Rom',
-    [firstPrefix + 'Co(?:r(?:inthian(?:s)?)?)?']: '1Cor',
-    [secondPrefix + 'Co(?:r(?:inthian(?:s)?)?)?']: '2Cor',
+    [firstPrefix + 'Co(?:r(?:inthian(?:s)?)?)?']: '1Co',
+    [secondPrefix + 'Co(?:r(?:inthian(?:s)?)?)?']: '2Co',
     'Gal(?:atians)?': 'Gal',
     'Eph(?:es(?:ians)?)?': 'Eph',
-    'Phil(?:ippians)?': 'Phil',
+    'Phil(?:ippians)?': 'Php',
     'Col(?:ossians)?': 'Col',
-    [firstPrefix + 'Thes(?:s(?:alonians)?)?']: '1Thess',
-    [secondPrefix + 'Thes(?:s(?:alonians)?)?']: '2Thess',
-    [firstPrefix + 'T(?:i?m?|imothy)']: '1Tim',
-    [secondPrefix + 'T(?:i?m?|imothy)']: '2Tim',
-    'Titus': 'Titus',
-    'Phil(?:em(?:on)?)?': 'Phil',
+    [firstPrefix + 'Thes(?:s(?:alonians)?)?']: '1Th',
+    [secondPrefix + 'Thes(?:s(?:alonians)?)?']: '2Th',
+    [firstPrefix + 'T(?:i?m?|imothy)']: '1Ti',
+    [secondPrefix + 'T(?:i?m?|imothy)']: '2Ti',
+    'Titus': 'Tit',
+    'Phil(?:em(?:on)?)?': 'Phm',
     'Heb(?:rews?)?': 'Heb',
     'James': 'Jas',
-    [firstPrefix + 'Pe?t(?:er)?']: '1Pet',
-    [secondPrefix + 'Pe?t(?:er)?']: '2Pet',
-    [firstPrefix + 'Jo?h?n']: '1John',
-    [secondPrefix + 'Jo?h?n']: '2John',
-    [thirdPrefix + 'Jo?h?n']: '3John',
-    'Jude?': 'Jude',
+    [firstPrefix + 'Pe?t(?:er)?']: '1Pe',
+    [secondPrefix + 'Pe?t(?:er)?']: '2Pe',
+    [firstPrefix + 'Jo?h?n']: '1Jn',
+    [secondPrefix + 'Jo?h?n']: '2Jn',
+    [thirdPrefix + 'Jo?h?n']: '3Jn',
+    'Jude?': 'Jud',
     'R(?:e?v|evelation)': 'Rev'
 };
 
@@ -310,7 +310,8 @@ function createTooltips(webpageUrl) {
                     if (bibleVerseDict[fullRef] === undefined) {
                         tool.updateTitleContent('Loading');
                         let [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(link.dataset.bibleRef, null);
-                        sendAPIRequestForVersesMultiChapter(link.dataset.bibleBook, startChap, startVerse, endChap, endVerse, link.dataset.bibleTrans, function (verseText, verseRef, status) {
+                        sendAPIRequestForVerses(link.dataset.bibleBook, startChap, startVerse, endChap, endVerse, link.dataset.bibleTrans, function (verseText, verseRef, status) {
+                            console.log(status)
                             if (verseText && status === 200) {
                                 let verseSel = tool.popperInstance.popper.querySelectorAll('.bpVerse')[0];
                                 verseSel.innerText = verseRef;
@@ -354,83 +355,35 @@ function createTooltips(webpageUrl) {
  * @param {string} book - OSIS abbreviation of the book
  * @param {string} startChapter - chapter number
  * @param {string} startVerse - what verse to start reading from
- * @param {string} endVerse - what verse to end reading at
- * @param {string} translation - Which bible translation to use
- * @param cb - What to do after the API returns the verse
- */
-function sendAPIRequestForVerses(book, startChapter, startVerse, endVerse, translation, cb) {
-    let requestLink = `${BIBLE_API_BASE_URL}chapters/${translation}:${book}.${startChapter}/verses.js?start=${startVerse}&end=${endVerse}`;
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', requestLink, true);
-    chrome.runtime.sendMessage({contentScriptQuery: 'getVerses', url: requestLink}, response => {
-        let res = JSON.parse(response).response;
-        let verses = res.verses;
-        let startChapterLastVerse = verses[0].previous.verse.id.split('.')[2];
-        let bapi = document.createElement('script');
-        // Make a call to the FUMS - copyright stuff
-        bapi.text = `_BAPI.t("${res.meta.fums_tid}")`;
-        headElement.appendChild(bapi);
-        headElement.removeChild(bapi);
-
-        if (verses === undefined) {
-            cb(null, null, 404);
-        } else {
-            cb(verses, startChapterLastVerse, 200);
-        }
-    });
-}
-
-
-/**
- * Sends a request to the bible API for the specified verses
- * @param {string} book - OSIS abbreviation of the book
- * @param {string} startChapter - starting chapter number
- * @param {string} startVerse - what verse to start reading from
  * @param {string} endChapter - ending chapter number
  * @param {string} endVerse - what verse to end reading at
  * @param {string} translation - Which bible translation to use
  * @param cb - What to do after the API returns the verse
  */
-function sendAPIRequestForVersesMultiChapter(book, startChapter, startVerse, endChapter, endVerse, translation, cb) {
-    if (startChapter !== endChapter) {
-        sendAPIRequestForVerses(book, endChapter, '1', endVerse, translation, function (endChapterVerses, startChapterLastVerse, err1) {
-            if (endChapterVerses !== null && err1 === 200) {
-                sendAPIRequestForVerses(book, startChapter, startVerse, startChapterLastVerse, translation, function (startChapterVerses, startChapterLastVerse, err2) {
-                    if (startChapterVerses !== null && err2 === 200) {
-                        let verseText = startChapterVerses.map(function (verse) {
-                            return verse.text;
-                        }).join('');
-                        verseText += `<h2>Chapter ${endChapter}</h2>`;
-                        verseText += endChapterVerses.map(function (verse) {
-                            return verse.text;
-                        }).join('');
-                        let verseRef = startChapterVerses[0].reference + ' - ' + endChapterVerses[endChapterVerses.length - 1].reference;
-                        cb(verseText, verseRef, 200);
-                    } else {
-                        cb(null, null, err2);
-                    }
-                });
-            } else {
-                cb(null, err1);
+function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, endVerse, translation, cb) {
+    let requestLink = `${BIBLE_API_BASE_URL}bibles/${translation}/verses/${book}.${startChapter}.${startVerse}-${book}.${endChapter}.${endVerse}`;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', requestLink, true);
+    chrome.runtime.sendMessage({contentScriptQuery: 'getVerses', url: requestLink}, response => {
+        let res = JSON.parse(response);
+        if (res.statusCode >= 300) {
+            cb(null, null, res.statusCode);
+        } else {
+            let bapi = document.createElement('script');
+            // Make a call to the FUMS - copyright stuff
+            bapi.text = `_BAPI.t("${res.meta.fums_tid}")`;
+            headElement.appendChild(bapi);
+            headElement.removeChild(bapi);
+
+            console.log(res.data.content);
+            let verseRef = res.data.reference;
+            if (startVerse !== endVerse) {
+                verseRef += ` - ${endChapter}:${endVerse}`;
             }
-        });
-    } else {
-        sendAPIRequestForVerses(book, startChapter, startVerse, endVerse, translation, function (verseObj, startChapterLastVerse, err) {
-            if (verseObj !== null && err === 200) {
-                let verseText = verseObj.map(function (verse) {
-                    return verse.text;
-                }).join('');
-                let verseRef = verseObj[0].reference;
-                if (startVerse !== endVerse) {
-                    verseRef += ' - ' + verseObj[verseObj.length - 1].reference;
-                }
-                cb(verseText, verseRef, 200);
-            } else {
-                cb(null, null, err);
-            }
-        });
-    }
+            cb(res.data.content, verseRef, 200)
+        }
+    });
 }
 
 // let xhr = new XMLHttpRequest();

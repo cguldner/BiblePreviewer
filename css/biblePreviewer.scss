@@ -82,10 +82,11 @@ $arrow-color: $toolbar-bg-color;
       line-height: 1;
     }
 
-    sup {
+    span.v {
+      vertical-align: super;
       font-style: italic;
-      font-size: 70%;
-      padding: 0 2px 0 5px;
+      font-size: 60%;
+      padding: 0 2px 0 4px;
     }
 
     span.nd {
