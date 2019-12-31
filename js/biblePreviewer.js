@@ -12,7 +12,7 @@ const ESV_API_BASE_URL = `https://api.esv.org/v3/passage/text/?q=`;
 const DEFAULT_TRANS = 'de4e12af7f28f599-02';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
 const DEFAULT_DEUTERO_TRANS = 'eng-KJVA';
-const BIBLE_DIRECT_URL = `https://bibles.org/`;
+const BIBLE_DIRECT_URL = `https://bibles.org/bible/`;
 
 const versions_with_deutero = ['eng-KJVA'];
 const deutero_books = ['1Macc', '2Macc', 'Wis', 'Sir', 'Bar', 'Tob', 'Jdt'];
@@ -225,7 +225,11 @@ function transformBibleReferences(trans) {
             let splitText = orig.split(/[,;]/g);
             for (let i = 0; i < verseList.length; i++) {
                 [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(verseList[i], prevChap);
-                let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}/${prevChap}/${startVerse}`;
+                book = book.toUpperCase();
+                let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}.${prevChap}?passageId=${book}.${startChap}.${startVerse}`;
+                if (startVerse !== endVerse) {
+                    directHref += `-${book}.${endChap}.${endVerse}`
+                }
                 let apiLink = `${startChap}:${startVerse}-${endChap}:${endVerse}`;
                 refList.push('<span class="biblePreviewerContainer">' +
                     `<a class="biblePreviewerLink" href="${directHref}" target="_blank" data-bible-ref="${apiLink}"
@@ -311,7 +315,6 @@ function createTooltips(webpageUrl) {
                         tool.updateTitleContent('Loading');
                         let [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(link.dataset.bibleRef, null);
                         sendAPIRequestForVerses(link.dataset.bibleBook, startChap, startVerse, endChap, endVerse, link.dataset.bibleTrans, function (verseText, verseRef, status) {
-                            console.log(status)
                             if (verseText && status === 200) {
                                 let verseSel = tool.popperInstance.popper.querySelectorAll('.bpVerse')[0];
                                 verseSel.innerText = verseRef;
@@ -376,7 +379,6 @@ function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, end
             headElement.appendChild(bapi);
             headElement.removeChild(bapi);
 
-            console.log(res.data.content);
             let verseRef = res.data.reference;
             if (startVerse !== endVerse) {
                 verseRef += ` - ${endChapter}:${endVerse}`;
