@@ -28,7 +28,7 @@
   },
   "options_ui": {
     "page": "html/options.html",
-    "open_in_tab": false
+    "open_in_tab": true
   },
   "web_accessible_resources": [
     "js/*.js.map"
@@ -47,6 +47,5 @@
       ],
       "all_frames": true
     }
-  ],
-  "content_security_policy": "script-src 'self' https://cdnjs.cloudflare.com; object-src 'self'"
+  ]
 }

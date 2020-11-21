@@ -1,4 +1,4 @@
-$toolbar-bg-color: #0871D7;
+$toolbar-bg-color: #0871d7;
 $toolbar-fg-color: white;
 $popup-fg-color: black;
 $popup-color: whitesmoke;
@@ -12,24 +12,39 @@ $arrow-color: $toolbar-bg-color;
   cursor: pointer;
 }
 
-.biblePreviewerTooltip {
-  min-width: 350px;
-  max-width: 100%;
-  z-index: 999999999999;
-  width: 350px;
-  margin: 10px;
+.tippy-box {
+  background-color: unset !important;
   border-radius: 10px;
-  box-shadow: 4px 4px 5px grey;
-  font: normal 1em "Segoe UI", Tahoma, sans-serif;
-  white-space: normal;
-  word-wrap: break-word;
+  &[data-placement^="top"] > .tippy-arrow::before {
+    border-top-color: $arrow-color !important;
+  }
+  &[data-placement^="bottom"] > .tippy-arrow::before {
+    border-bottom-color: $arrow-color !important;
+  }
+  &[data-placement^="left"] > .tippy-arrow::before {
+    border-left-color: $arrow-color !important;
+  }
+  &[data-placement^="right"] > .tippy-arrow::before {
+    border-right-color: $arrow-color !important;
+  }
 
+  .tippy-content {
+    background-color: $popup-color !important;
+    padding: 0 0 5px 0;
+    color: $popup-fg-color;
+    border-radius: 10px;
+    border: 2px solid $toolbar-bg-color;
+  }
+}
+
+.biblePreviewerTooltip {
   .bpHeaderBar {
     background-color: $toolbar-bg-color;
     padding: 3px 20px;
     color: $toolbar-fg-color;
     text-align: left;
     border-radius: 10px 10px 0 0;
+    border: 0;
     display: flex;
     align-items: center;
 
@@ -50,18 +65,14 @@ $arrow-color: $toolbar-bg-color;
     }
   }
 
-  .bpTooltipInner {
+  .bpTooltipContent {
     max-width: none;
     max-height: 300px;
     padding: 10px 20px;
     text-align: left;
-    color: $popup-fg-color;
-    background-color: $popup-color;
     overflow-x: hidden;
     overflow-y: auto;
     font-style: normal;
-    border-radius: 0 0 10px 10px;
-    border: 2px solid $toolbar-bg-color;
 
     h2 {
       margin: 5px 0;
@@ -101,30 +112,6 @@ $arrow-color: $toolbar-bg-color;
     position: absolute;
     margin: 0;
   }
-}
-
-.biblePreviewerTooltip[x-placement^="top"] .bpTooltipArrow {
-  border-bottom-width: 0;
-  border-top-color: $arrow-color;
-  bottom: -10px;
-}
-
-.biblePreviewerTooltip[x-placement^="bottom"] .bpTooltipArrow {
-  border-top-width: 0;
-  border-bottom-color: $arrow-color;
-  top: -10px;
-}
-
-.biblePreviewerTooltip[x-placement^="right"] .bpTooltipArrow {
-  border-left-width: 0;
-  border-right-color: $arrow-color;
-  left: -10px;
-}
-
-.biblePreviewerTooltip[x-placement^="left"] .bpTooltipArrow {
-  border-right-width: 0;
-  border-left-color: $arrow-color;
-  right: -10px;
 }
 
 .refreshBiblePreview {

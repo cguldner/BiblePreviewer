@@ -2,27 +2,25 @@
 // TODO: Add version selector to the popup.html
 // TODO: Add turning off on specific websites to popup.html
 import '../css/biblePreviewer.scss';
-import Tooltip from 'tooltip.js';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css'; // optional for styling
 
-const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
-const ESV_API_KEY = '52ca2a57f09495325d251464d417edc1cfe94834';
+// const ESV_API_KEY = '52ca2a57f09495325d251464d417edc1cfe94834';
 
-const BIBLE_API_BASE_URL = `https://api.scripture.api.bible/v1/`;
-const ESV_API_BASE_URL = `https://api.esv.org/v3/passage/text/?q=`;
+const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
+// const ESV_API_BASE_URL = `https://api.esv.org/v3/passage/text/?q=`;
 const DEFAULT_TRANS = 'de4e12af7f28f599-02';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
 const DEFAULT_DEUTERO_TRANS = 'eng-KJVA';
-const BIBLE_DIRECT_URL = `https://bibles.org/bible/`;
+const BIBLE_DIRECT_URL = 'https://bibles.org/bible/';
 
 const versions_with_deutero = ['eng-KJVA'];
 const deutero_books = ['1Macc', '2Macc', 'Wis', 'Sir', 'Bar', 'Tob', 'Jdt'];
-const books_start_with_num = '(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c|cabees)?|Co(?:r(?:inthians)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n)';
+// const books_start_with_num = '(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c|cabees)?|Co(?:r(?:inthians)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n)';
 const firstPrefix = '(?:1(?:st)?|I|First)\\s*';
 const secondPrefix = '(?:2(?:nd)?|II|Second)\\s*';
 const thirdPrefix = '(?:3(?:rd)?|III|Third)\\s*';
 const dashes = /[–—-]/;
-
-let headElement = document.getElementsByTagName('head')[0];
 
 // Lookup dictionary for verses
 let bibleVerseDict = {};
@@ -107,49 +105,59 @@ const bibleBooks = {
 // The regex to match book names
 // let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
 // // Matches the first chapter:verse, and optionally an endchapter:verse
-// bibleRegex += '\\.?\\s*((?:[0-9]{1,3}[:]\\s*[0-9]{1,2}(?:[–—-][0-9]{1,2}(?:[:][0-9]{1,2})?)?)';
+// bibleRegex += '\\.?\\s*((?:\d{1,3}[:]\\s*\d{1,2}(?:[–—-]\d{1,2}(?:[:]\d{1,2})?)?)';
 // // After the first, can leave off the chapter, so then a single verse will match to the last listed chapter
-// bibleRegex += '(?:[,;]\\s*(?:(?:[0-9]{1,3}(?:[:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))';
+// bibleRegex += '(?:[,;]\\s*(?:(?:\d{1,3}(?:[:]\d{1,2}(?:[–—-]\d{1,2})?))';
 // // But don't match a single verse if it is right before a book that has a number before it
-// bibleRegex += '|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?![,;]\\s*' + books_start_with_num + ')))*)';
+// bibleRegex += '|\d{1,3}(?:[–—-]\d{1,2})?(?![,;]\\s*' + books_start_with_num + ')))*)';
 // // Add Jude separately because Jude only has 1 chapter, so people usually don't put a chapter with the verse
-// bibleRegex += '|(?:Jude?\\s*([0-9]{1,2}(?:[,;]?\\s*[0-9]{1,2})*))';
+// bibleRegex += '|(?:Jude?\\s*(\d{1,2}(?:[,;]?\\s*\d{1,2})*))';
 // bibleRegex = new RegExp(bibleRegex, 'gi');
 // console.log(bibleRegex);
 
-let bibleRegex = /(Gen(?:esis)?|Ex(?:od(?:us)?)?|Le(?:v(?:iticus)?)?|Num(?:b(?:ers)?)?|D(?:t|eut(?:eronomy)?)|Jo(?:s(?:h(?:ua)?)?)?|J(?:dgs?|udg(?:es)?)|Ru?th|(?:1(?:st)?|I|First)\s*Sam(?:uel)?|(?:2(?:nd)?|II|Second)\s*Sam(?:uel)?|(?:1(?:st)?|I|First)\s*K(?:(?:in)?gs)|(?:2(?:nd)?|II|Second)\s*K(?:(?:in)?gs)|(?:1(?:st)?|I|First)\s*Chr(?:on(?:icles)?)?|(?:2(?:nd)?|II|Second)\s*Chr(?:on(?:icles)?)?|Ez(?:ra?)?|Ne(?:h(?:emiah)?)?|Tob(?:it|ias)?|J(?:d?th?|udith)|Est(?:h(?:er)?)?|(?:1(?:st)?|I|First)\s*Mac(?:c(?:abees)?)?|(?:2(?:nd)?|II|Second)\s*Mac(?:c(?:abees)?)?|Jo?b|Ps(?:a(?:lms?)?)?|Pro(?:v(?:erbs)?)?|Ecc(?:les?|lesiastes)?|So(?:S|ng(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a(?:iah)?)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e?k?|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad(?:iah)?)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h(?:aniah)?)?|Hag(?:gai)?|Zec(?:h(?:ariah)?)?|Mal(?:achi)?|M(?:t|att(?:h(?:ew)?)?)|M(?:k|ark?)|L(?:k|uke?)|Jo?h?n|Acts?|Ro(?:m(?:ans)?)?|(?:1(?:st)?|I|First)\s*Co(?:r(?:inthian(?:s)?)?)?|(?:2(?:nd)?|II|Second)\s*Co(?:r(?:inthian(?:s)?)?)?|Gal(?:atians)?|Eph(?:es(?:ians)?)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1(?:st)?|I|First)\s*Thes(?:s(?:alonians)?)?|(?:2(?:nd)?|II|Second)\s*Thes(?:s(?:alonians)?)?|(?:1(?:st)?|I|First)\s*T(?:i?m?|imothy)|(?:2(?:nd)?|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em(?:on)?)?|Heb(?:rews?)?|James|(?:1(?:st)?|I|First)\s*Pe?t(?:er)?|(?:2(?:nd)?|II|Second)\s*Pe?t(?:er)?|(?:1(?:st)?|I|First)\s*Jo?h?n|(?:2(?:nd)?|II|Second)\s*Jo?h?n|(?:3(?:rd)?|III|Third)\s*Jo?h?n|Jude?|R(?:e?v|evelation))\.?\s*((?:[0-9]{1,3}[:]\s*[0-9]{1,2}(?:[–—-][0-9]{1,2}(?:[:][0-9]{1,2})?)?)(?:[,;]\s*(?:(?:[0-9]{1,3}(?:[:][0-9]{1,2}(?:[–—-][0-9]{1,2})?))|[0-9]{1,3}(?:[–—-][0-9]{1,2})?(?![,;]\s*(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c|cabees)?|Co(?:r(?:inthians)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n))))*)|(?:Jude?\s*([0-9]{1,2}(?:[,;]?\s*[0-9]{1,2})*))/gi;
-
-// Starts the app only once the page has completely finished loading
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.translation === undefined) {
-        request.translation = DEFAULT_TRANS;
-    }
-
-    initBiblePreviewer(request.translation, request.url);
-});
+// eslint-disable-next-line max-len
+let bibleRegex = /(Gen(?:esis)?|Ex(?:od(?:us)?)?|Le(?:v(?:iticus)?)?|Num(?:b(?:ers)?)?|D(?:t|eut(?:eronomy)?)|Jo(?:s(?:h(?:ua)?)?)?|J(?:dgs?|udg(?:es)?)|Ru?th|(?:1(?:st)?|I|First)\s*Sam(?:uel)?|(?:2(?:nd)?|II|Second)\s*Sam(?:uel)?|(?:1(?:st)?|I|First)\s*K(?:(?:in)?gs)|(?:2(?:nd)?|II|Second)\s*K(?:(?:in)?gs)|(?:1(?:st)?|I|First)\s*Chr(?:on(?:icles)?)?|(?:2(?:nd)?|II|Second)\s*Chr(?:on(?:icles)?)?|Ez(?:ra?)?|Ne(?:h(?:emiah)?)?|Tob(?:it|ias)?|J(?:d?th?|udith)|Est(?:h(?:er)?)?|(?:1(?:st)?|I|First)\s*Mac(?:c(?:abees)?)?|(?:2(?:nd)?|II|Second)\s*Mac(?:c(?:abees)?)?|Jo?b|Ps(?:a(?:lms?)?)?|Pro(?:v(?:erbs)?)?|Ecc(?:les?|lesiastes)?|So(?:S|ng(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a(?:iah)?)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e?k?|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad(?:iah)?)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h(?:aniah)?)?|Hag(?:gai)?|Zec(?:h(?:ariah)?)?|Mal(?:achi)?|M(?:t|att(?:h(?:ew)?)?)|M(?:k|ark?)|L(?:k|uke?)|Jo?h?n|Acts?|Ro(?:m(?:ans)?)?|(?:1(?:st)?|I|First)\s*Co(?:r(?:inthian(?:s)?)?)?|(?:2(?:nd)?|II|Second)\s*Co(?:r(?:inthian(?:s)?)?)?|Gal(?:atians)?|Eph(?:es(?:ians)?)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1(?:st)?|I|First)\s*Thes(?:s(?:alonians)?)?|(?:2(?:nd)?|II|Second)\s*Thes(?:s(?:alonians)?)?|(?:1(?:st)?|I|First)\s*T(?:i?m?|imothy)|(?:2(?:nd)?|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em(?:on)?)?|Heb(?:rews?)?|James|(?:1(?:st)?|I|First)\s*Pe?t(?:er)?|(?:2(?:nd)?|II|Second)\s*Pe?t(?:er)?|(?:1(?:st)?|I|First)\s*Jo?h?n|(?:2(?:nd)?|II|Second)\s*Jo?h?n|(?:3(?:rd)?|III|Third)\s*Jo?h?n|Jude?|R(?:e?v|evelation))\.?\s*((?:\d{1,3}[:]\s*\d{1,2}(?:[–—-]\d{1,2}(?:[:]\d{1,2})?)?)(?:[,;]\s*(?:(?:\d{1,3}(?:[:]\d{1,2}(?:[–—-]\d{1,2})?))|\d{1,3}(?:[–—-]\d{1,2})?(?![,;]\s*(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c|cabees)?|Co(?:r(?:inthians)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n))))*)|(?:Jude?\s*(\d{1,2}(?:[,;]?\s*\d{1,2})*))/gi;
 
 /**
- * Initializes the app
+ * Given a string, gets the verse components and previous chapter (if it exists)
+ *
+ * @param {string} verseStr The verse
+ * @param {string} prevChap The previous chapter
+ * @returns {Array} Each component of the verse, including start chapter and verse, and end chapter and verse
  */
-function initBiblePreviewer(translation, url) {
-    // Load FUMS - copyright stuff
-    let script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.src = document.location.protocol + '//d2ue49q0mum86x.cloudfront.net/include/fums.c.js';
-    headElement.appendChild(script);
+function getVerseFromString(verseStr, prevChap) {
+    let startChap, startVerse, endChap, endVerse;
+    let [start, end] = verseStr.split(dashes);
 
-    let node_length = transformBibleReferences(translation);
-    if (node_length) {
-        // console.time('Create Tooltips');
-        createTooltips(url);
-        // console.timeEnd('Create Tooltips');
+    [startChap, startVerse] = start.split(':');
+    if (startVerse === undefined) {
+        startVerse = startChap;
+        startChap = prevChap;
+    } else {
+        prevChap = startChap;
     }
+
+    if (end !== undefined) {
+        [endChap, endVerse] = end.split(':');
+        if (endVerse === undefined) {
+            endVerse = endChap;
+            endChap = startChap;
+        } else {
+            prevChap = endChap;
+        }
+    } else {
+        endVerse = startVerse;
+        endChap = startChap;
+    }
+
+    return [startChap, startVerse, endChap, endVerse, prevChap];
 }
 
 /**
  * Transform all bible references into links using a TreeWalker
+ *
  * @param {string} trans - Which bible translation to use
+ * @returns {number} The number of links on the page
  */
 function transformBibleReferences(trans) {
     // console.time('TreeWalker');
@@ -228,7 +236,7 @@ function transformBibleReferences(trans) {
                 book = book.toUpperCase();
                 let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}.${prevChap}?passageId=${book}.${startChap}.${startVerse}`;
                 if (startVerse !== endVerse) {
-                    directHref += `-${book}.${endChap}.${endVerse}`
+                    directHref += `-${book}.${endChap}.${endVerse}`;
                 }
                 let apiLink = `${startChap}:${startVerse}-${endChap}:${endVerse}`;
                 refList.push('<span class="biblePreviewerContainer">' +
@@ -240,128 +248,19 @@ function transformBibleReferences(trans) {
         });
     });
     // console.timeEnd('Change to links');
-    return nodeList.length
-}
-
-function getVerseFromString(verseStr, prevChap) {
-    let startChap, startVerse, endChap, endVerse;
-    let [start, end] = verseStr.split(dashes);
-
-    [startChap, startVerse] = start.split(':');
-    if (startVerse === undefined) {
-        startVerse = startChap;
-        startChap = prevChap;
-    } else {
-        prevChap = startChap;
-    }
-
-    if (end !== undefined) {
-        [endChap, endVerse] = end.split(':');
-        if (endVerse === undefined) {
-            endVerse = endChap;
-            endChap = startChap;
-        } else {
-            prevChap = endChap;
-        }
-    } else {
-        endVerse = startVerse;
-        endChap = startChap;
-    }
-
-    return [startChap, startVerse, endChap, endVerse, prevChap];
-}
-
-/**
- * Create the tooltip popups that will show the verse text above the link on hover
- */
-function createTooltips(webpageUrl) {
-    document.querySelectorAll('.biblePreviewerLink').forEach(function (link) {
-        let tool, enterTimeout, exitTimeout;
-        // Add listener to biblePreviewerContainer so that we can hover over the tooltip as well
-        link.parentElement.addEventListener('mouseenter', function (e) {
-            if (tool) {
-                link.nextSibling.style.zIndex = '999';
-            }
-            clearTimeout(exitTimeout);
-            enterTimeout = setTimeout(function () {
-                // If there isn't a div following the link, then this is the first time hovering this link
-                if (link.nextSibling === null) {
-                    let boundElem = document.documentElement;
-                    if (webpageUrl.match('docs.google')) {
-                        boundElem = document.getElementsByClassName('kix-page-compact-first')[0];
-                    }
-
-                    tool = new Tooltip(link, {
-                        placement: 'top',
-                        title: 'Loading',
-                        trigger: 'manual',
-                        html: true,
-                        arrowSelector: '.bpTooltipArrow',
-                        innerSelector: '.bpTooltipInner',
-                        template: '<div class="biblePreviewerTooltip" role="tooltip">' +
-                            `<div class="bpHeaderBar"><div class="bpVerse">${link.textContent}</div>` +
-                            `<div class="bpTranslation">${link.dataset.bibleTrans}</div></div>` +
-                            '<div class="bpTooltipInner"></div>' +
-                            '<div class="bpTooltipArrow"></div>' +
-                            '</div>',
-                        boundariesElement: boundElem
-                    });
-                }
-
-                let fullRef = link.dataset.bibleBook + ' ' + link.dataset.bibleRef;
-                // Can remove some of this stuff later, once google docs works
-                if (tool) {
-                    if (bibleVerseDict[fullRef] === undefined) {
-                        tool.updateTitleContent('Loading');
-                        let [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(link.dataset.bibleRef, null);
-                        sendAPIRequestForVerses(link.dataset.bibleBook, startChap, startVerse, endChap, endVerse, link.dataset.bibleTrans, function (verseText, verseRef, status) {
-                            if (verseText && status === 200) {
-                                let verseSel = tool.popperInstance.popper.querySelectorAll('.bpVerse')[0];
-                                verseSel.innerText = verseRef;
-                                tool.updateTitleContent(verseText);
-                                // Store into a dictionary for quick access later
-                                bibleVerseDict[fullRef] = verseText;
-                            } else if (status === 404) {
-                                tool.updateTitleContent('Verse does not exist');
-                                bibleVerseDict[fullRef] = 'Verse does not exist';
-                            } else if (status === 0) {
-                                tool.updateTitleContent('Request couldn\'t be completed, try again later');
-                            } else {
-                                tool.updateTitleContent('Try again later');
-                            }
-                        });
-                    } else {
-                        // If there is another link to the same verse on the page, then set that verse text
-                        tool.updateTitleContent(bibleVerseDict[fullRef]);
-                    }
-                    tool.show();
-                }
-            }, 250);
-        });
-        link.parentElement.addEventListener('mouseleave', function (e) {
-            if (tool) {
-                link.nextSibling.style.zIndex = '998';
-            }
-            clearTimeout(enterTimeout);
-            // Destroy the tooltip to prevent any stray tooltips if mouse is moved fast
-            exitTimeout = setTimeout(function () {
-                if (tool) {
-                    tool.hide();
-                }
-            }, 750);
-        });
-    });
+    return nodeList.length;
 }
 
 /**
  * Sends a request to the bible API for the specified verses
+ *
  * @param {string} book - OSIS abbreviation of the book
  * @param {string} startChapter - chapter number
  * @param {string} startVerse - what verse to start reading from
  * @param {string} endChapter - ending chapter number
  * @param {string} endVerse - what verse to end reading at
  * @param {string} translation - Which bible translation to use
- * @param cb - What to do after the API returns the verse
+ * @param {Function} cb - What to do after the API returns the verse
  */
 function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, endVerse, translation, cb) {
     let requestLink = `${BIBLE_API_BASE_URL}bibles/${translation}/verses/${book}.${startChapter}.${startVerse}-${book}.${endChapter}.${endVerse}`;
@@ -373,20 +272,119 @@ function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, end
         if (res.statusCode >= 300) {
             cb(null, null, res.statusCode);
         } else {
-            let bapi = document.createElement('script');
-            // Make a call to the FUMS - copyright stuff
-            bapi.text = `_BAPI.t("${res.meta.fums_tid}")`;
-            headElement.appendChild(bapi);
-            headElement.removeChild(bapi);
-
             let verseRef = res.data.reference;
             if (startVerse !== endVerse) {
                 verseRef += ` - ${endChapter}:${endVerse}`;
             }
-            cb(res.data.content, verseRef, 200)
+            cb(res.data.content, verseRef, 200);
         }
     });
 }
+
+/**
+ * Creates the tooltip content for the bible verse
+ *
+ * @param {object} ref The stored bible verse information
+ * @param {string} ref.verse The bible verse (for example 1st Corinthians 1:1)
+ * @param {string} ref.text The text of the bible verse
+ * @param {string} ref.translation The translation of the verse
+ * @returns {string} The html content that the tooltip will use
+ */
+function createTooltipContent({verse, text, translation}) {
+    let htmlString = '<div class="biblePreviewerTooltip" role="tooltip">';
+    if (verse) {
+        htmlString += `<div class="bpHeaderBar"><div class="bpVerse">${verse}</div>`;
+        if (translation) {
+            htmlString += `<div class="bpTranslation">${translation}</div>`;
+        }
+        htmlString += '</div>';
+    }
+    htmlString += `<div class="bpTooltipContent">${text}</div></div>`;
+    return htmlString;
+}
+
+/**
+ * Create the tooltip popups that will show the verse text above the link on hover
+ */
+function createTooltips() {
+    tippy('.biblePreviewerLink', {
+        delay: [250, 10000],
+        duration: 250,
+        arrow: true,
+        interactive: true,
+        content: function(reference) {
+            const bibleBook = reference.getAttribute('data-bible-book');
+            const bibleRef = reference.getAttribute('data-bible-ref');
+            const fullRef = `${bibleBook} ${bibleRef}`;
+            if (bibleVerseDict[fullRef] === undefined) {
+                return createTooltipContent({text: 'Loading'});
+            } else {
+                // If there is another link to the same verse on the page, then set that verse text
+                return createTooltipContent(bibleVerseDict[fullRef]);
+            }
+        },
+        onShown: function(instance) {
+            console.log(instance);
+            const reference = instance.reference;
+            const bibleBook = reference.getAttribute('data-bible-book');
+            const bibleRef = reference.getAttribute('data-bible-ref');
+            const bibleTrans = reference.getAttribute('data-bible-trans');
+            console.log('shown ' + bibleBook);
+
+            const fullRef = `${bibleBook} ${bibleRef}`;
+            if (bibleVerseDict[fullRef] === undefined) {
+                // eslint-disable-next-line comma-spacing
+                let [startChap, startVerse, endChap, endVerse,] = getVerseFromString(bibleRef, null);
+                sendAPIRequestForVerses(bibleBook, startChap, startVerse, endChap, endVerse, bibleTrans, function (verseText, verseRef, status) {
+                    if (verseText && status === 200) {
+                        // Store into a dictionary for quick access later
+                        bibleVerseDict[fullRef] = {
+                            text: verseText,
+                            verse: verseRef,
+                            // The translation that comes back from the API is just a hash, so don't display that
+                            translation: ''
+                        };
+                        instance.setContent(createTooltipContent(bibleVerseDict[fullRef]));
+                    } else if (status === 404) {
+                        instance.setContentcreateTooltipContent({text: 'Verse does not exist'});
+                        bibleVerseDict[fullRef] = 'Verse does not exist';
+                    } else if (status === 0) {
+                        instance.setContentcreateTooltipContent({text: "Request couldn't be completed, try again later"});
+                    } else {
+                        instance.setContentcreateTooltipContent({text: 'Try again later'});
+                    }
+                });
+            } else {
+                // If there is another link to the same verse on the page, then set that verse text
+                instance.setContent(createTooltipContent(bibleVerseDict[fullRef]));
+            }
+        },
+
+        allowHTML: true
+    });
+}
+
+/**
+ * Initializes the app
+ *
+ * @param {string} translation Which bible translation to use
+ */
+function initBiblePreviewer(translation) {
+    let node_length = transformBibleReferences(translation);
+    if (node_length) {
+        // console.time('Create Tooltips');
+        createTooltips();
+        // console.timeEnd('Create Tooltips');
+    }
+}
+// Starts the app only once the page has completely finished loading
+chrome.runtime.onMessage.addListener(function (request) {
+    if (request.translation === undefined) {
+        request.translation = DEFAULT_TRANS;
+    }
+
+    initBiblePreviewer(request.translation);
+});
 
 // let xhr = new XMLHttpRequest();
 // xhr.open('GET', ESV_API_BASE_URL, true);
