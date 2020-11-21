@@ -4,7 +4,6 @@ const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
     console.info(tab);
     if (info.status === 'complete') {
-        // console.log('Loaded');
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
             chrome.storage.sync.get(null, settings => {
                 settings['url'] = tabs[0].url;
@@ -26,7 +25,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             .then(response => response.text())
             .then(res => sendResponse(res))
             .catch(error => {
-                console.log(error);
+                console.error(error);
             });
         return true; // Will respond asynchronously.
     }

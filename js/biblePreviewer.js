@@ -344,12 +344,12 @@ function createTooltips() {
                         };
                         instance.setContent(createTooltipContent(bibleVerseDict[fullRef]));
                     } else if (status === 404) {
-                        instance.setContentcreateTooltipContent({text: 'Verse does not exist'});
+                        instance.setContent(createTooltipContent({text: 'Verse does not exist'}));
                         bibleVerseDict[fullRef] = 'Verse does not exist';
                     } else if (status === 0) {
-                        instance.setContentcreateTooltipContent({text: "Request couldn't be completed, try again later"});
+                        instance.setContent(createTooltipContent({text: "Request couldn't be completed, try again later"}));
                     } else {
-                        instance.setContentcreateTooltipContent({text: 'Try again later'});
+                        instance.setContent(createTooltipContent({text: 'Try again later'}));
                     }
                 });
             } else {

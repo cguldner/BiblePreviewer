@@ -1,8 +1,8 @@
+import 'materialize-css';
 import '../css/options.scss';
 
+const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
 const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
-
-let xhr = new XMLHttpRequest();
 
 let version_select = document.getElementById('bible-version');
 let language_select = document.getElementById('language');
@@ -10,33 +10,59 @@ let status = document.getElementById('save-status');
 
 /**
  * Gets the available bible languages
+ *
+ * @param {Function} cb Function to call once the languages have been fetched
  */
-function get_languages() {
-    xhr.open('GET', `https://${BIBLE_API_KEY}@bibles.org/v2/versions.js`, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            let versions = JSON.parse(xhr.responseText).response.versions;
-            versions = versions.map(function (items) {
-                return items.lang_name_eng + ':::' + items.lang;
+function get_languages(cb) {
+    fetch(`${BIBLE_API_BASE_URL}bibles`, {
+        headers: new Headers({
+            'api-key': BIBLE_API_KEY,
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('HTTP status ' + response.status);
+            }
+            return response.json();
+        })
+        .then(res => {
+            const separator = ':::';
+            const versions = res.data.map(function (items) {
+                return `${items.language.name}${separator}${items.language.id}`;
             });
-            console.log(Array.from(new Set(versions)).sort());
-        }
-    };
-    xhr.send();
+            for (const version of Array.from(new Set(versions)).sort()) {
+                const [name, id] = version.split(separator);
+                // English is the first item in the list
+                if (id !== 'eng') {
+                    language_select.add(new Option(name, id));
+                }
+            }
+            cb();
+            // eslint-disable-next-line no-undef
+            M.FormSelect.init(language_select, {});
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 /**
  * Populate the version selector
+ *
+ * @param {object} versions The available bible versions
  */
-function populate() {
-    let versions = JSON.parse(xhr.responseText).response.versions;
+function populate_version_select(versions) {
     version_select.options.length = 0;
     for (let op in version_select.options) {
         version_select.remove(op);
     }
-    for (let v in versions) {
-        if (versions[v]['name'] !== '') {
-            version_select.add(new Option(versions[v]['name'], versions[v]['abbreviation']));
+    for (const ver of versions) {
+        if (ver['name'] !== '') {
+            let fullName = ver['name'];
+            if (ver['description']) {
+                fullName += ` - ${ver['description']}`;
+            }
+            version_select.add(new Option(fullName, ver['id']));
         }
     }
 }
@@ -48,22 +74,31 @@ function populate() {
  * @param {Function} cb Function to call once the versions have been obtained
  */
 function get_versions(is_event, cb) {
-    xhr.open(
-        'GET',
-        `https://${BIBLE_API_KEY}@bibles.org/v2/versions.js?language=${language_select.options[language_select.selectedIndex].value}`,
-        true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            populate();
+    // TODO: Remove extra fetch call, can just pass dictionary from language call
+    fetch(`${BIBLE_API_BASE_URL}bibles?language=${language_select.options[language_select.selectedIndex].value}`, {
+        headers: new Headers({
+            'api-key': BIBLE_API_KEY,
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('HTTP status ' + response.status);
+            }
+            return response.json();
+        })
+        .then(res => {
+            populate_version_select(res.data);
             if (!is_event) {
                 cb();
             }
             // Reinitialize the select to show the new options
             // eslint-disable-next-line no-undef
             M.FormSelect.init(version_select, {});
-        }
-    };
-    xhr.send();
+            version_select.removeAttribute('disabled');
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 /**
@@ -91,24 +126,25 @@ function restore_options(cb) {
     chrome.storage.sync.get({
         'language': 'eng-US',
         'translation': 'NASB'
-    }, function (items) {
-        language_select.value = items['language'];
+    }, function (settings) {
         document.getElementById('save-button').classList.remove('disabled');
-        cb(items['translation']);
+        cb(settings);
     });
 }
 
 document.getElementById('save-button').addEventListener('click', save_options);
 
 document.addEventListener('DOMContentLoaded', function () {
-    restore_options(function (version_value) {
+    restore_options(function (settings) {
         // eslint-disable-next-line no-undef
         M.FormSelect.init(language_select, {});
-        get_versions(false, function () {
-            version_select.value = version_value;
-            version_select.removeAttribute('disabled');
+        get_languages(function() {
+            language_select.value = settings['language'];
+            get_versions(false, function () {
+                version_select.value = settings['translation'];
+                version_select.removeAttribute('disabled');
+            });
         });
-        get_languages();
     });
     document.getElementById('language').onchange = get_versions;
 });

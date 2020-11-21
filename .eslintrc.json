@@ -2,7 +2,8 @@
     "env": {
         "browser": true,
         "es2021": true,
-        "webextensions": true
+        "webextensions": true,
+        "amd": true
     },
     "extends": [
         "eslint:recommended",
@@ -17,7 +18,7 @@
     },
     "rules": {
         "indent": [
-            "error",
+            "warn",
             4
         ],
         "linebreak-style": [
@@ -25,7 +26,7 @@
             "windows"
         ],
         "quotes": [
-            "error",
+            "warn",
             "single",
             {
                 "avoidEscape": true
