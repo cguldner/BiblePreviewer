@@ -308,7 +308,7 @@ function createTooltipContent({verse, text, translation}) {
  */
 function createTooltips() {
     tippy('.biblePreviewerLink', {
-        delay: [250, 10000],
+        delay: [250, 750],
         duration: 250,
         arrow: true,
         interactive: true,
@@ -323,13 +323,11 @@ function createTooltips() {
                 return createTooltipContent(bibleVerseDict[fullRef]);
             }
         },
-        onShown: function(instance) {
-            console.log(instance);
+        onShow: function(instance) {
             const reference = instance.reference;
             const bibleBook = reference.getAttribute('data-bible-book');
             const bibleRef = reference.getAttribute('data-bible-ref');
             const bibleTrans = reference.getAttribute('data-bible-trans');
-            console.log('shown ' + bibleBook);
 
             const fullRef = `${bibleBook} ${bibleRef}`;
             if (bibleVerseDict[fullRef] === undefined) {
