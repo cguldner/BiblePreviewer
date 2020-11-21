@@ -2,15 +2,10 @@
 
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const distFolder = 'dist';
-
-let pathsToClean = [
-    distFolder,
-    '*.zip'
-];
 
 module.exports = env => {
     let devMode = env === undefined || env.NODE_ENV !== 'production';
@@ -40,10 +35,12 @@ module.exports = env => {
                         {
                             loader: 'postcss-loader',
                             options: {
-                                ident: 'postcss',
-                                plugins: [
-                                    autoprefixer(),
-                                ]
+                                postcssOptions: {
+                                    ident: 'postcss',
+                                    plugins: [
+                                        autoprefixer(),
+                                    ]
+                                }
                             }
                         }
                     ]
@@ -51,41 +48,41 @@ module.exports = env => {
                 {
                     test: /\.js$/,
                     exclude: /node_modules/,
-                    loader: 'babel-loader',
-                    query: {
-                        'presets': [[
-                            '@babel/preset-env', {
-                                'targets':
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            'presets': [[
+                                '@babel/preset-env', {
+                                    'targets':
                                     {
                                         'chrome': '58',
                                         'firefox': '57'
                                     }
-                            }
-                        ]]
+                                }
+                            ]]
+                        }
                     }
                 }
             ]
         },
         plugins: [
-            new CleanWebpackPlugin(pathsToClean, {}),
+            new CleanWebpackPlugin({ verbose: true }),
             new MiniCssExtractPlugin({
                 filename: 'css/[name].css',
                 chunkFilename: '[id].css'
             }),
-            new CopyWebpackPlugin([
-                'manifest.json',
-                'manifest.json',
-                'html/*.html',
-                'html/*.html',
-                'icons/**/*',
-                'icons/**/*'
-            ], {})
+            new CopyWebpackPlugin({
+                patterns: [
+                    'manifest.json',
+                    'html/*.html',
+                    'icons/**/*'
+                ]
+            })
         ],
         stats:
-            {
-                colors: true
-            }
-    }
-        ;
+        {
+            colors: true
+        }
+    };
 };
 
