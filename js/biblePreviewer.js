@@ -9,10 +9,10 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
 
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
 // const ESV_API_BASE_URL = `https://api.esv.org/v3/passage/text/?q=`;
-const DEFAULT_TRANS = 'de4e12af7f28f599-02';
+const DEFAULT_TRANS = '78a9f6124f344018-01';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
 const DEFAULT_DEUTERO_TRANS = 'eng-KJVA';
-const BIBLE_DIRECT_URL = 'https://bibles.org/bible/';
+const BIBLE_DIRECT_URL = 'global.bible/bible/';
 
 const versions_with_deutero = ['eng-KJVA'];
 const deutero_books = ['1Macc', '2Macc', 'Wis', 'Sir', 'Bar', 'Tob', 'Jdt'];
@@ -157,9 +157,10 @@ function getVerseFromString(verseStr, prevChap) {
  * Transform all bible references into links using a TreeWalker
  *
  * @param {string} trans - Which bible translation to use
+ * @param {string} language - Which language is selected
  * @returns {number} The number of links on the page
  */
-function transformBibleReferences(trans) {
+function transformBibleReferences(trans, language) {
     // console.time('TreeWalker');
     // Use a TreeWalker instead of simple replace so we can ignore bible references that are already links
     let treeWalker = document.createTreeWalker(document.body,
@@ -234,7 +235,8 @@ function transformBibleReferences(trans) {
             for (let i = 0; i < verseList.length; i++) {
                 [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(verseList[i], prevChap);
                 book = book.toUpperCase();
-                let directHref = `${BIBLE_DIRECT_URL}${actual_trans}/${book}.${prevChap}?passageId=${book}.${startChap}.${startVerse}`;
+                let directHref = `https://${language}.${BIBLE_DIRECT_URL}${actual_trans}
+/${book}.${prevChap}?passageId=${book}.${startChap}.${startVerse}`;
                 if (startVerse !== endVerse) {
                     directHref += `-${book}.${endChap}.${endVerse}`;
                 }
@@ -362,37 +364,16 @@ function createTooltips() {
     });
 }
 
-/**
- * Initializes the app
- *
- * @param {string} translation Which bible translation to use
- */
-function initBiblePreviewer(translation) {
-    let node_length = transformBibleReferences(translation);
-    if (node_length) {
-        // console.time('Create Tooltips');
-        createTooltips();
-        // console.timeEnd('Create Tooltips');
-    }
-}
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request) {
     if (request.translation === undefined) {
         request.translation = DEFAULT_TRANS;
     }
 
-    initBiblePreviewer(request.translation);
+    let node_length = transformBibleReferences(request.translation, request.language);
+    if (node_length) {
+        // console.time('Create Tooltips');
+        createTooltips();
+        // console.timeEnd('Create Tooltips');
+    }
 });
-
-// let xhr = new XMLHttpRequest();
-// xhr.open('GET', ESV_API_BASE_URL, true);
-// xhr.setRequestHeader('Authorization', 'Token ' + ESV_API_KEY);
-// xhr.onreadystatechange = function () {
-//     if (xhr.readyState === 4 && xhr.status === 200) {
-//         let res = JSON.parse(xhr.responseText).response;
-//         console.log(res)
-//     } else {
-//         console.log(xhr.status);
-//     }
-// };
-// xhr.send();
