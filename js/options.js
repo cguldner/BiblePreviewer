@@ -4,6 +4,9 @@ import '../css/options.scss';
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
 const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
 
+const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
+const DEFAULT_LANGUAGE = 'eng';
+
 let version_select = document.getElementById('bible-version');
 let language_select = document.getElementById('language');
 let status = document.getElementById('save-status');
@@ -124,8 +127,8 @@ function save_options() {
  */
 function restore_options(cb) {
     chrome.storage.sync.get({
-        'language': 'eng-US',
-        'translation': 'NASB'
+        'language': DEFAULT_LANGUAGE,
+        'translation': DEFAULT_TRANS
     }, function (settings) {
         document.getElementById('save-button').classList.remove('disabled');
         cb(settings);
@@ -138,8 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
     restore_options(function (settings) {
         // eslint-disable-next-line no-undef
         M.FormSelect.init(language_select, {});
+        language_select.value = settings['language'];
         get_languages(function() {
-            language_select.value = settings['language'];
             get_versions(false, function () {
                 version_select.value = settings['translation'];
                 version_select.removeAttribute('disabled');

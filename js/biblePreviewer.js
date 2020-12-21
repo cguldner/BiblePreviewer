@@ -9,12 +9,13 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
 
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
 // const ESV_API_BASE_URL = `https://api.esv.org/v3/passage/text/?q=`;
-const DEFAULT_TRANS = '78a9f6124f344018-01';
+const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
+const DEFAULT_LANGUAGE = 'eng';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
-const DEFAULT_DEUTERO_TRANS = 'eng-KJVA';
+const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
 const BIBLE_DIRECT_URL = 'global.bible/bible/';
 
-const versions_with_deutero = ['eng-KJVA'];
+const versions_with_deutero = [DEFAULT_DEUTERO_TRANS];
 const deutero_books = ['1Macc', '2Macc', 'Wis', 'Sir', 'Bar', 'Tob', 'Jdt'];
 // const books_start_with_num = '(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c|cabees)?|Co(?:r(?:inthians)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n)';
 const firstPrefix = '(?:1(?:st)?|I|First)\\s*';
@@ -368,6 +369,9 @@ function createTooltips() {
 chrome.runtime.onMessage.addListener(function (request) {
     if (request.translation === undefined) {
         request.translation = DEFAULT_TRANS;
+    }
+    if (request.language === undefined) {
+        request.language = DEFAULT_LANGUAGE;
     }
 
     let node_length = transformBibleReferences(request.translation, request.language);
