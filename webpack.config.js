@@ -2,11 +2,12 @@
 
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const distFolder = 'dist';
 
+// eslint-disable-next-line jsdoc/require-jsdoc
 module.exports = env => {
     let devMode = env === undefined || env.NODE_ENV !== 'production';
 
@@ -66,7 +67,7 @@ module.exports = env => {
             ]
         },
         plugins: [
-            new CleanWebpackPlugin({ verbose: true }),
+            new CleanWebpackPlugin({verbose: true}),
             new MiniCssExtractPlugin({
                 filename: 'css/[name].css',
                 chunkFilename: '[id].css'
@@ -85,4 +86,3 @@ module.exports = env => {
         }
     };
 };
-

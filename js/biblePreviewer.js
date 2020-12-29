@@ -7,6 +7,11 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
 
 // const ESV_API_KEY = '52ca2a57f09495325d251464d417edc1cfe94834';
 
+const LOADING_TEXT = 'Loading';
+const VERSE_NO_EXIST_TEXT = 'Verse does not exist';
+const BAD_REQUEST_TEXT = 'Request couldn\'t be completed, try again later';
+const TRY_AGAIN_TEXT = 'Try again later';
+
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
 // const ESV_API_BASE_URL = `https://api.esv.org/v3/passage/text/?q=`;
 const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
@@ -157,14 +162,15 @@ function getVerseFromString(verseStr, prevChap) {
 /**
  * Transform all bible references into links using a TreeWalker
  *
+ * @param {Element} elem - The DOM node to search over
  * @param {string} trans - Which bible translation to use
  * @param {string} language - Which language is selected
  * @returns {number} The number of links on the page
  */
-function transformBibleReferences(trans, language) {
+function transformBibleReferences(elem, trans, language) {
     // console.time('TreeWalker');
     // Use a TreeWalker instead of simple replace so we can ignore bible references that are already links
-    let treeWalker = document.createTreeWalker(document.body,
+    let treeWalker = document.createTreeWalker(elem,
         NodeFilter.SHOW_TEXT,
         {
             acceptNode: function (node) {
@@ -308,25 +314,27 @@ function createTooltipContent({verse, text, translation}) {
 
 /**
  * Create the tooltip popups that will show the verse text above the link on hover
+ *
+ * @param {Element} elem The element to search under to create the tooltips for
  */
-function createTooltips() {
-    tippy('.biblePreviewerLink', {
+function createTooltips(elem) {
+    tippy(elem.querySelectorAll('.biblePreviewerLink'), {
         delay: [250, 750],
         duration: 250,
         arrow: true,
         interactive: true,
-        content: function(reference) {
+        content: function (reference) {
             const bibleBook = reference.getAttribute('data-bible-book');
             const bibleRef = reference.getAttribute('data-bible-ref');
             const fullRef = `${bibleBook} ${bibleRef}`;
             if (bibleVerseDict[fullRef] === undefined) {
-                return createTooltipContent({text: 'Loading'});
+                return createTooltipContent({text: LOADING_TEXT});
             } else {
                 // If there is another link to the same verse on the page, then set that verse text
                 return createTooltipContent(bibleVerseDict[fullRef]);
             }
         },
-        onShow: function(instance) {
+        onShow: function (instance) {
             const reference = instance.reference;
             const bibleBook = reference.getAttribute('data-bible-book');
             const bibleRef = reference.getAttribute('data-bible-ref');
@@ -347,12 +355,12 @@ function createTooltips() {
                         };
                         instance.setContent(createTooltipContent(bibleVerseDict[fullRef]));
                     } else if (status === 404) {
-                        instance.setContent(createTooltipContent({text: 'Verse does not exist'}));
+                        instance.setContent(createTooltipContent({text: VERSE_NO_EXIST_TEXT}));
                         bibleVerseDict[fullRef] = 'Verse does not exist';
                     } else if (status === 0) {
-                        instance.setContent(createTooltipContent({text: "Request couldn't be completed, try again later"}));
+                        instance.setContent(createTooltipContent({text: BAD_REQUEST_TEXT}));
                     } else {
-                        instance.setContent(createTooltipContent({text: 'Try again later'}));
+                        instance.setContent(createTooltipContent({text: TRY_AGAIN_TEXT}));
                     }
                 });
             } else {
@@ -365,6 +373,21 @@ function createTooltips() {
     });
 }
 
+/**
+ * Performs the link transformation and tooltip generation
+ *
+ * @param {Element} elem The element to search under to create the tooltips for
+ * @param {object} request The request object
+ */
+function addLinks(elem, request) {
+    let node_length = transformBibleReferences(elem, request.translation, request.language);
+    if (node_length) {
+        // console.time('Create Tooltips');
+        createTooltips(elem);
+        // console.timeEnd('Create Tooltips');
+    }
+}
+
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request) {
     if (request.translation === undefined) {
@@ -374,10 +397,25 @@ chrome.runtime.onMessage.addListener(function (request) {
         request.language = DEFAULT_LANGUAGE;
     }
 
-    let node_length = transformBibleReferences(request.translation, request.language);
-    if (node_length) {
-        // console.time('Create Tooltips');
-        createTooltips();
-        // console.timeEnd('Create Tooltips');
+    let isCypress = false;
+    for (let i = 0; i < document.scripts.length; i++) {
+        if (document.scripts[i].src.match(/localhost:\d+\/__cypress\/runner\/cypress_runner.js/)) {
+            isCypress = true;
+            break;
+        }
+    }
+
+    if (isCypress) {
+        addLinks(document.body, request);
+
+        let interval = setInterval(() => {
+            const cypressFrame = document.querySelector('iframe').contentWindow.document.querySelector('#bible-previewer-cypress-test-container');
+            if (cypressFrame) {
+                addLinks(cypressFrame, request);
+                clearInterval(interval);
+            }
+        }, 500);
+    } else {
+        addLinks(document.body, request);
     }
 });

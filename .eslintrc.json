@@ -2,8 +2,10 @@
     "env": {
         "browser": true,
         "es2021": true,
+        "node": true,
         "webextensions": true,
-        "amd": true
+        "amd": true,
+        "cypress/globals": true
     },
     "extends": [
         "eslint:recommended",
@@ -12,11 +14,17 @@
         "plugin:import/warnings",
         "plugin:regexp/recommended"
     ],
+    "plugins": [
+        "cypress",
+        "no-only-tests",
+        "jsdoc"
+    ],
     "parserOptions": {
         "ecmaVersion": 12,
         "sourceType": "module"
     },
     "rules": {
+        "no-only-tests/no-only-tests": "error",
         "indent": [
             "warn",
             4
@@ -133,6 +141,14 @@
         ],
         "space-infix-ops": "warn",
         "no-multi-spaces": "warn",
+        "jsdoc/require-jsdoc": [
+            "warn",
+            {
+                "require": {
+                    "ArrowFunctionExpression": true
+                }
+            }
+        ],
         "jsdoc/require-description": "warn",
         "jsdoc/check-tag-names": [
             "warn",

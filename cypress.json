@@ -1,0 +1,7 @@
+{
+    "env": {
+        "testFile": "test/test.html"
+    },
+    "watchForFileChanges": false,
+    "video": false
+}
