@@ -15,15 +15,19 @@ $arrow-color: $toolbar-bg-color;
 .tippy-box {
   background-color: unset !important;
   border-radius: 10px;
+
   &[data-placement^="top"] > .tippy-arrow::before {
     border-top-color: $arrow-color !important;
   }
+
   &[data-placement^="bottom"] > .tippy-arrow::before {
     border-bottom-color: $arrow-color !important;
   }
+
   &[data-placement^="left"] > .tippy-arrow::before {
     border-left-color: $arrow-color !important;
   }
+
   &[data-placement^="right"] > .tippy-arrow::before {
     border-right-color: $arrow-color !important;
   }

@@ -5,3 +5,4 @@ dist
 img
 *.crx
 *.pem
+cypress/screenshots/*

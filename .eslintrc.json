@@ -29,10 +29,6 @@
             "warn",
             4
         ],
-        "linebreak-style": [
-            "error",
-            "windows"
-        ],
         "quotes": [
             "warn",
             "single",

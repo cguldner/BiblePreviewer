@@ -1,6 +1,6 @@
 const TEST_FILE = Cypress.env('testFile');
 
-context('Tooltip', () => {
+context('Tooltip', {retries: 1}, () => {
     beforeEach(() => {
         cy.visit(TEST_FILE);
     });

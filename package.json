@@ -15,7 +15,7 @@
     "watch": "webpack --watch",
     "cypress:gui": "cypress open",
     "cypress:run": "cypress run --record false --browser chrome",
-    "test": "npm run cypress:run",
+    "test": "npm run build:dev && npm run cypress:run",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix"
   },
