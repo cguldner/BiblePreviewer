@@ -42,8 +42,7 @@
         "js/biblePreviewer.js"
       ],
       "matches": [
-        "http://*/*",
-        "https://*/*"
+        "<all_urls>"
       ],
       "all_frames": true
     }
