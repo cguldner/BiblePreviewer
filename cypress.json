@@ -1,6 +1,6 @@
 {
     "env": {
-        "testFile": "test/test.html"
+        "testFile": "cypress/test.html"
     },
     "watchForFileChanges": false,
     "video": false

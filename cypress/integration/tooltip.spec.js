@@ -68,7 +68,8 @@ context('Tooltip', {retries: 1}, () => {
         it('Should show tooltip on hover of single chapter and single verse', () => tooltipShow('John 4:24'));
         it('Should show tooltip on hover of single chapter and multiple verses', () => tooltipShow('Gen 4:24-25'));
         it('Should show tooltip on hover of multiple chapters and multiple verses', () => tooltipShow('Matt 4:24-5:3'));
-        it('Should show tooltip on hover of Jude', () => tooltipShow('Jude 6'));
+        it('Should show tooltip on hover of Jude if chapter not provided', () => tooltipShow('Jude 6'));
+        it('Should show tooltip on hover of Jude if chapter is provided', () => tooltipShow('Jude 1:7'));
         it('Should not send another network request if one link is hovered twice', () => {
             const verse = /^John 4:24$/;
             cy.get('a.biblePreviewerLink').contains(verse).realHover();
@@ -81,13 +82,11 @@ context('Tooltip', {retries: 1}, () => {
             cy.get('@getRequest2').should('not.exist');
         });
         it('Should not send another network request if two separate links to same bible verse are hovered', () => {
-            // Index should be equal to the index of the Ex 19:20 verse in the test.html
-            const index = 4;
-            cy.get('a.biblePreviewerLink').eq(index).realHover();
+            cy.get('div.duplicate-verse-test a.biblePreviewerLink').eq(0).realHover();
             cy.wait('@getRequest');
             unhoverTooltip();
             cy.intercept('GET', API_ENDPOINT).as('getRequest2');
-            cy.get('a.biblePreviewerLink').eq(index + 1).realHover();
+            cy.get('div.duplicate-verse-test a.biblePreviewerLink').eq(1).realHover();
             cy.get('.biblePreviewerTooltip').should('exist');
             unhoverTooltip();
             cy.get('@getRequest2').should('not.exist');
@@ -118,7 +117,8 @@ context('Tooltip', {retries: 1}, () => {
         it('Should have matching header for single chapter and single verse tooltip', () => tooltipHeaderVerify('John', '4', '24'));
         it('Should have matching header for single chapter and multiple verses tooltip', () => tooltipHeaderVerify('Gen', '4', '24', '', '25'));
         it('Should have matching header for multiple chapters and multiple verses tooltip', () => tooltipHeaderVerify('Matt', '4', '24', '5', '3'));
-        it('Should have matching header for Jude', () => tooltipHeaderVerify('Jude', '', '6'));
+        it('Should have matching header for Jude if chapter not provided', () => tooltipHeaderVerify('Jude', '', '6'));
+        it('Should have matching header for Jude if chapter is provided', () => tooltipHeaderVerify('Jude', '1', '7'));
     });
 
     describe('Tooltip Content Verification', () => {
@@ -150,6 +150,7 @@ context('Tooltip', {retries: 1}, () => {
         it('Should have matching content for single chapter and single verse tooltip', () => tooltipContentVerify('John', '4', '24'));
         it('Should have matching content for single chapter and multiple verses tooltip', () => tooltipContentVerify('Gen', '4', '24', '', '25'));
         it('Should have matching content for multiple chapters and multiple verses tooltip', () => tooltipContentVerify('Matt', '4', '24', '5', '3'));
-        it('Should have matching content for Jude', () => tooltipContentVerify('Jude', '', '6'));
+        it('Should have matching content for Jude if chapter not provided', () => tooltipContentVerify('Jude', '', '6'));
+        it('Should have matching content for Jude if chapter is provided', () => tooltipContentVerify('Jude', '1', '7'));
     });
 });

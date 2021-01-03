@@ -208,13 +208,12 @@ function transformBibleReferences(elem, trans, language) {
 
     // console.time('Change to links');
     nodeList.forEach(node => {
-        // m - original text, b - book, l - verse list match, jv - Jude verse (if applicable)
         node.innerHTML = node.innerHTML.replace(bibleRegex, function (orig, matchedBook, verseListStr, judeVerse) {
             let book = '', actual_trans = trans;
             if (judeVerse === undefined) {
                 // TODO: Figure out a more efficient way to do this
                 for (let key in bibleBooks) {
-                    if (matchedBook.search('^' + key + '$') > -1) {
+                    if (matchedBook.search(`^${key}$`) > -1) {
                         book = bibleBooks[key];
                         // If the book is John, continue searching to verify it isn't 1, 2, 3 John
                         if (book !== 'John')
@@ -238,7 +237,7 @@ function transformBibleReferences(elem, trans, language) {
                 verseListStr = verseListStr.join(',');
             }
 
-            let startChap, startVerse, endChap, endVerse, prevChap = null;
+            let startChap, startVerse, endChap, endVerse, prevChap = '';
             let refList = [], verseList = verseListStr.split(/[,;]\s*/g);
             let splitText = orig.split(/[,;]/g);
             for (let i = 0; i < verseList.length; i++) {
