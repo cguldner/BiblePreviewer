@@ -138,9 +138,9 @@ context('Tooltip', {retries: 1}, () => {
             cy.get('.bpTooltipContent').as('content')
                 .should('exist')
                 .invoke('text')
-                .should('not.include', 'Loading')
-                .should('not.include', 'Verse does not exist')
-                .should('not.include', 'Try again later');
+                .should('not.equal', 'Loading')
+                .should('not.equal', 'Verse does not exist')
+                .should('not.equal', 'Try again later');
             // cy.get('@content').find('span').contains(refToRegexp(startChap));
             cy.get('@content').find('span').contains(refToRegexp(startVerse));
             // if (endChap !== '') cy.get('@content').find('span').contains(refToRegexp(endChap));
