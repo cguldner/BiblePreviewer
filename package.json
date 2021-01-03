@@ -1,6 +1,6 @@
 {
   "name": "bible-previewer",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "Turns every bible verse into a link you can hover over to see the contents of the verse",
   "main": "biblePreviewer.js",
   "repository": {
