@@ -28,6 +28,8 @@ const secondPrefix = '(?:2(?:nd)?|II|Second)\\s*';
 const thirdPrefix = '(?:3(?:rd)?|III|Third)\\s*';
 const dashes = /[–—-]/;
 
+const JUDE_BOOK_ID = 'Jud';
+
 // Lookup dictionary for verses
 let bibleVerseDict = {};
 
@@ -104,7 +106,7 @@ const bibleBooks = {
     [firstPrefix + 'Jo?h?n']: '1Jn',
     [secondPrefix + 'Jo?h?n']: '2Jn',
     [thirdPrefix + 'Jo?h?n']: '3Jn',
-    'Jude?': 'Jud',
+    'Jude?': JUDE_BOOK_ID,
     'R(?:e?v|evelation)': 'Rev'
 };
 
@@ -228,7 +230,7 @@ function transformBibleReferences(elem, trans, language) {
                     actual_trans = DEFAULT_DEUTERO_TRANS;
                 }
             } else {
-                book = 'Jude';
+                book = JUDE_BOOK_ID;
                 verseListStr = judeVerse.split(/[,;]\s*/g);
                 for (let i = 0; i < verseListStr.length; i++) {
                     verseListStr[i] = '1:' + verseListStr[i];

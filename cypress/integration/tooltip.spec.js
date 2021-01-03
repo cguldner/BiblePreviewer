@@ -1,8 +1,10 @@
 const TEST_FILE = Cypress.env('testFile');
+const API_ENDPOINT = '**/api.scripture.api.bible/v1/**';
 
 context('Tooltip', {retries: 1}, () => {
     beforeEach(() => {
         cy.visit(TEST_FILE);
+        cy.intercept('GET', API_ENDPOINT).as('getRequest');
     });
 
     /**
@@ -26,7 +28,11 @@ context('Tooltip', {retries: 1}, () => {
      * @returns {string} The full bible reference
      */
     function biblePartsToRef(book, startChap, startVerse, endChap = '', endVerse = '') {
-        let bibleRef = `${book}\\s${startChap}:${startVerse}`;
+        let bibleRef = `${book}\\s`;
+        if (startChap !== '') {
+            bibleRef += `${startChap}:`;
+        }
+        bibleRef += startVerse;
         if (endChap !== '' || endVerse !== '') {
             bibleRef += '-';
             if (endChap) {
@@ -35,6 +41,15 @@ context('Tooltip', {retries: 1}, () => {
             bibleRef += endVerse;
         }
         return bibleRef;
+    }
+
+    /**
+     * Unhovers the tooltip, and waits for it to disappear
+     */
+    function unhoverTooltip() {
+        cy.get('body').realHover();
+        // Wait until the tooltip disappears
+        cy.get('.biblePreviewerTooltip').should('not.exist');
     }
 
     describe('Tooltip Show', () => {
@@ -51,8 +66,32 @@ context('Tooltip', {retries: 1}, () => {
         }
 
         it('Should show tooltip on hover of single chapter and single verse', () => tooltipShow('John 4:24'));
-        it('Should show tooltip on hover of single chapter and multiple verses', () => tooltipShow('John 4:24-25'));
-        it('Should show tooltip on hover of multiple chapters and multiple verses', () => tooltipShow('John 4:24-5:3'));
+        it('Should show tooltip on hover of single chapter and multiple verses', () => tooltipShow('Gen 4:24-25'));
+        it('Should show tooltip on hover of multiple chapters and multiple verses', () => tooltipShow('Matt 4:24-5:3'));
+        it('Should show tooltip on hover of Jude', () => tooltipShow('Jude 6'));
+        it('Should not send another network request if one link is hovered twice', () => {
+            const verse = /^John 4:24$/;
+            cy.get('a.biblePreviewerLink').contains(verse).realHover();
+            cy.wait('@getRequest');
+            unhoverTooltip();
+            cy.intercept('GET', API_ENDPOINT).as('getRequest2');
+            cy.get('a.biblePreviewerLink').contains(verse).realHover();
+            cy.get('.biblePreviewerTooltip').should('exist');
+            unhoverTooltip();
+            cy.get('@getRequest2').should('not.exist');
+        });
+        it('Should not send another network request if two separate links to same bible verse are hovered', () => {
+            // Index should be equal to the index of the Ex 19:20 verse in the test.html
+            const index = 4;
+            cy.get('a.biblePreviewerLink').eq(index).realHover();
+            cy.wait('@getRequest');
+            unhoverTooltip();
+            cy.intercept('GET', API_ENDPOINT).as('getRequest2');
+            cy.get('a.biblePreviewerLink').eq(index + 1).realHover();
+            cy.get('.biblePreviewerTooltip').should('exist');
+            unhoverTooltip();
+            cy.get('@getRequest2').should('not.exist');
+        });
     });
 
     describe('Tooltip Header Verification', () => {
@@ -69,7 +108,7 @@ context('Tooltip', {retries: 1}, () => {
             const bibleRef = biblePartsToRef(book, startChap, startVerse, endChap, endVerse);
             cy.get('a.biblePreviewerLink').contains(new RegExp(`^${bibleRef}$`)).realHover();
             cy.get('.biblePreviewerTooltip .bpHeaderBar').should('exist')
-                .contains(refToRegexp(book))
+                .contains(new RegExp(`\\b${book}`))
                 .contains(refToRegexp(startChap))
                 .contains(refToRegexp(startVerse))
                 .contains(refToRegexp(endChap))
@@ -77,8 +116,9 @@ context('Tooltip', {retries: 1}, () => {
         }
 
         it('Should have matching header for single chapter and single verse tooltip', () => tooltipHeaderVerify('John', '4', '24'));
-        it('Should have matching header for single chapter and multiple verses tooltip', () => tooltipHeaderVerify('John', '4', '24', '', '25'));
-        it('Should have matching header for multiple chapters and multiple verses tooltip', () => tooltipHeaderVerify('John', '4', '24', '5', '3'));
+        it('Should have matching header for single chapter and multiple verses tooltip', () => tooltipHeaderVerify('Gen', '4', '24', '', '25'));
+        it('Should have matching header for multiple chapters and multiple verses tooltip', () => tooltipHeaderVerify('Matt', '4', '24', '5', '3'));
+        it('Should have matching header for Jude', () => tooltipHeaderVerify('Jude', '', '6'));
     });
 
     describe('Tooltip Content Verification', () => {
@@ -94,13 +134,13 @@ context('Tooltip', {retries: 1}, () => {
         function tooltipContentVerify(book, startChap, startVerse, endChap = '', endVerse = '') {
             const bibleRef = biblePartsToRef(book, startChap, startVerse, endChap, endVerse);
             cy.get('a.biblePreviewerLink').contains(new RegExp(`^${bibleRef}$`)).realHover();
-            // Header doesn't appear until request has finished
-            cy.get('.biblePreviewerTooltip .bpHeaderBar').should('exist');
-            cy.get('.biblePreviewerTooltip .bpTooltipContent').as('content')
+            cy.wait('@getRequest');
+            cy.get('.bpTooltipContent').as('content')
                 .should('exist')
-                .should('not.have.text', /Loading/i)
-                .should('not.have.text', /Verse does not exist/i)
-                .should('not.have.text', /Try again later/i);
+                .invoke('text')
+                .should('not.include', 'Loading')
+                .should('not.include', 'Verse does not exist')
+                .should('not.include', 'Try again later');
             // cy.get('@content').find('span').contains(refToRegexp(startChap));
             cy.get('@content').find('span').contains(refToRegexp(startVerse));
             // if (endChap !== '') cy.get('@content').find('span').contains(refToRegexp(endChap));
@@ -108,7 +148,8 @@ context('Tooltip', {retries: 1}, () => {
         }
 
         it('Should have matching content for single chapter and single verse tooltip', () => tooltipContentVerify('John', '4', '24'));
-        it('Should have matching content for single chapter and multiple verses tooltip', () => tooltipContentVerify('John', '4', '24', '', '25'));
-        it('Should have matching content for multiple chapters and multiple verses tooltip', () => tooltipContentVerify('John', '4', '24', '5', '3'));
+        it('Should have matching content for single chapter and multiple verses tooltip', () => tooltipContentVerify('Gen', '4', '24', '', '25'));
+        it('Should have matching content for multiple chapters and multiple verses tooltip', () => tooltipContentVerify('Matt', '4', '24', '5', '3'));
+        it('Should have matching content for Jude', () => tooltipContentVerify('Jude', '', '6'));
     });
 });

@@ -32,7 +32,6 @@ module.exports = env => {
                     use: [
                         MiniCssExtractPlugin.loader,
                         'css-loader',
-                        'sass-loader',
                         {
                             loader: 'postcss-loader',
                             options: {
@@ -43,7 +42,8 @@ module.exports = env => {
                                     ]
                                 }
                             }
-                        }
+                        },
+                        'sass-loader'
                     ]
                 },
                 {
