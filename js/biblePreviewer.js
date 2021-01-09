@@ -162,16 +162,13 @@ function getVerseFromString(verseStr, prevChap) {
 }
 
 /**
- * Transform all bible references into links using a TreeWalker
+ * Gets all the document nodes that need to be transformed into a link
+ * Uses a TreeWalker instead of simple replace so we can ignore bible references that are already links
  *
  * @param {Element} elem - The DOM node to search over
- * @param {string} trans - Which bible translation to use
- * @param {string} language - Which language is selected
- * @returns {number} The number of links on the page
+ * @returns {Array} The list of node elements to transform to bible links
  */
-function transformBibleReferences(elem, trans, language) {
-    // console.time('TreeWalker');
-    // Use a TreeWalker instead of simple replace so we can ignore bible references that are already links
+function getNodesToTransform(elem) {
     let treeWalker = document.createTreeWalker(elem,
         NodeFilter.SHOW_TEXT,
         {
@@ -204,12 +201,27 @@ function transformBibleReferences(elem, trans, language) {
         }
         if (shouldAdd) nodeList.push(newNode);
     }
+    return nodeList;
+}
+
+/**
+ * Transform all bible references into links using a TreeWalker
+ *
+ * @param {Element} elem - The DOM node to search over
+ * @param {string} trans - Which bible translation to use
+ * @param {string} language - Which language is selected
+ * @returns {number} The number of links on the page
+ */
+function transformBibleReferences(elem, trans, language) {
+    // console.time('TreeWalker');
+    let nodeList = getNodesToTransform(elem);
     // console.timeEnd('TreeWalker');
 
     // console.time('Change to links');
     nodeList.forEach(node => {
         node.innerHTML = node.innerHTML.replace(bibleRegex, function (orig, matchedBook, verseListStr, judeVerse) {
-            let book = '', actual_trans = trans;
+            let book = '';
+            let actual_trans = trans;
             if (judeVerse === undefined) {
                 // TODO: Figure out a more efficient way to do this
                 for (let key in bibleBooks) {
@@ -238,8 +250,9 @@ function transformBibleReferences(elem, trans, language) {
             }
 
             let startChap, startVerse, endChap, endVerse, prevChap = '';
-            let refList = [], verseList = verseListStr.split(/[,;]\s*/g);
-            let splitText = orig.split(/[,;]/g);
+            let refList = [];
+            const verseList = verseListStr.split(/[,;]\s*/g);
+            const splitText = orig.split(/[,;]/g);
             for (let i = 0; i < verseList.length; i++) {
                 [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(verseList[i], prevChap);
                 book = book.toUpperCase();
@@ -295,9 +308,9 @@ function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, end
  * Creates the tooltip content for the bible verse
  *
  * @param {object} ref The stored bible verse information
- * @param {string} ref.verse The bible verse (for example 1st Corinthians 1:1)
+ * @param {string} [ref.verse] The bible verse (for example 1st Corinthians 1:1)
  * @param {string} ref.text The text of the bible verse
- * @param {string} ref.translation The translation of the verse
+ * @param {string} [ref.translation] The translation of the verse
  * @returns {string} The html content that the tooltip will use
  */
 function createTooltipContent({verse, text, translation}) {
@@ -344,7 +357,7 @@ function createTooltips(elem) {
             const fullRef = `${bibleBook} ${bibleRef}`;
             if (bibleVerseDict[fullRef] === undefined) {
                 // eslint-disable-next-line comma-spacing
-                let [startChap, startVerse, endChap, endVerse,] = getVerseFromString(bibleRef, null);
+                let [startChap, startVerse, endChap, endVerse,] = getVerseFromString(bibleRef, '');
                 sendAPIRequestForVerses(bibleBook, startChap, startVerse, endChap, endVerse, bibleTrans, function (verseText, verseRef, status) {
                     if (verseText && status === 200) {
                         // Store into a dictionary for quick access later
