@@ -21,54 +21,90 @@ const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
 const BIBLE_DIRECT_URL = 'global.bible/bible/';
 
 const versions_with_deutero = [DEFAULT_DEUTERO_TRANS];
-const deutero_books = ['1Macc', '2Macc', 'Wis', 'Sir', 'Bar', 'Tob', 'Jdt'];
-// const books_start_with_num = '(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c|cabees)?|Co(?:r(?:inthians)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n)';
+
+/**
+ * Whether to generate the bible reference matching regex, or use the hardcoded one.
+ * For production, this should be set to false.
+ */
+const GENERATE_REGEX = false;
+
+const ONE_MAC_TAG = '1Ma';
+const TWO_MAC_TAG = '2Ma';
+const WISDOM_TAG = 'Wis';
+const SIRACH_TAG = 'Sir';
+const BARUCH_TAG = 'Bar';
+const TOBIT_TAG = 'Tob';
+const JUDITH_TAG = 'Jdt';
+
+const SAMUEL_REG = 'Sa?m(?:uel)?';
+const KINGS_REG = 'K(?:(?:in)?gs)';
+const CHRON_REG = 'Chr(?:on(?:icles)?)?';
+const MACC_REG = 'Mac(?:c(?:abees)?)?';
+const CORINTH_REG = 'Co(?:r(?:inthian(?:s)?)?)?';
+const JUDE_REG = 'Jude?';
+const THES_REG = 'Thes(?:s(?:alonians)?)?';
+const TIM_REG = 'T(?:i?m?|imothy)';
+const PETER_REG = 'Pe?t(?:er)?';
+const JOHN_REG = 'Jo?h?n';
+
+const deutero_books = [ONE_MAC_TAG, TWO_MAC_TAG, WISDOM_TAG, SIRACH_TAG, BARUCH_TAG, TOBIT_TAG, JUDITH_TAG];
+const books_start_with_num = `(?:${SAMUEL_REG}|${KINGS_REG}|${CHRON_REG}|${MACC_REG}|${CORINTH_REG}|${THES_REG}|${TIM_REG}|${PETER_REG}|${JOHN_REG})`;
 const firstPrefix = '(?:1(?:st)?|I|First)\\s*';
 const secondPrefix = '(?:2(?:nd)?|II|Second)\\s*';
 const thirdPrefix = '(?:3(?:rd)?|III|Third)\\s*';
-const dashes = /[–—-]/;
+
+/**
+ * Contains different dashes that might be used in a bible reference
+ */
+const DASHES_STR = '[–—-]';
+/**
+ * @see DASHES_STR
+ */
+const DASHES_REG = new RegExp(DASHES_STR);
 
 const JUDE_BOOK_ID = 'Jud';
 
-// Lookup dictionary for verses
+/**
+ * Lookup dictionary for verses
+ */
 let bibleVerseDict = {};
 
 // I make a lot of the () non-capturing, so I can capture the chapter/verse numbers more easily later
 const bibleBooks = {
-    'Gen(?:esis)?': 'Gen',
+    'Ge?n(?:esis)?': 'Gen',
     'Ex(?:od(?:us)?)?': 'Exo',
     'Le(?:v(?:iticus)?)?': 'Lev',
-    'Num(?:b(?:ers)?)?': 'Num',
+    'Nu?m(?:b(?:ers)?)?': 'Num',
     'D(?:t|eut(?:eronomy)?)': 'Deu',
     'Jo(?:s(?:h(?:ua)?)?)?': 'Jos',
     'J(?:dgs?|udg(?:es)?)': 'Jdg',
     'Ru?th': 'Rut',
-    [firstPrefix + 'Sam(?:uel)?']: '1Sa',
-    [secondPrefix + 'Sam(?:uel)?']: '2Sa',
-    [firstPrefix + 'K(?:(?:in)?gs)']: '1Ki',
-    [secondPrefix + 'K(?:(?:in)?gs)']: '2Ki',
-    [firstPrefix + 'Chr(?:on(?:icles)?)?']: '1Ch',
-    [secondPrefix + 'Chr(?:on(?:icles)?)?']: '2Ch',
-    'Ez(?:ra?)?': 'Ezr',
+    [firstPrefix + SAMUEL_REG]: '1Sa',
+    [secondPrefix + SAMUEL_REG]: '2Sa',
+    [firstPrefix + KINGS_REG]: '1Ki',
+    [secondPrefix + KINGS_REG]: '2Ki',
+    [firstPrefix + CHRON_REG]: '1Ch',
+    [secondPrefix + CHRON_REG]: '2Ch',
+    'Ez(?:ra?)': 'Ezr',
     'Ne(?:h(?:emiah)?)?': 'Neh',
-    'Tob(?:it|ias)?': 'Tob',
-    'J(?:d?th?|udith)': 'Jdt',
+    'Tob(?:it|ias)?': TOBIT_TAG,
+    'J(?:d?th?|udith)': JUDITH_TAG,
     'Est(?:h(?:er)?)?': 'Est',
-    [firstPrefix + 'Mac(?:c(?:abees)?)?']: '1Ma',
-    [secondPrefix + 'Mac(?:c(?:abees)?)?']: '2Ma',
+    [firstPrefix + MACC_REG]: ONE_MAC_TAG,
+    [secondPrefix + MACC_REG]: TWO_MAC_TAG,
     'Jo?b': 'Job',
     'Ps(?:a(?:lms?)?)?': 'Psa',
     'Pro(?:v(?:erbs)?)?': 'Pro',
     'Ecc(?:les?|lesiastes)?': 'Ecc',
     'So(?:S|ng(?:\\s*of\\s*(?:Sol(?:omon)?|Songs?))?)': 'Sng',
-    'Wis(?:dom)?(?:\\s*of\\s*Sol(?:omon)?)?': 'Wis',
-    'Sir(?:ach)?': 'Sir',
-    'Bar(?:uch)?': 'Bar',
+    'Wis(?:dom)?(?:\\s*of\\s*Sol(?:omon)?)?': WISDOM_TAG,
+    'Sir(?:ach)?': SIRACH_TAG,
+    'Bar(?:uch)?': BARUCH_TAG,
     'Is(?:a(?:iah)?)?': 'Isa',
     'Jer(?:emiah)?': 'Jer',
     'Lam(?:entations)?': 'Lam',
-    'Ez(?:e?k?|ekiel)': 'Ezk',
-    'Dan(?:iel)?': 'Dan',
+    'Ez(?:e?k?|ekiel)?': 'Ezk',
+    'Da?n(?:iel)?': 'Dan',
     'Hos(?:ea)?': 'Hos',
     'Joel': 'Jol',
     'Amos': 'Amo',
@@ -84,47 +120,51 @@ const bibleBooks = {
     'M(?:t|att(?:h(?:ew)?)?)': 'Mat',
     'M(?:k|ark?)': 'Mrk',
     'L(?:k|uke?)': 'Luk',
-    'Jo?h?n': 'Jhn',
+    [JOHN_REG]: 'Jhn',
     'Acts?': 'Act',
     'Ro(?:m(?:ans)?)?': 'Rom',
-    [firstPrefix + 'Co(?:r(?:inthian(?:s)?)?)?']: '1Co',
-    [secondPrefix + 'Co(?:r(?:inthian(?:s)?)?)?']: '2Co',
+    [firstPrefix + CORINTH_REG]: '1Co',
+    [secondPrefix + CORINTH_REG]: '2Co',
     'Gal(?:atians)?': 'Gal',
     'Eph(?:es(?:ians)?)?': 'Eph',
     'Phil(?:ippians)?': 'Php',
     'Col(?:ossians)?': 'Col',
-    [firstPrefix + 'Thes(?:s(?:alonians)?)?']: '1Th',
-    [secondPrefix + 'Thes(?:s(?:alonians)?)?']: '2Th',
-    [firstPrefix + 'T(?:i?m?|imothy)']: '1Ti',
-    [secondPrefix + 'T(?:i?m?|imothy)']: '2Ti',
+    [firstPrefix + THES_REG]: '1Th',
+    [secondPrefix + THES_REG]: '2Th',
+    [firstPrefix + TIM_REG]: '1Ti',
+    [secondPrefix + TIM_REG]: '2Ti',
     'Titus': 'Tit',
     'Phil(?:em(?:on)?)?': 'Phm',
     'Heb(?:rews?)?': 'Heb',
-    'James': 'Jas',
-    [firstPrefix + 'Pe?t(?:er)?']: '1Pe',
-    [secondPrefix + 'Pe?t(?:er)?']: '2Pe',
-    [firstPrefix + 'Jo?h?n']: '1Jn',
-    [secondPrefix + 'Jo?h?n']: '2Jn',
-    [thirdPrefix + 'Jo?h?n']: '3Jn',
-    'Jude?': JUDE_BOOK_ID,
+    'Ja(?:me)?s': 'Jas',
+    [firstPrefix + PETER_REG]: '1Pe',
+    [secondPrefix + PETER_REG]: '2Pe',
+    [firstPrefix + JOHN_REG]: '1Jn',
+    [secondPrefix + JOHN_REG]: '2Jn',
+    [thirdPrefix + JOHN_REG]: '3Jn',
+    [JUDE_REG]: JUDE_BOOK_ID,
     'R(?:e?v|evelation)': 'Rev'
 };
 
-// The regex to match book names
-// let bibleRegex = '(' + Object.keys(bibleBooks).join('|') + ')';
-// // Matches the first chapter:verse, and optionally an endchapter:verse
-// bibleRegex += '\\.?\\s*((?:\d{1,3}[:]\\s*\d{1,2}(?:[–—-]\d{1,2}(?:[:]\d{1,2})?)?)';
-// // After the first, can leave off the chapter, so then a single verse will match to the last listed chapter
-// bibleRegex += '(?:[,;]\\s*(?:(?:\d{1,3}(?:[:]\d{1,2}(?:[–—-]\d{1,2})?))';
-// // But don't match a single verse if it is right before a book that has a number before it
-// bibleRegex += '|\d{1,3}(?:[–—-]\d{1,2})?(?![,;]\\s*' + books_start_with_num + ')))*)';
-// // Add Jude separately because Jude only has 1 chapter, so people usually don't put a chapter with the verse
-// bibleRegex += '|(?:Jude?\\s*(\d{1,2}(?:[,;]?\\s*\d{1,2})*))';
-// bibleRegex = new RegExp(bibleRegex, 'gi');
-// console.log(bibleRegex);
+let bibleRegex;
 
-// eslint-disable-next-line max-len
-let bibleRegex = /(Gen(?:esis)?|Ex(?:od(?:us)?)?|Le(?:v(?:iticus)?)?|Num(?:b(?:ers)?)?|D(?:t|eut(?:eronomy)?)|Jo(?:s(?:h(?:ua)?)?)?|J(?:dgs?|udg(?:es)?)|Ru?th|(?:1(?:st)?|I|First)\s*Sam(?:uel)?|(?:2(?:nd)?|II|Second)\s*Sam(?:uel)?|(?:1(?:st)?|I|First)\s*K(?:(?:in)?gs)|(?:2(?:nd)?|II|Second)\s*K(?:(?:in)?gs)|(?:1(?:st)?|I|First)\s*Chr(?:on(?:icles)?)?|(?:2(?:nd)?|II|Second)\s*Chr(?:on(?:icles)?)?|Ez(?:ra?)?|Ne(?:h(?:emiah)?)?|Tob(?:it|ias)?|J(?:d?th?|udith)|Est(?:h(?:er)?)?|(?:1(?:st)?|I|First)\s*Mac(?:c(?:abees)?)?|(?:2(?:nd)?|II|Second)\s*Mac(?:c(?:abees)?)?|Jo?b|Ps(?:a(?:lms?)?)?|Pro(?:v(?:erbs)?)?|Ecc(?:les?|lesiastes)?|So(?:S|ng(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a(?:iah)?)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e?k?|ekiel)|Dan(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad(?:iah)?)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h(?:aniah)?)?|Hag(?:gai)?|Zec(?:h(?:ariah)?)?|Mal(?:achi)?|M(?:t|att(?:h(?:ew)?)?)|M(?:k|ark?)|L(?:k|uke?)|Jo?h?n|Acts?|Ro(?:m(?:ans)?)?|(?:1(?:st)?|I|First)\s*Co(?:r(?:inthian(?:s)?)?)?|(?:2(?:nd)?|II|Second)\s*Co(?:r(?:inthian(?:s)?)?)?|Gal(?:atians)?|Eph(?:es(?:ians)?)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1(?:st)?|I|First)\s*Thes(?:s(?:alonians)?)?|(?:2(?:nd)?|II|Second)\s*Thes(?:s(?:alonians)?)?|(?:1(?:st)?|I|First)\s*T(?:i?m?|imothy)|(?:2(?:nd)?|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em(?:on)?)?|Heb(?:rews?)?|James|(?:1(?:st)?|I|First)\s*Pe?t(?:er)?|(?:2(?:nd)?|II|Second)\s*Pe?t(?:er)?|(?:1(?:st)?|I|First)\s*Jo?h?n|(?:2(?:nd)?|II|Second)\s*Jo?h?n|(?:3(?:rd)?|III|Third)\s*Jo?h?n|Jude?|R(?:e?v|evelation))\.?\s*((?:\d{1,3}[:]\s*\d{1,2}(?:[–—-]\d{1,2}(?:[:]\d{1,2})?)?)(?:[,;]\s*(?:(?:\d{1,3}(?:[:]\d{1,2}(?:[–—-]\d{1,2})?))|\d{1,3}(?:[–—-]\d{1,2})?(?![,;]\s*(?:Sam(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c|cabees)?|Co(?:r(?:inthians)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n))))*)|(?:Jude?\s*(\d{1,2}(?:[,;]?\s*\d{1,2})*))/gi;
+if (GENERATE_REGEX) {
+    // The regex to match book names
+    bibleRegex = `(${Object.keys(bibleBooks).join('|')})`;
+    // Matches the first chapter:verse, and optionally an endchapter:verse
+    bibleRegex += `\\.?\\s*((?:\\d{1,3}[:]\\s*\\d{1,2}(?:${DASHES_STR}\\d{1,2}(?:[:]\\d{1,2})?)?)`;
+    // After the first, can leave off the chapter, so then a single verse will match to the last listed chapter
+    bibleRegex += `(?:[,;]\\s*(?:(?:\\d{1,3}(?:[:]\\d{1,2}(?:${DASHES_STR}\\d{1,2})?)?`;
+    // But don't match a single verse if it is right before a book that has a number before it
+    bibleRegex += `(?!\\s*${books_start_with_num}))))*)`;
+    // Add Jude separately because Jude only has 1 chapter, so people usually don't put a chapter with the verse
+    bibleRegex += `|(?:${JUDE_REG}\\s*(\\d{1,2}(?:[,;]?\\s*\\d{1,2})*))`;
+    bibleRegex = new RegExp(bibleRegex, 'gi');
+    console.log(bibleRegex);
+} else {
+    // eslint-disable-next-line max-len
+    bibleRegex = /(Ge?n(?:esis)?|Ex(?:od(?:us)?)?|Le(?:v(?:iticus)?)?|Nu?m(?:b(?:ers)?)?|D(?:t|eut(?:eronomy)?)|Jo(?:s(?:h(?:ua)?)?)?|J(?:dgs?|udg(?:es)?)|Ru?th|(?:1(?:st)?|I|First)\s*Sa?m(?:uel)?|(?:2(?:nd)?|II|Second)\s*Sa?m(?:uel)?|(?:1(?:st)?|I|First)\s*K(?:(?:in)?gs)|(?:2(?:nd)?|II|Second)\s*K(?:(?:in)?gs)|(?:1(?:st)?|I|First)\s*Chr(?:on(?:icles)?)?|(?:2(?:nd)?|II|Second)\s*Chr(?:on(?:icles)?)?|Ez(?:ra?)|Ne(?:h(?:emiah)?)?|Tob(?:it|ias)?|J(?:d?th?|udith)|Est(?:h(?:er)?)?|(?:1(?:st)?|I|First)\s*Mac(?:c(?:abees)?)?|(?:2(?:nd)?|II|Second)\s*Mac(?:c(?:abees)?)?|Jo?b|Ps(?:a(?:lms?)?)?|Pro(?:v(?:erbs)?)?|Ecc(?:les?|lesiastes)?|So(?:S|ng(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a(?:iah)?)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e?k?|ekiel)?|Da?n(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad(?:iah)?)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h(?:aniah)?)?|Hag(?:gai)?|Zec(?:h(?:ariah)?)?|Mal(?:achi)?|M(?:t|att(?:h(?:ew)?)?)|M(?:k|ark?)|L(?:k|uke?)|Jo?h?n|Acts?|Ro(?:m(?:ans)?)?|(?:1(?:st)?|I|First)\s*Co(?:r(?:inthian(?:s)?)?)?|(?:2(?:nd)?|II|Second)\s*Co(?:r(?:inthian(?:s)?)?)?|Gal(?:atians)?|Eph(?:es(?:ians)?)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1(?:st)?|I|First)\s*Thes(?:s(?:alonians)?)?|(?:2(?:nd)?|II|Second)\s*Thes(?:s(?:alonians)?)?|(?:1(?:st)?|I|First)\s*T(?:i?m?|imothy)|(?:2(?:nd)?|II|Second)\s*T(?:i?m?|imothy)|Titus|Phil(?:em(?:on)?)?|Heb(?:rews?)?|Ja(?:me)?s|(?:1(?:st)?|I|First)\s*Pe?t(?:er)?|(?:2(?:nd)?|II|Second)\s*Pe?t(?:er)?|(?:1(?:st)?|I|First)\s*Jo?h?n|(?:2(?:nd)?|II|Second)\s*Jo?h?n|(?:3(?:rd)?|III|Third)\s*Jo?h?n|Jude?|R(?:e?v|evelation))\.?\s*((?:\d{1,3}[:]\s*\d{1,2}(?:[–—-]\d{1,2}(?:[:]\d{1,2})?)?)(?:[,;]\s*(?:(?:\d{1,3}(?:[:]\d{1,2}(?:[–—-]\d{1,2})?)?(?!\s*(?:Sa?m(?:uel)?|K(?:(?:in)?gs)|Chr(?:on(?:icles)?)?|Mac(?:c(?:abees)?)?|Co(?:r(?:inthian(?:s)?)?)?|Thes(?:s(?:alonians)?)?|T(?:i?m?|imothy)|Pe?t(?:er)?|Jo?h?n)))))*)|(?:Jude?\s*(\d{1,2}(?:[,;]?\s*\d{1,2})*))/gi;
+}
 
 /**
  * Given a string, gets the verse components and previous chapter (if it exists)
@@ -135,7 +175,7 @@ let bibleRegex = /(Gen(?:esis)?|Ex(?:od(?:us)?)?|Le(?:v(?:iticus)?)?|Num(?:b(?:e
  */
 function getVerseFromString(verseStr, prevChap) {
     let startChap, startVerse, endChap, endVerse;
-    let [start, end] = verseStr.split(dashes);
+    let [start, end] = verseStr.split(DASHES_REG);
 
     [startChap, startVerse] = start.split(':');
     if (startVerse === undefined) {
@@ -213,13 +253,13 @@ function getNodesToTransform(elem) {
  * @returns {number} The number of links on the page
  */
 function transformBibleReferences(elem, trans, language) {
-    // console.time('TreeWalker');
     let nodeList = getNodesToTransform(elem);
-    // console.timeEnd('TreeWalker');
+    console.log(nodeList);
 
-    // console.time('Change to links');
     nodeList.forEach(node => {
         node.innerHTML = node.innerHTML.replace(bibleRegex, function (orig, matchedBook, verseListStr, judeVerse) {
+            console.log(orig);
+            console.log(matchedBook);
             let book = '';
             let actual_trans = trans;
             if (judeVerse === undefined) {
@@ -252,6 +292,7 @@ function transformBibleReferences(elem, trans, language) {
             let startChap, startVerse, endChap, endVerse, prevChap = '';
             let refList = [];
             const verseList = verseListStr.split(/[,;]\s*/g);
+            console.log(verseList);
             const splitText = orig.split(/[,;]/g);
             for (let i = 0; i < verseList.length; i++) {
                 [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(verseList[i], prevChap);
@@ -270,7 +311,6 @@ function transformBibleReferences(elem, trans, language) {
             return refList.join(', ');
         });
     });
-    // console.timeEnd('Change to links');
     return nodeList.length;
 }
 

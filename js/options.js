@@ -12,6 +12,20 @@ let language_select = document.getElementById('language');
 let status = document.getElementById('save-status');
 
 /**
+ * Verify that the response is good from the fetch call
+ *
+ * @param {Response} response The response object
+ * @returns {object} The JSON associated with the response
+ * @throws Error if response is bad
+ */
+function check_fetch_ok_response(response) {
+    if (!response.ok) {
+        throw new Error('HTTP status ' + response.status);
+    }
+    return response.json();
+}
+
+/**
  * Gets the available bible languages
  *
  * @param {Function} cb Function to call once the languages have been fetched
@@ -22,12 +36,7 @@ function get_languages(cb) {
             'api-key': BIBLE_API_KEY,
         }),
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('HTTP status ' + response.status);
-            }
-            return response.json();
-        })
+        .then(check_fetch_ok_response)
         .then(res => {
             const separator = ':::';
             const versions = res.data.map(function (items) {
@@ -83,12 +92,7 @@ function get_versions(is_event, cb) {
             'api-key': BIBLE_API_KEY,
         }),
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('HTTP status ' + response.status);
-            }
-            return response.json();
-        })
+        .then(check_fetch_ok_response)
         .then(res => {
             populate_version_select(res.data);
             if (!is_event) {
@@ -142,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // eslint-disable-next-line no-undef
         M.FormSelect.init(language_select, {});
         language_select.value = settings['language'];
-        get_languages(function() {
+        get_languages(function () {
             get_versions(false, function () {
                 version_select.value = settings['translation'];
                 version_select.removeAttribute('disabled');
