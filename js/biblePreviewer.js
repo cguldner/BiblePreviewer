@@ -23,6 +23,15 @@ const BIBLE_DIRECT_URL = 'global.bible/bible/';
 const versions_with_deutero = [DEFAULT_DEUTERO_TRANS];
 
 /**
+ * The Z index to give tooltips that are no longer being hovered
+ */
+const INACTIVE_ZINDEX = 400;
+/**
+ * The Z index to give the tooltip that is being actively hovered
+ */
+const ACTIVE_ZINDEX = 500;
+
+/**
  * Whether to generate the bible reference matching regex, or use the hardcoded one.
  * For production, this should be set to false.
  */
@@ -254,12 +263,9 @@ function getNodesToTransform(elem) {
  */
 function transformBibleReferences(elem, trans, language) {
     let nodeList = getNodesToTransform(elem);
-    console.log(nodeList);
 
     nodeList.forEach(node => {
         node.innerHTML = node.innerHTML.replace(bibleRegex, function (orig, matchedBook, verseListStr, judeVerse) {
-            console.log(orig);
-            console.log(matchedBook);
             let book = '';
             let actual_trans = trans;
             if (judeVerse === undefined) {
@@ -292,7 +298,6 @@ function transformBibleReferences(elem, trans, language) {
             let startChap, startVerse, endChap, endVerse, prevChap = '';
             let refList = [];
             const verseList = verseListStr.split(/[,;]\s*/g);
-            console.log(verseList);
             const splitText = orig.split(/[,;]/g);
             for (let i = 0; i < verseList.length; i++) {
                 [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(verseList[i], prevChap);
@@ -377,6 +382,12 @@ function createTooltips(elem) {
         duration: 250,
         arrow: true,
         interactive: true,
+        onTrigger: function (instance) {
+            instance.setProps({zIndex: ACTIVE_ZINDEX});
+        },
+        onUntrigger: function (instance) {
+            instance.setProps({zIndex: INACTIVE_ZINDEX});
+        },
         content: function (reference) {
             const bibleBook = reference.getAttribute('data-bible-book');
             const bibleRef = reference.getAttribute('data-bible-ref');
@@ -389,6 +400,8 @@ function createTooltips(elem) {
             }
         },
         onShow: function (instance) {
+            instance.setProps({zIndex: ACTIVE_ZINDEX});
+
             const reference = instance.reference;
             const bibleBook = reference.getAttribute('data-bible-book');
             const bibleRef = reference.getAttribute('data-bible-ref');
