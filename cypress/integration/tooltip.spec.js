@@ -1,4 +1,7 @@
 const TEST_FILE = Cypress.env('testFile');
+const LINK_SELECTOR = Cypress.env('linkSelector');
+const TOOLTIP_SELECTOR = Cypress.env('tooltipSelector');
+const TOOLTIP_TEXT_SELECTOR = Cypress.env('tooltipTextSelector');
 const API_ENDPOINT = '**/api.scripture.api.bible/v1/**';
 
 context('Tooltip', {retries: 1}, () => {
@@ -49,7 +52,7 @@ context('Tooltip', {retries: 1}, () => {
     function unhoverTooltip() {
         cy.get('body').realHover();
         // Wait until the tooltip disappears
-        cy.get('.biblePreviewerTooltip').should('not.exist');
+        cy.get(TOOLTIP_SELECTOR).should('not.exist');
     }
 
     describe('Tooltip Show', () => {
@@ -59,10 +62,9 @@ context('Tooltip', {retries: 1}, () => {
          * @param {string} bibleRef The bible reference to verify
          */
         function tooltipShow(bibleRef) {
-            cy.get('.biblePreviewerTooltip').should('not.exist');
-            cy.get('a.biblePreviewerLink').contains(new RegExp(`^${bibleRef}$`)).should('exist');
-            cy.get('a.biblePreviewerLink').contains(new RegExp(`^${bibleRef}$`)).realHover();
-            cy.get('.biblePreviewerTooltip').should('exist');
+            cy.get(TOOLTIP_SELECTOR).should('not.exist');
+            cy.get(LINK_SELECTOR).contains(new RegExp(`^${bibleRef}$`)).should('exist').realHover();
+            cy.get(TOOLTIP_SELECTOR).should('exist');
         }
 
         it('Should show tooltip on hover of single chapter and single verse', () => tooltipShow('John 4:24'));
@@ -72,22 +74,22 @@ context('Tooltip', {retries: 1}, () => {
         it('Should show tooltip on hover of Jude if chapter is provided', () => tooltipShow('Jude 1:7'));
         it('Should not send another network request if one link is hovered twice', () => {
             const verse = /^John 4:24$/;
-            cy.get('a.biblePreviewerLink').contains(verse).realHover();
+            cy.get(LINK_SELECTOR).contains(verse).realHover();
             cy.wait('@getRequest');
             unhoverTooltip();
             cy.intercept('GET', API_ENDPOINT).as('getRequest2');
-            cy.get('a.biblePreviewerLink').contains(verse).realHover();
-            cy.get('.biblePreviewerTooltip').should('exist');
+            cy.get(LINK_SELECTOR).contains(verse).realHover();
+            cy.get(TOOLTIP_SELECTOR).should('exist');
             unhoverTooltip();
             cy.get('@getRequest2').should('not.exist');
         });
         it('Should not send another network request if two separate links to same bible verse are hovered', () => {
-            cy.get('div.duplicate-verse-test a.biblePreviewerLink').eq(0).realHover();
+            cy.get(`div.duplicate-verse-test ${LINK_SELECTOR}`).eq(0).realHover();
             cy.wait('@getRequest');
             unhoverTooltip();
             cy.intercept('GET', API_ENDPOINT).as('getRequest2');
-            cy.get('div.duplicate-verse-test a.biblePreviewerLink').eq(1).realHover();
-            cy.get('.biblePreviewerTooltip').should('exist');
+            cy.get(`div.duplicate-verse-test ${LINK_SELECTOR}`).eq(1).realHover();
+            cy.get(TOOLTIP_SELECTOR).should('exist');
             unhoverTooltip();
             cy.get('@getRequest2').should('not.exist');
         });
@@ -105,8 +107,8 @@ context('Tooltip', {retries: 1}, () => {
          */
         function tooltipHeaderVerify(book, startChap, startVerse, endChap = '', endVerse = '') {
             const bibleRef = biblePartsToRef(book, startChap, startVerse, endChap, endVerse);
-            cy.get('a.biblePreviewerLink').contains(new RegExp(`^${bibleRef}$`)).realHover();
-            cy.get('.biblePreviewerTooltip .bpHeaderBar').should('exist')
+            cy.get(LINK_SELECTOR).contains(new RegExp(`^${bibleRef}$`)).realHover();
+            cy.get(`${TOOLTIP_SELECTOR} .bpHeaderBar`).should('exist')
                 .contains(new RegExp(`\\b${book}`))
                 .contains(refToRegexp(startChap))
                 .contains(refToRegexp(startVerse))
@@ -133,9 +135,9 @@ context('Tooltip', {retries: 1}, () => {
          */
         function tooltipContentVerify(book, startChap, startVerse, endChap = '', endVerse = '') {
             const bibleRef = biblePartsToRef(book, startChap, startVerse, endChap, endVerse);
-            cy.get('a.biblePreviewerLink').contains(new RegExp(`^${bibleRef}$`)).realHover();
+            cy.get(LINK_SELECTOR).contains(new RegExp(`^${bibleRef}$`)).realHover();
             cy.wait('@getRequest');
-            cy.get('.bpTooltipContent').as('content')
+            cy.get(TOOLTIP_TEXT_SELECTOR).as('content')
                 .should('exist')
                 .invoke('text')
                 .should('not.equal', 'Loading')

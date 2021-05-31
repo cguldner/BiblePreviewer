@@ -1,6 +1,9 @@
 {
     "env": {
-        "testFile": "cypress/test.html"
+        "testFile": "cypress/test.html",
+        "linkSelector": "a.biblePreviewerLink",
+        "tooltipSelector": ".biblePreviewerTooltip",
+        "tooltipTextSelector": ".bpTooltipContent"
     },
     "watchForFileChanges": false,
     "video": false

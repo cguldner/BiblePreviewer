@@ -1,4 +1,5 @@
 const TEST_FILE = Cypress.env('testFile');
+const LINK_SELECTOR = Cypress.env('linkSelector');
 
 context('Link Creation', () => {
     beforeEach(() => {
@@ -11,7 +12,7 @@ context('Link Creation', () => {
      * @param {string} bibleRef The bible reference to verify
      */
     function linkMatch(bibleRef) {
-        cy.get('a.biblePreviewerLink').contains(new RegExp(`^${bibleRef}$`)).should('exist');
+        cy.get(LINK_SELECTOR).contains(new RegExp(`^${bibleRef}$`)).should('exist');
     }
 
     it('Should create link for single chapter and single verse', () => linkMatch('John 4:24'));
@@ -21,8 +22,8 @@ context('Link Creation', () => {
     it('Should create link for Jude if chapter is provided', () => linkMatch('Jude 1:7'));
     it('Should not overwrite existing links', () => {
         // At least wait until bible links have started appearing
-        cy.get('a.biblePreviewerLink').should('exist');
-        cy.get('.keep-existing-link-test').find('a.biblePreviewerLink').should('not.exist');
+        cy.get(LINK_SELECTOR).should('exist');
+        cy.get('.keep-existing-link-test').find(LINK_SELECTOR).should('not.exist');
     });
     // Makes sure that in the case of something like Phil. 2:12, 1 Pet. 1:9,
     // the 1 matches to Peter and not to Philippians
