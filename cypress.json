@@ -3,7 +3,8 @@
         "testFile": "cypress/test.html",
         "linkSelector": "a.biblePreviewerLink",
         "tooltipSelector": ".biblePreviewerTooltip",
-        "tooltipTextSelector": ".bpTooltipContent"
+        "tooltipTextSelector": ".bpTooltipContent",
+        "apiEndpoint": "**/api.scripture.api.bible/v1/**"
     },
     "watchForFileChanges": false,
     "video": false

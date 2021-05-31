@@ -4,6 +4,7 @@ const LINK_SELECTOR = Cypress.env('linkSelector');
 context('Link Creation', () => {
     beforeEach(() => {
         cy.visit(TEST_FILE);
+        cy.stubApiRequests();
     });
 
     /**

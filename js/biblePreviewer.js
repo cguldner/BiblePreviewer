@@ -409,8 +409,7 @@ function createTooltips(elem) {
 
             const fullRef = `${bibleBook} ${bibleRef}`;
             if (bibleVerseDict[fullRef] === undefined) {
-                // eslint-disable-next-line comma-spacing
-                let [startChap, startVerse, endChap, endVerse,] = getVerseFromString(bibleRef, '');
+                let [startChap, startVerse, endChap, endVerse] = getVerseFromString(bibleRef, '');
                 sendAPIRequestForVerses(bibleBook, startChap, startVerse, endChap, endVerse, bibleTrans, function (verseText, verseRef, status) {
                     if (verseText && status === 200) {
                         // Store into a dictionary for quick access later
