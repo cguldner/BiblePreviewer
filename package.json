@@ -14,7 +14,7 @@
     "zip": "rm -rf *.zip && npm run build:dev && gulp zip",
     "watch": "webpack --watch",
     "cypress:gui": "cypress open",
-    "cypress:run": "cypress run --record false --browser chrome",
+    "cypress:run": "cypress run --record false --browser chrome --headed",
     "test": "npm run build:dev && npm run cypress:run",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix"
