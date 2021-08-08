@@ -42,6 +42,8 @@ $arrow-color: $toolbar-bg-color;
 }
 
 .biblePreviewerTooltip {
+  font-family: initial;
+
   .bpHeaderBar {
     background-color: $toolbar-bg-color;
     padding: 3px 20px;
@@ -75,7 +77,8 @@ $arrow-color: $toolbar-bg-color;
     padding: 10px 20px;
     text-align: left;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: auto !important;
+    white-space: initial !important;
     font-style: normal;
 
     h2 {
@@ -93,7 +96,7 @@ $arrow-color: $toolbar-bg-color;
     p {
       margin: 0;
       display: inline;
-      font-size: 18px;
+      font-size: 1.25em;
       line-height: 1;
     }
 

@@ -350,25 +350,45 @@ function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, end
 }
 
 /**
+ * Creates an HTML element with the specified attributes
+ *
+ * @param {string} elemName The tag name of the HTML element to create (such as div)
+ * @param {object} paramDict The dictionary of attributes to set
+ * @returns {Node} The HTML element
+ */
+function createHtmlElement(elemName, paramDict) {
+    const elem = document.createElement(elemName);
+    for (const [key, val] of Object.entries(paramDict)) {
+        if (['innerHTML', 'innerText'].indexOf(key) >= 0) {
+            elem[key] = val;
+        } else {
+            elem.setAttribute(key, val);
+        }
+    }
+    return elem;
+}
+
+/**
  * Creates the tooltip content for the bible verse
  *
  * @param {object} ref The stored bible verse information
  * @param {string} [ref.verse] The bible verse (for example 1st Corinthians 1:1)
  * @param {string} ref.text The text of the bible verse
  * @param {string} [ref.translation] The translation of the verse
- * @returns {string} The html content that the tooltip will use
+ * @returns {Node} The html content that the tooltip will use
  */
 function createTooltipContent({verse, text, translation}) {
-    let htmlString = '<div class="biblePreviewerTooltip" role="tooltip">';
+    const containerElem = createHtmlElement('div', {'class': 'biblePreviewerTooltip', 'role': 'tooltip'});
     if (verse) {
-        htmlString += `<div class="bpHeaderBar"><div class="bpVerse">${verse}</div>`;
+        const headerElem = createHtmlElement('div', {'class': 'bpHeaderBar'});
+        headerElem.appendChild(createHtmlElement('div', {'class': 'bpVerse', 'innerText': verse}));
         if (translation) {
-            htmlString += `<div class="bpTranslation">${translation}</div>`;
+            headerElem.appendChild(createHtmlElement('div', {'class': 'bpTranslation', 'innerText': translation}));
         }
-        htmlString += '</div>';
+        containerElem.appendChild(headerElem);
     }
-    htmlString += `<div class="bpTooltipContent">${text}</div></div>`;
-    return htmlString;
+    containerElem.appendChild(createHtmlElement('div', {'class': 'bpTooltipContent', 'innerHTML': text}));
+    return containerElem;
 }
 
 /**
@@ -382,6 +402,7 @@ function createTooltips(elem) {
         duration: 250,
         arrow: true,
         interactive: true,
+        allowHTML: true,
         onTrigger: function (instance) {
             instance.setProps({zIndex: ACTIVE_ZINDEX});
         },
@@ -433,9 +454,7 @@ function createTooltips(elem) {
                 // If there is another link to the same verse on the page, then set that verse text
                 instance.setContent(createTooltipContent(bibleVerseDict[fullRef]));
             }
-        },
-
-        allowHTML: true
+        }
     });
 }
 
