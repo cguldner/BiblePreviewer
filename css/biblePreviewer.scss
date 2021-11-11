@@ -35,7 +35,7 @@ $arrow-color: $toolbar-bg-color;
   .tippy-content {
     background-color: $popup-color !important;
     padding: 0 0 5px 0;
-    color: $popup-fg-color;
+    color: $popup-fg-color !important;
     border-radius: 10px;
     border: 2px solid $toolbar-bg-color;
   }
