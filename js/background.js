@@ -2,7 +2,6 @@ const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
 
 // Runs the script once the page has been fully loaded
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
-    console.info(tab);
     if (!tab.url.match(/^about:/) && info.status === 'complete') {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
             chrome.storage.sync.get(null, settings => {
@@ -10,11 +9,10 @@ chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
                     settings = {};
                 }
                 settings['url'] = tabs[0].url;
-                chrome.tabs.sendMessage(tabs[0].id, settings, response => {
-                    console.info(response);
-                });
+                chrome.tabs.sendMessage(tabs[0].id, settings);
             });
         });
+        return true; // Will respond asynchronously.
     }
 });
 
@@ -29,6 +27,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             .then(res => sendResponse(res))
             .catch(error => {
                 console.error(error);
+                sendResponse(JSON.stringify({
+                    'statusCode': 400
+                }));
             });
         return true; // Will respond asynchronously.
     }

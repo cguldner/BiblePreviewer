@@ -13,12 +13,28 @@ context('Link Creation', () => {
      * @param {string} bibleRef The bible reference to verify
      */
     function linkMatch(bibleRef) {
-        cy.get(LINK_SELECTOR).contains(new RegExp(`^${bibleRef}$`)).should('exist');
+        cy.get(LINK_SELECTOR).contains(new RegExp(`^\\s*${bibleRef}\\s*$`)).should('exist');
     }
 
     it('Should create link for single chapter and single verse', () => linkMatch('John 4:24'));
     it('Should create link for single chapter and multiple verses', () => linkMatch('Gen 4:24-25'));
     it('Should create link for multiple chapters and multiple verses', () => linkMatch('Matt 4:24-5:3'));
+    it('Should create link for a list of single verses in the same chapter', () => {
+        linkMatch('Gal 3:5');
+        linkMatch('8');
+    });
+    it('Should create link for a list of multiple verses in the same chapter', () => {
+        linkMatch('Joel 2:4');
+        linkMatch('9-10');
+    });
+    it('Should create link for a list of multiple chapter:verse references in same book', () => {
+        linkMatch('1 Cor 3:6');
+        linkMatch('5:8');
+    });
+    it('Should create link for a list of multiple chapter:verse range references in same book', () => {
+        linkMatch('Psalm 133:99-100');
+        linkMatch('144:89-200');
+    });
     it('Should create link for Jude if chapter not provided', () => linkMatch('Jude 6'));
     it('Should create link for Jude if chapter is provided', () => linkMatch('Jude 1:7'));
     it('Should not overwrite existing links', () => {
