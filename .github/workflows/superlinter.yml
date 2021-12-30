@@ -30,3 +30,4 @@ jobs:
           VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_JSCPD: false
+          CSS_FILE_NAME: .stylelintrc.json
