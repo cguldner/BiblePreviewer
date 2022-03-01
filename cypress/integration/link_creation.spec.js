@@ -31,6 +31,9 @@ context('Link Creation', () => {
         linkMatch('1 Cor 3:6');
         linkMatch('5:8');
     });
+    it('Should create link for a reference where the chapter and verse are each 3 digits long', () => {
+        linkMatch('Psalm 119:105');
+    });
     it('Should create link for a list of multiple chapter:verse range references in same book', () => {
         linkMatch('Psalm 133:99-100');
         linkMatch('144:89-200');
