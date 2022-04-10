@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Bible Previewer",
   "short_name": "BiblePreview",
   "author": "Cody Guldner",
@@ -12,26 +12,29 @@
     "128": "icons/bible128.png"
   },
   "permissions": [
-    "https://bibles.org/v2/",
     "storage",
     "tabs"
   ],
-  "browser_action": {
+  "host_permissions": [
+    "https://bibles.org/v2/",
+    "*://*/*"
+  ],
+  "action": {
     "default_icon": "icons/bible16.png",
     "default_popup": "html/popup.html"
   },
   "background": {
-    "scripts": [
-      "js/background.js"
-    ],
-    "persistent": false
+    "service_worker": "js/background.js"
   },
   "options_ui": {
     "page": "html/options.html",
     "open_in_tab": false
   },
   "web_accessible_resources": [
-    "js/*.js.map"
+    {
+      "resources": ["js/*.js.map"],
+      "matches": ["*://*/*"]
+    }
   ],
   "content_scripts": [
     {
