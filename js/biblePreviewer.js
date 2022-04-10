@@ -476,7 +476,7 @@ function addLinks(elem, request) {
 }
 
 // Starts the app only once the page has completely finished loading
-chrome.runtime.onMessage.addListener(function (request) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.translation === undefined) {
         request.translation = DEFAULT_TRANS;
     }
@@ -492,9 +492,9 @@ chrome.runtime.onMessage.addListener(function (request) {
         }
     }
 
-    if (isCypress) {
-        addLinks(document.body, request);
+    addLinks(document.body, request);
 
+    if (isCypress) {
         let interval = setInterval(() => {
             const cypressFrame = document.querySelector('iframe').contentWindow.document.querySelector('#bible-previewer-cypress-test-container');
             if (cypressFrame) {
@@ -502,7 +502,8 @@ chrome.runtime.onMessage.addListener(function (request) {
                 clearInterval(interval);
             }
         }, 500);
-    } else {
-        addLinks(document.body, request);
     }
+
+    // Call sendResponse so the message passer knows that the request has finished
+    sendResponse();
 });
