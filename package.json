@@ -11,18 +11,14 @@
     "build:prod": "webpack -p --env.NODE_ENV=production",
     "build:dev": "webpack",
     "clean": "rm -rf dist *.zip",
-    "zip": "rm -rf *.zip && npm run build:dev && gulp zip",
+    "zip": "rm -rf *.zip && bash get_versions.sh && npm run build:dev && gulp zip",
     "watch": "webpack --watch",
     "cypress:gui": "cypress open",
     "cypress:run": "cypress run --record false --browser chrome --headed",
     "test": "npm run build:dev && npm run cypress:run",
     "lint": "eslint . --max-warnings 0 && stylelint **/*.scss",
-    "lint:fix": "eslint . --fix"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint && npm test"
-    }
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky install"
   },
   "author": "Cody Guldner",
   "license": "ISC",
@@ -50,7 +46,7 @@
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
     "gulp-zip": "^5.1.0",
-    "husky": "^5.0.0",
+    "husky": "^7.0.4",
     "mini-css-extract-plugin": "^1.3.1",
     "node-sass": "^7.0.1",
     "postcss": "^8.4.5",

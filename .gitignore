@@ -6,3 +6,4 @@ img
 *.crx
 *.pem
 cypress/screenshots/*
+build_versions.txt
