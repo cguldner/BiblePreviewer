@@ -1,0 +1,8 @@
+#!/bin/sh
+
+BASEDIR="$( cd "$( dirname "$0" )" && pwd )"
+
+# shellcheck source=/dev/null
+. "${BASEDIR}/_/husky.sh"
+
+npm run lint
