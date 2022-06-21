@@ -6,11 +6,11 @@
 </head>
 <body>
 <div id="bible-previewer-cypress-test-container">
-    <div>John 4:24</div>
+    <div>A cool verse is John 4:24</div>
     <div>Gen 4:24-25</div>
     <div>Matt 4:24-5:3</div>
     <div>Gal 3:5, 8</div>
-    <div>Joel 2:4, 9-10</div>
+    <div class="multiple-verse-same-chapter">Joel 2:4, 9-10</div>
     <div>1 Cor 3:6, 5:8</div>
     <div>Psalm 133:99-100, 144:89-200</div>
     <div>Psalm 119:105</div>
@@ -18,7 +18,16 @@
     <div>Jude 1:7</div>
     <div class="duplicate-verse-test">Ex 19:20</div>
     <div class="duplicate-verse-test">Ex 19:20</div>
-    <div class="keep-existing-link-test">Judges <a href="#">14</a>:22</div>
+    <div class="keep-existing-link-test">
+        I think that <a id="link-to-nowhere" href="#">Judges 14:22</a> is a pretty cool bible verse, but you can't
+        forget about Romans 12:2
+    </div>
+    <div class="keep-existing-link-test-with-html">
+        <a id="link-to-nowhere-with-html" href="#"><i>Col 7:4</i></a>
+    </div>
+    <div class="create-two-links-for-different-books">
+        Sirach 1:20 and Song of Songs 4:3 are neat
+    </div>
     <div class="following-verse-start-chapter-test">Phil. 2:12, 1 Pet. 1:9</div>
 </div>
 

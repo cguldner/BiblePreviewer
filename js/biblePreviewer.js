@@ -1,6 +1,3 @@
-// TODO: Add font size selector to the option panel
-// TODO: Add version selector to the popup.html
-// TODO: Add turning off on specific websites to popup.html
 import '../css/biblePreviewer.scss';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional for styling
@@ -9,7 +6,7 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
 
 const LOADING_TEXT = 'Loading';
 const VERSE_NO_EXIST_TEXT = 'Verse does not exist';
-const BAD_REQUEST_TEXT = 'Request couldn\'t be completed, try again later';
+const BAD_REQUEST_TEXT = "Request couldn't be completed, try again later";
 const TRY_AGAIN_TEXT = 'Try again later';
 
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
@@ -21,6 +18,13 @@ const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
 const BIBLE_DIRECT_URL = 'global.bible/bible/';
 
 const versions_with_deutero = [DEFAULT_DEUTERO_TRANS];
+
+const BIBLE_PREVIEWER_CONTAINER_CLASS = 'biblePreviewerContainer';
+const BIBLE_PREVIEWER_LINK_CLASS = 'biblePreviewerLink';
+
+const BIBLE_REF_LINK_PROP = 'data-bible-ref';
+const BIBLE_BOOK_LINK_PROP = 'data-bible-book';
+const BIBLE_TRANS_LINK_PROP = 'data-bible-trans';
 
 /**
  * The Z index to give tooltips that are no longer being hovered
@@ -212,43 +216,32 @@ function getVerseFromString(verseStr, prevChap) {
 
 /**
  * Gets all the document nodes that need to be transformed into a link
- * Uses a TreeWalker instead of simple replace so we can ignore bible references that are already links
+ * Uses a TreeWalker instead of simple replace, so we can handle links in a special way.
  *
  * @param {Element} elem - The DOM node to search over
- * @returns {Array} The list of node elements to transform to bible links
+ * @returns {Array<Node>} The list of node elements to transform to bible links
  */
 function getNodesToTransform(elem) {
     let treeWalker = document.createTreeWalker(elem,
         NodeFilter.SHOW_TEXT,
         {
             acceptNode: function (node) {
-                // Check for a book of the bible, and that the text isn't already a link
-                if (node.textContent.match(bibleRegex) && node.parentElement.closest('a') === null
-                    && node.parentElement.closest('.biblePreviewerTooltip') === null) {
+                // Check for a book of the bible, and make sure this text node isn't already in a link
+                if (node.textContent.match(bibleRegex)
+                    && node.parentElement.classList.contains(BIBLE_PREVIEWER_LINK_CLASS) === false
+                    && node.parentElement.closest(BIBLE_PREVIEWER_LINK_CLASS) === null) {
                     return NodeFilter.FILTER_ACCEPT;
                 }
+                return NodeFilter.FILTER_REJECT;
             }
-        },
-        false
+        }
     );
 
     let nodeList = [];
-    // Since the tree walker returns text nodes, get all the elements containing those text nodes in the walker
+    // Return the list of nodes instead of the tree walker, because returning the tree walker
+    // messes with the iteration through the walker for some reason.
     while (treeWalker.nextNode()) {
-        let newNode = treeWalker.currentNode.parentNode, shouldAdd = true;
-        for (let i = nodeList.length - 1; i >= 0; i--) {
-            let prevNode = nodeList[i];
-            // Don't add this node if it has already been added, or it's parent is in the list
-            if (prevNode === newNode || prevNode.contains(newNode)) {
-                shouldAdd = false;
-                break;
-            }
-            // If we found a child of the new node, remove it from the list
-            if (newNode.contains(prevNode)) {
-                nodeList.splice(i, 1);
-            }
-        }
-        if (shouldAdd) nodeList.push(newNode);
+        nodeList.push(treeWalker.currentNode);
     }
     return nodeList;
 }
@@ -263,9 +256,11 @@ function getNodesToTransform(elem) {
  */
 function transformBibleReferences(elem, trans, language) {
     let nodeList = getNodesToTransform(elem);
+    const translationHasDeuteroBooks = versions_with_deutero.includes(trans);
 
-    nodeList.forEach(node => {
-        node.innerHTML = node.innerHTML.replace(bibleRegex, function (orig, matchedBook, verseListStr, judeVerse) {
+    for (const node of nodeList) {
+        const renderNode = document.createElement('span');
+        renderNode.innerHTML = node.textContent.replace(bibleRegex, function (orig, matchedBook, verseListStr, judeVerse) {
             let book = '';
             let actual_trans = trans;
             if (judeVerse === undefined) {
@@ -274,16 +269,17 @@ function transformBibleReferences(elem, trans, language) {
                     if (matchedBook.search(`^${key}$`) > -1) {
                         book = bibleBooks[key];
                         // If the book is John, continue searching to verify it isn't 1, 2, 3 John
-                        if (book !== 'John')
+                        if (book !== 'John') {
                             break;
+                        }
                     }
                 }
                 if (book === '') {
-                    console.error('Couldn\'t match ' + orig);
+                    console.error("Couldn't match " + orig);
                     return orig;
                 }
                 // Change translation if it is a deuterocannonical book and an unsupported translation is selected
-                if (!versions_with_deutero.includes(actual_trans) && deutero_books.includes(book)) {
+                if (!translationHasDeuteroBooks && deutero_books.includes(book)) {
                     actual_trans = DEFAULT_DEUTERO_TRANS;
                 }
             } else {
@@ -302,20 +298,35 @@ function transformBibleReferences(elem, trans, language) {
             for (let i = 0; i < verseList.length; i++) {
                 [startChap, startVerse, endChap, endVerse, prevChap] = getVerseFromString(verseList[i], prevChap);
                 book = book.toUpperCase();
-                let directHref = `https://${language}.${BIBLE_DIRECT_URL}${actual_trans}
+                let linkElem;
+                if (node.parentElement.tagName === 'A' || node.parentElement.closest('a') !== null) {
+                    // Just create a span so that the original link is not modified
+                    linkElem = document.createElement('span');
+                } else {
+                    linkElem = document.createElement('a');
+                    linkElem.href = `https://${language}.${BIBLE_DIRECT_URL}${actual_trans}
 /${book}.${prevChap}?passageId=${book}.${startChap}.${startVerse}`;
-                if (startVerse !== endVerse) {
-                    directHref += `-${book}.${endChap}.${endVerse}`;
+                    if (startVerse !== endVerse) {
+                        linkElem.href += `-${book}.${endChap}.${endVerse}`;
+                    }
                 }
-                let apiLink = `${startChap}:${startVerse}-${endChap}:${endVerse}`;
-                refList.push('<span class="biblePreviewerContainer">' +
-                    `<a class="biblePreviewerLink" href="${directHref}" target="_blank" data-bible-ref="${apiLink}"
-                            data-bible-book="${book}" data-bible-trans="${actual_trans}">${splitText[i]}</a></span>`);
+                const containerElem = document.createElement('span');
+                containerElem.className = BIBLE_PREVIEWER_CONTAINER_CLASS;
+                linkElem.className = BIBLE_PREVIEWER_LINK_CLASS;
+                linkElem.textContent = splitText[i];
+                linkElem.setAttribute(BIBLE_REF_LINK_PROP, `${startChap}:${startVerse}-${endChap}:${endVerse}`);
+                linkElem.setAttribute(BIBLE_BOOK_LINK_PROP, book);
+                linkElem.setAttribute(BIBLE_TRANS_LINK_PROP, actual_trans);
+                containerElem.appendChild(linkElem);
+                refList.push(containerElem.outerHTML);
             }
 
             return refList.join(', ');
         });
-    });
+
+        node.replaceWith(...renderNode.childNodes);
+    }
+
     return nodeList.length;
 }
 
@@ -353,8 +364,8 @@ function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, end
  * Creates an HTML element with the specified attributes
  *
  * @param {string} elemName The tag name of the HTML element to create (such as div)
- * @param {object} paramDict The dictionary of attributes to set
- * @returns {Node} The HTML element
+ * @param {Object<string, string>} paramDict The dictionary of attributes to set
+ * @returns {HTMLElement} The HTML element
  */
 function createHtmlElement(elemName, paramDict) {
     const elem = document.createElement(elemName);
@@ -375,7 +386,7 @@ function createHtmlElement(elemName, paramDict) {
  * @param {string} [ref.verse] The bible verse (for example 1st Corinthians 1:1)
  * @param {string} ref.text The text of the bible verse
  * @param {string} [ref.translation] The translation of the verse
- * @returns {Node} The html content that the tooltip will use
+ * @returns {HTMLElement} The html content that the tooltip will use
  */
 function createTooltipContent({verse, text, translation}) {
     const containerElem = createHtmlElement('div', {'class': 'biblePreviewerTooltip', 'role': 'tooltip'});
@@ -397,7 +408,7 @@ function createTooltipContent({verse, text, translation}) {
  * @param {Element} elem The element to search under to create the tooltips for
  */
 function createTooltips(elem) {
-    tippy(elem.querySelectorAll('.biblePreviewerLink'), {
+    tippy(elem.querySelectorAll(`.${BIBLE_PREVIEWER_LINK_CLASS}`), {
         delay: [250, 750],
         duration: 250,
         arrow: true,
@@ -410,8 +421,8 @@ function createTooltips(elem) {
             instance.setProps({zIndex: INACTIVE_ZINDEX});
         },
         content: function (reference) {
-            const bibleBook = reference.getAttribute('data-bible-book');
-            const bibleRef = reference.getAttribute('data-bible-ref');
+            const bibleBook = reference.getAttribute(BIBLE_BOOK_LINK_PROP);
+            const bibleRef = reference.getAttribute(BIBLE_REF_LINK_PROP);
             const fullRef = `${bibleBook} ${bibleRef}`;
             if (bibleVerseDict[fullRef] === undefined) {
                 return createTooltipContent({text: LOADING_TEXT});
@@ -424,9 +435,9 @@ function createTooltips(elem) {
             instance.setProps({zIndex: ACTIVE_ZINDEX});
 
             const reference = instance.reference;
-            const bibleBook = reference.getAttribute('data-bible-book');
-            const bibleRef = reference.getAttribute('data-bible-ref');
-            const bibleTrans = reference.getAttribute('data-bible-trans');
+            const bibleBook = reference.getAttribute(BIBLE_BOOK_LINK_PROP);
+            const bibleRef = reference.getAttribute(BIBLE_REF_LINK_PROP);
+            const bibleTrans = reference.getAttribute(BIBLE_TRANS_LINK_PROP);
 
             const fullRef = `${bibleBook} ${bibleRef}`;
             if (bibleVerseDict[fullRef] === undefined) {

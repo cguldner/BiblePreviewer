@@ -62,11 +62,12 @@ context('Tooltip', {retries: 1}, () => {
      * Verifies that a tooltip is created for the given bible reference when hovered
      *
      * @param {string} bibleRef The bible reference to verify
+     * @param {string} [containerSelector=body] The selector of the container to look in
      */
-    function tooltipShow(bibleRef) {
-        cy.get(TOOLTIP_SELECTOR).should('not.exist');
-        cy.get(LINK_SELECTOR).contains(new RegExp(`^${bibleRef}$`)).should('exist').realHover();
-        cy.get(TOOLTIP_SELECTOR).should('exist');
+    function tooltipShow(bibleRef, containerSelector = 'body') {
+        cy.get(containerSelector).find(TOOLTIP_SELECTOR).should('not.exist');
+        cy.get(containerSelector).find(LINK_SELECTOR).contains(new RegExp(`^${bibleRef}$`)).should('exist').realHover();
+        cy.get(containerSelector).find(TOOLTIP_SELECTOR).should('exist').should('be.visible');
     }
 
     /**
@@ -98,6 +99,14 @@ context('Tooltip', {retries: 1}, () => {
         it('Should show tooltip on hover of multiple chapters and multiple verses', () => tooltipShow('Matt 4:24-5:3'));
         it('Should show tooltip on hover of Jude if chapter not provided', () => tooltipShow('Jude 6'));
         it('Should show tooltip on hover of Jude if chapter is provided', () => tooltipShow('Jude 1:7'));
+        it('Should show tooltip for pre-existing link', () => {
+            tooltipShow('Judges 14:22', '.keep-existing-link-test');
+            unhoverTooltip();
+            tooltipShow('Romans 12:2', '.keep-existing-link-test');
+        });
+        it('Should show tooltip for pre-existing link with nested HTML', () => {
+            tooltipShow('Col 7:4', '.keep-existing-link-test-with-html');
+        });
         it('Should not send another network request if one link is hovered twice', () => {
             const verse = /^John 4:24$/;
             cy.get(LINK_SELECTOR).contains(verse).realHover();
