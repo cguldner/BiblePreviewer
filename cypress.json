@@ -1,11 +1,13 @@
 {
     "env": {
         "testFile": "cypress/test.html",
-        "linkSelector": "a.biblePreviewerLink",
+        "containerSelector": "span.biblePreviewerContainer",
+        "linkSelector": ".biblePreviewerLink",
         "tooltipSelector": ".biblePreviewerTooltip",
         "tooltipTextSelector": ".bpTooltipContent",
         "apiEndpoint": "**/api.scripture.api.bible/v1/**"
     },
+    "screenshotOnRunFailure": false,
     "watchForFileChanges": false,
     "video": false
 }
