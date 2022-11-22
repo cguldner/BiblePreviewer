@@ -2,9 +2,9 @@ name: Super-Linter
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   # Set the job key. The key is displayed as the job name

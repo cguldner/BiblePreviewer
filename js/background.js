@@ -1,4 +1,4 @@
-const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
+const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
 
 // Runs the script once the page has been fully loaded
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
