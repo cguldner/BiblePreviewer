@@ -23,7 +23,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm install
         uses: bahmutov/npm-install@v1
-      - run: npm run build:dev
+      - run: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
       - run: npm test
 
   zip:
@@ -42,6 +42,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm install
         uses: bahmutov/npm-install@v1
+      - run: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
       - run: npm run zip
       - name: Upload zip files
         uses: actions/upload-artifact@v2

@@ -6,10 +6,15 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
 const distFolder = 'dist';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 module.exports = env => {
+    let envPlugin;
+    if (env.BIBLE_API_KEY !== undefined) {
+        envPlugin = new webpack.EnvironmentPlugin({'BIBLE_API_KEY': env.BIBLE_API_KEY});
+    }
     let devMode = env === undefined || env.NODE_ENV !== 'production';
 
     return {
@@ -68,7 +73,9 @@ module.exports = env => {
             ]
         },
         plugins: [
-            new Dotenv(),
+            // If an environment variable exists for the BIBLE_API_KEY, then use that.
+            // Otherwise, use the value from the .env file.
+            envPlugin ? envPlugin : new Dotenv(),
             new CleanWebpackPlugin({verbose: true}),
             new MiniCssExtractPlugin({
                 filename: 'css/[name].css',
