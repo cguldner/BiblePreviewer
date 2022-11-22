@@ -2,7 +2,7 @@ import 'materialize-css';
 import '../css/options.scss';
 
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
-const BIBLE_API_KEY = '5b84d02c13d0f6135804a4aafc5f4040';
+const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
 
 const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
 const DEFAULT_LANGUAGE = 'eng';

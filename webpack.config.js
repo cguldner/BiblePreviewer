@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const Dotenv = require('dotenv-webpack');
 const distFolder = 'dist';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -67,6 +68,7 @@ module.exports = env => {
             ]
         },
         plugins: [
+            new Dotenv(),
             new CleanWebpackPlugin({verbose: true}),
             new MiniCssExtractPlugin({
                 filename: 'css/[name].css',

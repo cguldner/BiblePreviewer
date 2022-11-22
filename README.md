@@ -10,6 +10,12 @@ adds a link to that text that can be hovered, showing the text of the verse abov
 
 ## Building
 
+Create a `.env` file with the following contents:
+
+```shell
+BIBLE_API_KEY=<API_KEY>
+```
+
 Run `npm run watch` to have webpack watch the files for changes.
 
 Run `npm run zip` to compile a production build to the `dist` directory and create a zip of the necessary files

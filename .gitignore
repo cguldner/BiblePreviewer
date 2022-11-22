@@ -7,3 +7,4 @@ img
 *.pem
 cypress/screenshots/*
 build_versions.txt
+.env

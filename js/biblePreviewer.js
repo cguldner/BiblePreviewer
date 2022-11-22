@@ -2,7 +2,6 @@ import '../css/biblePreviewer.scss';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 
-// const ESV_API_KEY = '52ca2a57f09495325d251464d417edc1cfe94834';
 
 const LOADING_TEXT = 'Loading';
 const VERSE_NO_EXIST_TEXT = 'Verse does not exist';
@@ -10,7 +9,6 @@ const BAD_REQUEST_TEXT = "Request couldn't be completed, try again later";
 const TRY_AGAIN_TEXT = 'Try again later';
 
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
-// const ESV_API_BASE_URL = `https://api.esv.org/v3/passage/text/?q=`;
 const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
 const DEFAULT_LANGUAGE = 'eng';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
@@ -56,7 +54,7 @@ const MACC_REG = 'Mac(?:c(?:abees)?)?';
 const CORINTH_REG = 'Co(?:r(?:inthians?)?)?';
 const JUDE_REG = 'Jude?';
 const THES_REG = 'Thes(?:s(?:alonians)?)?';
-const TIM_REG = 'T(?:imothy|i?m?)';
+const TIM_REG = 'T(?:imothy|i|m|im)';
 const PETER_REG = 'Pe?t(?:er)?';
 const JOHN_REG = 'Jo?h?n';
 
