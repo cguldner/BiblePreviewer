@@ -1,4 +1,4 @@
-import 'materialize-css';
+import '@materializecss/materialize';
 import '../css/options.scss';
 
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
