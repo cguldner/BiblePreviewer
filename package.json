@@ -57,8 +57,8 @@
     "webpack-cli": "^5.0.0"
   },
   "dependencies": {
+    "@materializecss/materialize": "^1.1.0",
     "@popperjs/core": "^2.11.5",
-    "materialize-css": "^1.0.0",
     "tippy.js": "^6.3.7"
   }
 }
