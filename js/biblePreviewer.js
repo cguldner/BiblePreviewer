@@ -494,8 +494,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
 
     let isCypress = false;
-    for (let i = 0; i < document.scripts.length; i++) {
-        if (document.scripts[i].src.match(/localhost:\d+\/__cypress\/runner\/cypress_runner.js/)) {
+    for (const element of document.scripts) {
+        if (element.src.match(/localhost:\d+\/__cypress\/runner\/cypress_runner.js/)) {
             isCypress = true;
             break;
         }
