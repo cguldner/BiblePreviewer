@@ -13,7 +13,6 @@ let status = document.getElementById('save-status');
 
 /**
  * Verify that the response is good from the fetch call
- *
  * @param {Response} response The response object
  * @returns {object} The JSON associated with the response
  * @throws Error if response is bad
@@ -27,7 +26,6 @@ function check_fetch_ok_response(response) {
 
 /**
  * Gets the available bible languages
- *
  * @param {Function} cb Function to call once the languages have been fetched
  */
 function get_languages(cb) {
@@ -60,7 +58,6 @@ function get_languages(cb) {
 
 /**
  * Populate the version selector
- *
  * @param {object} versions The available bible versions
  */
 function populate_version_select(versions) {
@@ -81,7 +78,6 @@ function populate_version_select(versions) {
 
 /**
  * Get the available bible versions based on the selected language
- *
  * @param {boolean} is_event If this is being called in response to an event
  * @param {Function} cb Function to call once the versions have been obtained
  */
@@ -126,7 +122,6 @@ function save_options() {
 
 /**
  * Restores select box and checkbox state using the preferences stored in chrome.storage.
- *
  * @param {Function} cb Function to call after the options are loaded
  */
 function restore_options(cb) {

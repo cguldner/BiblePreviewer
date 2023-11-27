@@ -77,6 +77,7 @@ $arrow-color: $toolbar-bg-color;
     padding: 10px 20px;
     text-align: left;
     overflow-x: hidden;
+    /* stylelint-disable-next-line declaration-block-no-redundant-longhand-properties */
     overflow-y: auto !important;
     white-space: initial !important;
     font-style: normal;

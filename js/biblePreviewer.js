@@ -179,7 +179,6 @@ if (GENERATE_REGEX) {
 
 /**
  * Given a string, gets the verse components and previous chapter (if it exists)
- *
  * @param {string} verseStr The verse
  * @param {string} prevChap The previous chapter
  * @returns {Array} Each component of the verse, including start chapter and verse, and end chapter and verse
@@ -215,7 +214,6 @@ function getVerseFromString(verseStr, prevChap) {
 /**
  * Gets all the document nodes that need to be transformed into a link
  * Uses a TreeWalker instead of simple replace, so we can handle links in a special way.
- *
  * @param {Element} elem - The DOM node to search over
  * @returns {Array<Node>} The list of node elements to transform to bible links
  */
@@ -246,7 +244,6 @@ function getNodesToTransform(elem) {
 
 /**
  * Transform all bible references into links using a TreeWalker
- *
  * @param {Element} elem - The DOM node to search over
  * @param {string} trans - Which bible translation to use
  * @param {string} language - Which language is selected
@@ -330,7 +327,6 @@ function transformBibleReferences(elem, trans, language) {
 
 /**
  * Sends a request to the bible API for the specified verses
- *
  * @param {string} book - OSIS abbreviation of the book
  * @param {string} startChapter - chapter number
  * @param {string} startVerse - what verse to start reading from
@@ -360,9 +356,8 @@ function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, end
 
 /**
  * Creates an HTML element with the specified attributes
- *
  * @param {string} elemName The tag name of the HTML element to create (such as div)
- * @param {Object<string, string>} paramDict The dictionary of attributes to set
+ * @param {{[key: string]: string}} paramDict The dictionary of attributes to set
  * @returns {HTMLElement} The HTML element
  */
 function createHtmlElement(elemName, paramDict) {
@@ -379,7 +374,6 @@ function createHtmlElement(elemName, paramDict) {
 
 /**
  * Creates the tooltip content for the bible verse
- *
  * @param {object} ref The stored bible verse information
  * @param {string} [ref.verse] The bible verse (for example 1st Corinthians 1:1)
  * @param {string} ref.text The text of the bible verse
@@ -402,7 +396,6 @@ function createTooltipContent({verse, text, translation}) {
 
 /**
  * Create the tooltip popups that will show the verse text above the link on hover
- *
  * @param {Element} elem The element to search under to create the tooltips for
  */
 function createTooltips(elem) {
@@ -471,7 +464,6 @@ function createTooltips(elem) {
 
 /**
  * Performs the link transformation and tooltip generation
- *
  * @param {Element} elem The element to search under to create the tooltips for
  * @param {object} request The request object
  */
