@@ -10,7 +10,6 @@ context('Link Creation', () => {
 
     /**
      * Verifies that a link is created for the given bible reference
-     *
      * @param {string} bibleRef The bible reference to verify
      * @param {string} containerSelector The selector of the container to look in
      */

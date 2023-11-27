@@ -5,6 +5,7 @@ dist
 img
 *.crx
 *.pem
+cypress/downloads/*
 cypress/screenshots/*
 build_versions.txt
 .env

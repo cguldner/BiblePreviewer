@@ -24,7 +24,6 @@ context('Tooltip', {retries: 1}, () => {
 
     /**
      * Turns a bible reference portion into a regex
-     *
      * @param {string} ref The part of the reference to turn into a word bounded regex
      * @returns {RegExp} A word bounded regex
      */
@@ -34,7 +33,6 @@ context('Tooltip', {retries: 1}, () => {
 
     /**
      * Turns the parts of the bible reference into a full reference
-     *
      * @param {string} book Bible book name
      * @param {string} startChap Chapter number
      * @param {string} startVerse What verse to start reading from
@@ -60,9 +58,8 @@ context('Tooltip', {retries: 1}, () => {
 
     /**
      * Verifies that a tooltip is created for the given bible reference when hovered
-     *
      * @param {string} bibleRef The bible reference to verify
-     * @param {string} [containerSelector=body] The selector of the container to look in
+     * @param {string} [containerSelector] The selector of the container to look in
      */
     function tooltipShow(bibleRef, containerSelector = 'body') {
         cy.get(containerSelector).find(TOOLTIP_SELECTOR).should('not.exist');
@@ -72,7 +69,6 @@ context('Tooltip', {retries: 1}, () => {
 
     /**
      * Hovers the specified verse and waits for the corresponding API request to complete
-     *
      * @param {string} bibleRef The bible reference to hover
      */
     function tooltipShowAndWaitForApi(bibleRef) {
@@ -135,7 +131,6 @@ context('Tooltip', {retries: 1}, () => {
 
         /**
          * Verifies that the tooltip header has the correct information
-         *
          * @param {string} book Bible book name
          * @param {string} startChap Chapter number
          * @param {string} startVerse What verse to start reading from
@@ -153,7 +148,6 @@ context('Tooltip', {retries: 1}, () => {
 
         /**
          * Verifies that the tooltip content has the correct information
-         *
          * @param {string} startVerse What verse to start reading from
          * @param {string} [endVerse] What verse to end reading at
          */
@@ -170,7 +164,6 @@ context('Tooltip', {retries: 1}, () => {
 
         /**
          * Verifies the header and content of the tooltip
-         *
          * @param {string} book Bible book name
          * @param {string} startChap Chapter number
          * @param {string} startVerse What verse to start reading from
