@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+Script to create the releasable zip files for the extension.
+"""
 
 import argparse
 import json
@@ -43,6 +46,9 @@ def write_file_to_zip(file, root, dist_folder, zipf):
 
 
 def main():
+    """
+    Main function
+    """
     parser = argparse.ArgumentParser(
         description="Create releasable zip files",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -56,12 +62,12 @@ def main():
     )
     args = parser.parse_args()
 
-    with open(args.manifest, "r") as manifest_file:
+    with open(args.manifest, "r", encoding="utf-8") as manifest_file:
         manifest_data = json.load(manifest_file)
         release_version = manifest_data["version"]
 
     create_zip_file(
-        "BiblePreview.v{}.zip".format(release_version),
+        f"BiblePreview.v{release_version}.zip",
         [args.dist_folder],
         args.dist_folder,
     )
