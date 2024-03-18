@@ -18,4 +18,4 @@ BIBLE_API_KEY=<API_KEY>
 
 Run `npm run watch` to have webpack watch the files for changes.
 
-Run `npm run zip` to compile a production build to the `dist` directory and create a zip of the necessary files
+Run `npm run zip` to compile a production build to the `dist` directory and create an archive of the necessary files

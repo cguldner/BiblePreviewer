@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [master]
 
+permissions:
+  contents: read
+  packages: read
+  # To report GitHub Actions status checks
+  statuses: write
+
 jobs:
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
@@ -36,3 +42,4 @@ jobs:
           VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_JSCPD: false
+          VALIDATE_BASH_EXEC: false
