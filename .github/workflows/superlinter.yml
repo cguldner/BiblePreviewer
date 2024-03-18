@@ -19,12 +19,16 @@ jobs:
       # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          # super-linter needs the full git history to get the
+          # list of files that changed across commits
+          fetch-depth: 0
 
       # Runs the Super-Linter action
       - name: Run Super-Linter
-        uses: github/super-linter/slim@v4
+        uses: super-linter/super-linter@v6.3.0
         env:
-          DEFAULT_BRANCH: main
+          DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Don't validate CSS because it is too dumb to find my stylelintrc.json. Covered by the eslint job
           VALIDATE_CSS: false
