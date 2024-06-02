@@ -1,21 +1,22 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 const TEST_FILE = Cypress.env('testFile');
 const LINK_SELECTOR = Cypress.env('linkSelector');
 const CONTAINER_SELECTOR = Cypress.env('containerSelector');
+
+/**
+ * Verifies that a link is created for the given bible reference
+ * @param {string} bibleReference The bible reference to verify
+ * @param {string} containerSelector The selector of the container to look in
+ */
+function linkMatch(bibleReference, containerSelector = 'body') {
+    cy.get(containerSelector).find(LINK_SELECTOR).contains(new RegExp(`^\\s*${bibleReference}\\s*$`)).should('exist');
+}
 
 context('Link Creation', () => {
     beforeEach(() => {
         cy.visit(TEST_FILE);
         cy.stubApiRequests();
     });
-
-    /**
-     * Verifies that a link is created for the given bible reference
-     * @param {string} bibleRef The bible reference to verify
-     * @param {string} containerSelector The selector of the container to look in
-     */
-    function linkMatch(bibleRef, containerSelector = 'body') {
-        cy.get(containerSelector).find(LINK_SELECTOR).contains(new RegExp(`^\\s*${bibleRef}\\s*$`)).should('exist');
-    }
 
     it('Should create link for single chapter and single verse', () => linkMatch('John 4:24'));
     it('Should create link for single chapter and multiple verses', () => linkMatch('Gen 4:24-25'));

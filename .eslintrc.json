@@ -12,12 +12,17 @@
         "plugin:jsdoc/recommended",
         "plugin:import/errors",
         "plugin:import/warnings",
-        "plugin:regexp/recommended"
+        "plugin:regexp/recommended",
+        "plugin:unicorn/all",
+        "plugin:eslint-comments/recommended",
+        "plugin:sonarjs/recommended-legacy"
     ],
     "plugins": [
         "cypress",
         "no-only-tests",
-        "jsdoc"
+        "jsdoc",
+        "unicorn",
+        "sonarjs"
     ],
     "parserOptions": {
         "ecmaVersion": 12,
@@ -161,6 +166,16 @@
                 "definedTypes": [
                     "ReactNode"
                 ]
+            }
+        ],
+        "unicorn/prefer-module": "off",
+        "unicorn/no-anonymous-default-export": "off",
+        "unicorn/filename-case": "off",
+        "unicorn/no-array-callback-reference": "off",
+        "eslint-comments/disable-enable-pair": [
+            "error",
+            {
+                "allowWholeFile": true
             }
         ]
     }

@@ -1,21 +1,21 @@
 'use strict';
 
-const path = require('path');
+const path = require('node:path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const Dotenv = require('dotenv-webpack');
 const webpack = require('webpack');
-const distFolder = 'dist';
+const distributionFolder = 'dist';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-module.exports = env => {
-    let envPlugin;
-    if (env.BIBLE_API_KEY !== undefined) {
-        envPlugin = new webpack.EnvironmentPlugin({'BIBLE_API_KEY': env.BIBLE_API_KEY});
+module.exports = environment => {
+    let environmentPlugin;
+    if (environment.BIBLE_API_KEY !== undefined) {
+        environmentPlugin = new webpack.EnvironmentPlugin({'BIBLE_API_KEY': environment.BIBLE_API_KEY});
     }
-    let devMode = env === undefined || env.NODE_ENV !== 'production';
+    let developmentMode = environment === undefined || environment.NODE_ENV !== 'production';
 
     return {
         // mode: devMode ? 'development' : 'production',
@@ -28,9 +28,9 @@ module.exports = env => {
         },
         output: {
             filename: 'js/[name].js',
-            path: path.resolve(__dirname, distFolder)
+            path: path.resolve(__dirname, distributionFolder)
         },
-        devtool: devMode ? 'source-map' : false,
+        devtool: developmentMode ? 'source-map' : false,
         module: {
             rules: [
                 {
@@ -75,7 +75,7 @@ module.exports = env => {
         plugins: [
             // If an environment variable exists for the BIBLE_API_KEY, then use that.
             // Otherwise, use the value from the .env file.
-            envPlugin ? envPlugin : new Dotenv(),
+            environmentPlugin ?? new Dotenv(),
             new CleanWebpackPlugin({verbose: true}),
             new MiniCssExtractPlugin({
                 filename: 'css/[name].css',

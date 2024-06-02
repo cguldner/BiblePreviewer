@@ -2,8 +2,9 @@ const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
 
 // Runs the script once the page has been fully loaded
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
-    if (!tab.url.match(/^(about|chrome):/) && info.status === 'complete') {
+    if (!/^(?:about|chrome):/.test(tab.url) && info.status === 'complete') {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+            // eslint-disable-next-line unicorn/no-null
             chrome.storage.sync.get(null, settings => {
                 if (settings === undefined) {
                     settings = {};
@@ -24,7 +25,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }),
         })
             .then(response => response.text())
-            .then(res => sendResponse(res))
+            .then(response => sendResponse(response))
             .catch(error => {
                 console.error(error);
                 sendResponse(JSON.stringify({
