@@ -24,7 +24,11 @@
     "default_popup": "html/popup.html"
   },
   "background": {
-    "service_worker": "js/background.js"
+    "scripts": [
+      "js/background.js"
+    ],
+    "service_worker": "js/background.js",
+    "persistent": false
   },
   "options_ui": {
     "page": "html/options.html",
@@ -32,8 +36,12 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["js/*.js.map"],
-      "matches": ["*://*/*"]
+      "resources": [
+        "js/*.js.map"
+      ],
+      "matches": [
+        "*://*/*"
+      ]
     }
   ],
   "content_scripts": [
@@ -49,5 +57,11 @@
       ],
       "all_frames": true
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{bda3a2e1-851d-4bf9-83c1-0d1ac026a675}",
+      "strict_min_version": "42.0"
+    }
+  }
 }
