@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 module.exports = (on, config) => {

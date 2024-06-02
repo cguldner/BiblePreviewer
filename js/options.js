@@ -7,9 +7,9 @@ const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
 const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
 const DEFAULT_LANGUAGE = 'eng';
 
-let version_select = document.getElementById('bible-version');
-let language_select = document.getElementById('language');
-let status = document.getElementById('save-status');
+let version_select = document.querySelector('#bible-version');
+let language_select = document.querySelector('#language');
+let status = document.querySelector('#save-status');
 
 /**
  * Verify that the response is good from the fetch call
@@ -26,28 +26,28 @@ function check_fetch_ok_response(response) {
 
 /**
  * Gets the available bible languages
- * @param {Function} cb Function to call once the languages have been fetched
+ * @param {Function} callback Function to call once the languages have been fetched
  */
-function get_languages(cb) {
+function get_languages(callback) {
     fetch(`${BIBLE_API_BASE_URL}bibles`, {
         headers: new Headers({
             'api-key': BIBLE_API_KEY,
         }),
     })
         .then(check_fetch_ok_response)
-        .then(res => {
+        .then(response => {
             const separator = ':::';
-            const versions = res.data.map(function (items) {
+            const versions = response.data.map(function (items) {
                 return `${items.language.name}${separator}${items.language.id}`;
             });
-            for (const version of Array.from(new Set(versions)).sort()) {
+            for (const version of [...new Set(versions)].sort()) {
                 const [name, id] = version.split(separator);
                 // English is the first item in the list
                 if (id !== 'eng') {
                     language_select.add(new Option(name, id));
                 }
             }
-            cb();
+            callback();
             // eslint-disable-next-line no-undef
             M.FormSelect.init(language_select, {});
         })
@@ -65,13 +65,13 @@ function populate_version_select(versions) {
     for (let op in version_select.options) {
         version_select.remove(op);
     }
-    for (const ver of versions) {
-        if (ver['name'] !== '') {
-            let fullName = ver['name'];
-            if (ver['description']) {
-                fullName += ` - ${ver['description']}`;
+    for (const version of versions) {
+        if (version['name'] !== '') {
+            let fullName = version['name'];
+            if (version['description']) {
+                fullName += ` - ${version['description']}`;
             }
-            version_select.add(new Option(fullName, ver['id']));
+            version_select.add(new Option(fullName, version['id']));
         }
     }
 }
@@ -79,9 +79,9 @@ function populate_version_select(versions) {
 /**
  * Get the available bible versions based on the selected language
  * @param {boolean} is_event If this is being called in response to an event
- * @param {Function} cb Function to call once the versions have been obtained
+ * @param {Function} callback Function to call once the versions have been obtained
  */
-function get_versions(is_event, cb) {
+function get_versions(is_event, callback) {
     // TODO: Remove extra fetch call, can just pass dictionary from language call
     fetch(`${BIBLE_API_BASE_URL}bibles?language=${language_select.options[language_select.selectedIndex].value}`, {
         headers: new Headers({
@@ -89,10 +89,10 @@ function get_versions(is_event, cb) {
         }),
     })
         .then(check_fetch_ok_response)
-        .then(res => {
-            populate_version_select(res.data);
+        .then(response => {
+            populate_version_select(response.data);
             if (!is_event) {
-                cb();
+                callback();
             }
             // Reinitialize the select to show the new options
             // eslint-disable-next-line no-undef
@@ -122,19 +122,19 @@ function save_options() {
 
 /**
  * Restores select box and checkbox state using the preferences stored in chrome.storage.
- * @param {Function} cb Function to call after the options are loaded
+ * @param {Function} callback Function to call after the options are loaded
  */
-function restore_options(cb) {
+function restore_options(callback) {
     chrome.storage.sync.get({
         'language': DEFAULT_LANGUAGE,
         'translation': DEFAULT_TRANS
     }, function (settings) {
-        document.getElementById('save-button').classList.remove('disabled');
-        cb(settings);
+        document.querySelector('#save-button').classList.remove('disabled');
+        callback(settings);
     });
 }
 
-document.getElementById('save-button').addEventListener('click', save_options);
+document.querySelector('#save-button').addEventListener('click', save_options);
 
 document.addEventListener('DOMContentLoaded', function () {
     restore_options(function (settings) {
@@ -148,5 +148,5 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
-    document.getElementById('language').onchange = get_versions;
+    document.querySelector('#language').addEventListener('change', get_versions);
 });
