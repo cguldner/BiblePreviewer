@@ -4,7 +4,6 @@ const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
     if (!/^(?:about|chrome):/.test(tab.url) && info.status === 'complete') {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-            // eslint-disable-next-line unicorn/no-null
             chrome.storage.sync.get(null, settings => {
                 if (settings === undefined) {
                     settings = {};

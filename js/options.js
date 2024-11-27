@@ -1,3 +1,5 @@
+/* global M */
+
 import '@materializecss/materialize';
 import '../css/options.scss';
 
@@ -48,7 +50,6 @@ function get_languages(callback) {
                 }
             }
             callback();
-            // eslint-disable-next-line no-undef
             M.FormSelect.init(language_select, {});
         })
         .catch(error => {
@@ -95,7 +96,6 @@ function get_versions(is_event, callback) {
                 callback();
             }
             // Reinitialize the select to show the new options
-            // eslint-disable-next-line no-undef
             M.FormSelect.init(version_select, {});
             version_select.removeAttribute('disabled');
         })
@@ -138,11 +138,11 @@ document.querySelector('#save-button').addEventListener('click', save_options);
 
 document.addEventListener('DOMContentLoaded', function () {
     restore_options(function (settings) {
-        // eslint-disable-next-line no-undef
-        M.FormSelect.init(language_select, {});
-        language_select.value = settings['language'];
         get_languages(function () {
+            M.FormSelect.init(language_select, {});
+            language_select.value = settings['language'];
             get_versions(false, function () {
+                M.FormSelect.init(version_select, {});
                 version_select.value = settings['translation'];
                 version_select.removeAttribute('disabled');
             });

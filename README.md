@@ -5,8 +5,8 @@ adds a link to that text that can be hovered, showing the text of the verse abov
 
 ## Browser Support
 
-* [Chrome](https://chrome.google.com/webstore/detail/bible-previewer/khknjdjihianlbkkbpmoemlkphkeaddi)
-* [Firefox 57+](https://addons.mozilla.org/en-US/firefox/addon/bible-previewer/)
+- [Chrome](https://chrome.google.com/webstore/detail/bible-previewer/khknjdjihianlbkkbpmoemlkphkeaddi)
+- [Firefox 57+](https://addons.mozilla.org/en-US/firefox/addon/bible-previewer/)
 
 ## Building
 

@@ -11,22 +11,14 @@
     "64": "icons/bible64.png",
     "128": "icons/bible128.png"
   },
-  "permissions": [
-    "storage",
-    "tabs"
-  ],
-  "host_permissions": [
-    "https://bibles.org/v2/",
-    "*://*/*"
-  ],
+  "permissions": ["storage", "tabs"],
+  "host_permissions": ["https://bibles.org/v2/", "*://*/*"],
   "action": {
     "default_icon": "icons/bible16.png",
     "default_popup": "html/popup.html"
   },
   "background": {
-    "scripts": [
-      "js/background.js"
-    ],
+    "scripts": ["js/background.js"],
     "service_worker": "js/background.js",
     "persistent": false
   },
@@ -36,25 +28,15 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "js/*.js.map"
-      ],
-      "matches": [
-        "*://*/*"
-      ]
+      "resources": ["js/*.js.map"],
+      "matches": ["*://*/*"]
     }
   ],
   "content_scripts": [
     {
-      "css": [
-        "css/biblePreviewer.css"
-      ],
-      "js": [
-        "js/biblePreviewer.js"
-      ],
-      "matches": [
-        "<all_urls>"
-      ],
+      "css": ["css/biblePreviewer.css"],
+      "js": ["js/biblePreviewer.js"],
+      "matches": ["<all_urls>"],
       "all_frames": true
     }
   ],
