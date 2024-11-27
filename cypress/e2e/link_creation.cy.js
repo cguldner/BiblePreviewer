@@ -1,4 +1,4 @@
-/* eslint-disable sonarjs/no-duplicate-string */
+
 const TEST_FILE = Cypress.env('testFile');
 const LINK_SELECTOR = Cypress.env('linkSelector');
 const CONTAINER_SELECTOR = Cypress.env('containerSelector');
