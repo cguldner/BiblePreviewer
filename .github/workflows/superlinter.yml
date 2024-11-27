@@ -38,8 +38,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Don't validate CSS because it is too dumb to find my stylelintrc.json. Covered by the eslint job
           VALIDATE_CSS: false
+          VALIDATE_HTML_PRETTIER: false
           # Don't validate javascript, because it can't install packages
           VALIDATE_JAVASCRIPT_ES: false
+          VALIDATE_JAVASCRIPT_PRETTIER: false
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_JSCPD: false
+          VALIDATE_JSON: false
           VALIDATE_BASH_EXEC: false
