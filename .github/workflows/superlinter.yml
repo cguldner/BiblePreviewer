@@ -32,7 +32,7 @@ jobs:
 
       # Runs the Super-Linter action
       - name: Run Super-Linter
-        uses: super-linter/super-linter@v6.3.0
+        uses: super-linter/super-linter@v7
         env:
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
