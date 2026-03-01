@@ -23,10 +23,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install
-        uses: bahmutov/npm-install@v1
-      - run: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
-      - run: npm test
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v7
+        with:
+          build: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
+          browser: chrome
 
   zip:
     name: Create releasable zips

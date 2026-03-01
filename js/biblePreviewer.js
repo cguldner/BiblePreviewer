@@ -226,7 +226,7 @@ function getNodesToTransform(element) {
                 // Check for a book of the bible, and make sure this text node isn't already in a link
                 if (bibleRegex.test(node.textContent)
                     && node.parentElement.classList.contains(BIBLE_PREVIEWER_LINK_CLASS) === false
-                    && node.parentElement.closest(BIBLE_PREVIEWER_LINK_CLASS) === null) {
+                    && node.parentElement.closest(`.${BIBLE_PREVIEWER_LINK_CLASS}`) === null) {
                     return NodeFilter.FILTER_ACCEPT;
                 }
                 return NodeFilter.FILTER_REJECT;
