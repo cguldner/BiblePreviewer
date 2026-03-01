@@ -14,7 +14,7 @@
     "zip": "rm -rf *.zip && bash scripts/get_versions.sh && python scripts/create_zips.py",
     "watch": "webpack --watch",
     "cypress:gui": "cypress open",
-    "cypress:run": "cypress run --record false --browser chrome --headed",
+    "cypress:run": "cypress run --record false --browser chrome",
     "test": "npm run cypress:run",
     "lint": "eslint . --max-warnings 0 --ignore-pattern dist && stylelint **/*.scss",
     "lint:fix": "eslint . --fix --ignore-pattern dist"

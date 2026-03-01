@@ -13,20 +13,14 @@ jobs:
     name: Build code base
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v7
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm install
-        uses: bahmutov/npm-install@v1
-      - run: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
-      - run: npm test
+          node-version: 20
+          build: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
+          browser: chrome
 
   zip:
     name: Create releasable zips
