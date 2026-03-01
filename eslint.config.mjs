@@ -38,6 +38,7 @@ export default [
         ignores: [
             '**/dist/**',
             '**/icons/**',
+            '**/chrome/**',
         ],
         rules: {
             'no-only-tests/no-only-tests': 'error',
