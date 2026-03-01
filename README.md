@@ -22,12 +22,16 @@ Run `npm run zip` to compile a production build to the `dist` directory and crea
 
 ## Testing
 
+Chrome 137 and higher do not support loading extensions, so you have to use Chrome for Testing
+
+```shell
+npx @puppeteer/browsers install chrome@stable
+```
+
+Copy the output path for the chrome binary, and update package.json to point to this path in the `cypress:run` script.
+
 Run end-to-end tests with:
 
 ```shell
 npm test
 ```
-
-Cypress runs against Chrome in this repo. On Linux CI/containers it also requires `Xvfb` to provide a virtual display.
-If you see `Error: spawn Xvfb ENOENT`, install Xvfb (or use a Cypress Docker image that already includes required system dependencies) before running tests.
-
