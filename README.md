@@ -19,3 +19,15 @@ BIBLE_API_KEY=<API_KEY>
 Run `npm run watch` to have webpack watch the files for changes.
 
 Run `npm run zip` to compile a production build to the `dist` directory and create an archive of the necessary files
+
+## Testing
+
+Run end-to-end tests with:
+
+```shell
+npm test
+```
+
+Cypress runs against Chrome in this repo. On Linux CI/containers it also requires `Xvfb` to provide a virtual display.
+If you see `Error: spawn Xvfb ENOENT`, install Xvfb (or use a Cypress Docker image that already includes required system dependencies) before running tests.
+
