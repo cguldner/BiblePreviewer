@@ -26,7 +26,9 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v7
         with:
+          install-command: npm ci
           build: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
+          command: npm run cypress:run
           browser: chrome
           headed: true
 
