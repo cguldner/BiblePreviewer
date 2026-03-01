@@ -28,6 +28,7 @@ jobs:
         with:
           build: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
           browser: chrome
+          headed: true
 
   zip:
     name: Create releasable zips
