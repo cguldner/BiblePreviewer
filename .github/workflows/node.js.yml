@@ -33,7 +33,7 @@ jobs:
         with:
           install-command: npm ci
           build: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
-          browser: chrome
+          browser: chrome-for-testing
           headed: true
         env:
           # Point Cypress explicitly to the CfT binary location
