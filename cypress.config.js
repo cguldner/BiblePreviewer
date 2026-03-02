@@ -1,7 +1,7 @@
 const {defineConfig} = require('cypress');
 
 module.exports = defineConfig({
-    env: {
+    expose: {
         testFile: 'cypress/test.html',
         containerSelector: 'span.biblePreviewerContainer',
         linkSelector: '.biblePreviewerLink',
@@ -9,6 +9,7 @@ module.exports = defineConfig({
         tooltipTextSelector: '.bpTooltipContent',
         apiEndpoint: '**/api.scripture.api.bible/v1/**',
     },
+    allowCypressEnv: false,
     screenshotOnRunFailure: false,
     watchForFileChanges: false,
     video: false,

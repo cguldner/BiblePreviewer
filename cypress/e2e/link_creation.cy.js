@@ -1,7 +1,7 @@
 
-const TEST_FILE = Cypress.env('testFile');
-const LINK_SELECTOR = Cypress.env('linkSelector');
-const CONTAINER_SELECTOR = Cypress.env('containerSelector');
+const TEST_FILE = Cypress.expose('testFile');
+const LINK_SELECTOR = Cypress.expose('linkSelector');
+const CONTAINER_SELECTOR = Cypress.expose('containerSelector');
 
 /**
  * Verifies that a link is created for the given bible reference

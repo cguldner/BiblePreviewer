@@ -14,7 +14,7 @@
     "zip": "rm -rf *.zip && bash scripts/get_versions.sh && python scripts/create_zips.py",
     "watch": "webpack --watch",
     "cypress:gui": "cypress open",
-    "cypress:run": "cypress run --record false --browser chrome --headed",
+    "cypress:run": "cypress run --record false --browser C:\\Users\\codyg\\Documents\\CodingProjects\\BiblePreviewer\\chrome\\win64-146.0.7680.31\\chrome-win64\\chrome.exe --headed",
     "test": "npm run cypress:run",
     "lint": "eslint . --max-warnings 0 --ignore-pattern dist && stylelint **/*.scss",
     "lint:fix": "eslint . --fix --ignore-pattern dist"
@@ -34,7 +34,6 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
     "cypress": "^15.11.0",
-    "cypress-intellij-reporter": "0.0.7",
     "cypress-real-events": "^1.15.0",
     "dotenv-webpack": "^8.0.1",
     "eslint": "^9.39.3",

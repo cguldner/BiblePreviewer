@@ -1,4 +1,4 @@
-const API_ENDPOINT = Cypress.env('apiEndpoint');
+const API_ENDPOINT = Cypress.expose('apiEndpoint');
 
 /**
  * Stub API requests to the bible endpoint, so they don't use up the request limit
