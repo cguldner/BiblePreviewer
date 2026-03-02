@@ -1,8 +1,8 @@
 
-const TEST_FILE = Cypress.env('testFile');
-const LINK_SELECTOR = Cypress.env('linkSelector');
-const TOOLTIP_SELECTOR = Cypress.env('tooltipSelector');
-const TOOLTIP_TEXT_SELECTOR = Cypress.env('tooltipTextSelector');
+const TEST_FILE = Cypress.expose('testFile');
+const LINK_SELECTOR = Cypress.expose('linkSelector');
+const TOOLTIP_SELECTOR = Cypress.expose('tooltipSelector');
+const TOOLTIP_TEXT_SELECTOR = Cypress.expose('tooltipTextSelector');
 
 /**
  * Stub API requests to the bible endpoint, so they don't use up the request limit
