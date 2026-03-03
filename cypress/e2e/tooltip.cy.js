@@ -3,6 +3,16 @@ const TEST_FILE = Cypress.expose('testFile');
 const LINK_SELECTOR = Cypress.expose('linkSelector');
 const TOOLTIP_SELECTOR = Cypress.expose('tooltipSelector');
 const TOOLTIP_TEXT_SELECTOR = Cypress.expose('tooltipTextSelector');
+const API_ENDPOINT = Cypress.expose('apiEndpoint');
+
+/**
+ * Escapes a string so it can be used in a RegExp safely
+ * @param {string} text The text to escape
+ * @returns {string} The escaped text
+ */
+function escapeRegExp(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 /**
  * Stub API requests to the bible endpoint, so they don't use up the request limit
@@ -37,7 +47,7 @@ function referenceToRegexp(reference) {
  * @returns {string} The full bible reference
  */
 function biblePartsToReference(book, startChap, startVerse, endChap = '', endVerse = '') {
-    let bibleReference = `${book}\\s`;
+    let bibleReference = `${book} `;
     if (startChap !== '') {
         bibleReference += `${startChap}:`;
     }
@@ -59,7 +69,11 @@ function biblePartsToReference(book, startChap, startVerse, endChap = '', endVer
  */
 function tooltipShow(bibleReference, containerSelector = 'body') {
     cy.get(containerSelector).find(TOOLTIP_SELECTOR).should('not.exist');
-    cy.get(containerSelector).find(LINK_SELECTOR).contains(new RegExp(`^${bibleReference}$`)).should('exist').realHover();
+    cy.get(containerSelector)
+        .find(LINK_SELECTOR)
+        .contains(new RegExp(`^\\s*${escapeRegExp(bibleReference)}\\s*$`))
+        .should('exist')
+        .realHover();
     cy.get(containerSelector).find(TOOLTIP_SELECTOR).should('exist').should('be.visible');
 }
 
@@ -76,7 +90,7 @@ function tooltipShowAndWaitForApi(bibleReference) {
  * Unhovers the tooltip, and waits for it to disappear
  */
 function unhoverTooltip() {
-    cy.get('body').realHover();
+    cy.get('#hover-safe-zone').realHover();
     // Wait until the tooltip disappears
     cy.get(TOOLTIP_SELECTOR).should('not.exist');
 }
@@ -129,6 +143,37 @@ function testTooltip(book, startChap, startVerse, endChap = '', endVerse = '') {
     tooltipContentVerify(startVerse, endVerse);
 }
 
+/**
+ * Hovers the same verse twice and verifies the API request count
+ * @param {string} bibleReference The bible reference to hover
+ * @param {number} expectedCount The expected number of requests
+ * @param {string} [containerSelector] The selector of the container to look in
+ */
+function verifyRequestCountAfterTwoHovers(bibleReference, expectedCount, containerSelector = 'body') {
+    tooltipShow(bibleReference, containerSelector);
+    cy.wait('@getRequest');
+    unhoverTooltip();
+    tooltipShow(bibleReference, containerSelector);
+    cy.get(TOOLTIP_SELECTOR).should('exist');
+    unhoverTooltip();
+    cy.get('@getRequest.all').should('have.length', expectedCount);
+}
+
+/**
+ * Stubs API responses by status and verifies final tooltip text
+ * @param {number} statusCode HTTP status code to return
+ * @param {string} expectedMessage Expected tooltip text
+ */
+function verifyErrorTooltipMessage(statusCode, expectedMessage) {
+    cy.intercept('GET', API_ENDPOINT, {
+        statusCode,
+        body: {statusCode}
+    }).as('getRequest');
+    tooltipShow('John 4:24');
+    cy.wait('@getRequest');
+    cy.get(TOOLTIP_TEXT_SELECTOR).should('have.text', expectedMessage);
+}
+
 context('Tooltip', {retries: 1}, () => {
     beforeEach(() => {
         cy.visit(TEST_FILE);
@@ -139,11 +184,23 @@ context('Tooltip', {retries: 1}, () => {
             stubApiRequests();
         });
 
-        it('Should show tooltip on hover of single chapter and single verse', () => tooltipShow('John 4:24'));
-        it('Should show tooltip on hover of single chapter and multiple verses', () => tooltipShow('Gen 4:24-25'));
-        it('Should show tooltip on hover of multiple chapters and multiple verses', () => tooltipShow('Matt 4:24-5:3'));
-        it('Should show tooltip on hover of Jude if chapter not provided', () => tooltipShow('Jude 6'));
-        it('Should show tooltip on hover of Jude if chapter is provided', () => tooltipShow('Jude 1:7'));
+        const showCases = [
+            {name: 'single chapter and single verse', text: 'John 4:24'},
+            {name: 'single chapter and multiple verses', text: 'Gen 4:24-25'},
+            {name: 'multiple chapters and multiple verses', text: 'Matt 4:24-5:3'},
+            {name: 'Jude if chapter not provided', text: 'Jude 6'},
+            {name: 'Jude if chapter is provided', text: 'Jude 1:7'},
+            {name: 'roman numeral prefix', text: 'II Tim 3:16', containerSelector: '.roman-prefix-test'},
+            {name: 'word prefix', text: 'First Kings 2:3', containerSelector: '.word-prefix-test'},
+            {name: 'unicode en dash range', text: 'Gen 1:1–3', containerSelector: '.unicode-dash-test'},
+        ];
+
+        for (const testCase of showCases) {
+            it(`Should show tooltip on hover of ${testCase.name}`, () => {
+                tooltipShow(testCase.text, testCase.containerSelector);
+            });
+        }
+
         it('Should show tooltip for pre-existing link', () => {
             tooltipShow('Judges 14:22', '.keep-existing-link-test');
             unhoverTooltip();
@@ -153,14 +210,7 @@ context('Tooltip', {retries: 1}, () => {
             tooltipShow('Col 7:4', '.keep-existing-link-test-with-html');
         });
         it('Should not send another network request if one link is hovered twice', () => {
-            const verse = /^John 4:24$/;
-            cy.get(LINK_SELECTOR).contains(verse).realHover();
-            cy.wait('@getRequest');
-            unhoverTooltip();
-            cy.get(LINK_SELECTOR).contains(verse).realHover();
-            cy.get(TOOLTIP_SELECTOR).should('exist');
-            unhoverTooltip();
-            cy.get('@getRequest.all').should('have.length', 1);
+            verifyRequestCountAfterTwoHovers('John 4:24', 1);
         });
         it('Should not send another network request if two separate links to same bible verse are hovered', () => {
             cy.get(`div.duplicate-verse-test ${LINK_SELECTOR}`).eq(0).realHover();
@@ -178,10 +228,66 @@ context('Tooltip', {retries: 1}, () => {
             listenForApiRequests();
         });
 
-        it('Should have matching content for single chapter and single verse tooltip', () => testTooltip('John', '4', '24'));
-        it('Should have matching content for single chapter and multiple verses tooltip', () => testTooltip('Gen', '4', '24', '', '25'));
-        it('Should have matching content for multiple chapters and multiple verses tooltip', () => testTooltip('Matt', '4', '24', '5', '3'));
-        it('Should have matching content for Jude if chapter not provided', () => testTooltip('Jude', '', '6'));
-        it('Should have matching content for Jude if chapter is provided', () => testTooltip('Jude', '1', '7'));
+        const contentCases = [
+            {name: 'single chapter and single verse tooltip', args: ['John', '4', '24']},
+            {name: 'single chapter and multiple verses tooltip', args: ['Gen', '4', '24', '', '25']},
+            {name: 'multiple chapters and multiple verses tooltip', args: ['Matt', '4', '24', '5', '3']},
+            {name: 'Jude if chapter not provided', args: ['Jude', '', '6']},
+            {name: 'Jude if chapter is provided', args: ['Jude', '1', '7']},
+        ];
+
+        for (const testCase of contentCases) {
+            it(`Should have matching content for ${testCase.name}`, () => {
+                testTooltip(...testCase.args);
+            });
+        }
+
+        it('Should request the expected endpoint for range references', () => {
+            tooltipShow('Matt 4:24-5:3');
+            cy.wait('@getRequest').its('request.url').should('match', /\/MAT\.4\.24-MAT\.5\.3$/);
+        });
+
+        it('Should request the expected endpoint for chapter-carried list item', () => {
+            tooltipShow('8');
+            cy.wait('@getRequest').its('request.url').should('match', /\/GAL\.3\.8-GAL\.3\.8$/);
+        });
+    });
+
+    describe('Tooltip Error Handling', () => {
+        const errorCases = [
+            {status: 404, message: 'Verse does not exist'},
+            {status: 400, message: "Request couldn't be completed, try again later"},
+            {status: 500, message: 'Try again later'},
+        ];
+
+        for (const testCase of errorCases) {
+            it(`Should show expected message for ${testCase.status} response`, () => {
+                verifyErrorTooltipMessage(testCase.status, testCase.message);
+            });
+        }
+
+        it('Should cache 404 responses and avoid a second request for same reference', () => {
+            cy.intercept('GET', API_ENDPOINT, {
+                statusCode: 404,
+                body: {statusCode: 404}
+            }).as('getRequest');
+            verifyRequestCountAfterTwoHovers('John 4:24', 1);
+        });
+
+        it('Should retry 400 responses on second hover of same reference', () => {
+            cy.intercept('GET', API_ENDPOINT, {
+                statusCode: 400,
+                body: {statusCode: 400}
+            }).as('getRequest');
+            verifyRequestCountAfterTwoHovers('John 4:24', 2);
+        });
+
+        it('Should retry 500 responses on second hover of same reference', () => {
+            cy.intercept('GET', API_ENDPOINT, {
+                statusCode: 500,
+                body: {statusCode: 500}
+            }).as('getRequest');
+            verifyRequestCountAfterTwoHovers('John 4:24', 2);
+        });
     });
 });

@@ -1,6 +1,7 @@
 import '../css/biblePreviewer.scss';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional for styling
+import {DASHES_STR, getVerseFromString} from './verseParser.mjs';
 
 
 const LOADING_TEXT = 'Loading';
@@ -64,17 +65,6 @@ const books_start_with_number = `(?:${SAMUEL_REG}|${KINGS_REG}|${CHRON_REG}|${MA
 const firstPrefix = String.raw`(?:1(?:st)?|I|First)\s*`;
 const secondPrefix = String.raw`(?:2(?:nd)?|II|Second)\s*`;
 const thirdPrefix = String.raw`(?:3(?:rd)?|III|Third)\s*`;
-
-/**
- * Contains different dashes that might be used in a bible reference
- *
- * Note: Order matters where this is used, so the Regex parser doesn't interpret a dash as a character range
- */
-const DASHES_STR = '–—-';
-/**
- * @see DASHES_STR
- */
-const DASHES_REG = new RegExp(`[${DASHES_STR}]`);
 
 const JUDE_BOOK_ID = 'Jud';
 
@@ -179,40 +169,6 @@ if (GENERATE_REGEX) {
 }
 
 /**
- * Given a string, gets the verse components and previous chapter (if it exists)
- * @param {string} verseString The verse
- * @param {string} previousChap The previous chapter
- * @returns {Array} Each component of the verse, including start chapter and verse, and end chapter and verse
- */
-function getVerseFromString(verseString, previousChap) {
-    let startChap, startVerse, endChap, endVerse;
-    let [start, end] = verseString.split(DASHES_REG);
-
-    [startChap, startVerse] = start.split(':');
-    if (startVerse === undefined) {
-        startVerse = startChap;
-        startChap = previousChap;
-    } else {
-        previousChap = startChap;
-    }
-
-    if (end === undefined) {
-        endVerse = startVerse;
-        endChap = startChap;
-    } else {
-        [endChap, endVerse] = end.split(':');
-        if (endVerse === undefined) {
-            endVerse = endChap;
-            endChap = startChap;
-        } else {
-            previousChap = endChap;
-        }
-    }
-
-    return [startChap, startVerse, endChap, endVerse, previousChap];
-}
-
-/**
  * Gets all the document nodes that need to be transformed into a link
  * Uses a TreeWalker instead of simple replace, so we can handle links in a special way.
  * @param {Element} element - The DOM node to search over
@@ -224,6 +180,7 @@ function getNodesToTransform(element) {
         {
             acceptNode: function (node) {
                 // Check for a book of the bible, and make sure this text node isn't already in a link
+                bibleRegex.lastIndex = 0;
                 if (bibleRegex.test(node.textContent)
                     && node.parentElement.classList.contains(BIBLE_PREVIEWER_LINK_CLASS) === false
                     && node.parentElement.closest(`.${BIBLE_PREVIEWER_LINK_CLASS}`) === null) {
@@ -300,8 +257,8 @@ function transformBibleReferences(element, trans, language) {
                     linkElement = document.createElement('span');
                 } else {
                     linkElement = document.createElement('a');
-                    linkElement.href = `https://${language}.${BIBLE_DIRECT_URL}${actual_trans}
-/${book}.${previousChap}?passageId=${book}.${startChap}.${startVerse}`;
+                    linkElement.href = `https://${language}.${BIBLE_DIRECT_URL}${actual_trans}/` +
+                        `${book}.${previousChap}?passageId=${book}.${startChap}.${startVerse}`;
                     if (startVerse !== endVerse) {
                         linkElement.href += `-${book}.${endChap}.${endVerse}`;
                     }

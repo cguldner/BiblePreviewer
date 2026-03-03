@@ -2,6 +2,25 @@
 const TEST_FILE = Cypress.expose('testFile');
 const LINK_SELECTOR = Cypress.expose('linkSelector');
 const CONTAINER_SELECTOR = Cypress.expose('containerSelector');
+const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
+
+/**
+ * Escapes a string so it can be used in a RegExp safely
+ * @param {string} text The text to escape
+ * @returns {string} The escaped text
+ */
+function escapeRegExp(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Creates an exact-match regex for rendered link text
+ * @param {string} bibleReference The rendered text to match
+ * @returns {RegExp} Regex that matches only the full rendered text
+ */
+function exactTextRegex(bibleReference) {
+    return new RegExp(`^\\s*${escapeRegExp(bibleReference)}\\s*$`);
+}
 
 /**
  * Verifies that a link is created for the given bible reference
@@ -9,7 +28,69 @@ const CONTAINER_SELECTOR = Cypress.expose('containerSelector');
  * @param {string} containerSelector The selector of the container to look in
  */
 function linkMatch(bibleReference, containerSelector = 'body') {
-    cy.get(containerSelector).find(LINK_SELECTOR).contains(new RegExp(`^\\s*${bibleReference}\\s*$`)).should('exist');
+    cy.get(containerSelector).find(LINK_SELECTOR).contains(exactTextRegex(bibleReference)).should('exist');
+}
+
+/**
+ * Gets a single bible previewer link by exact rendered text
+ * @param {string} bibleReference The rendered text of the link
+ * @param {string} containerSelector The selector of the container to look in
+ * @returns {*} The selected link chainable
+ */
+function getLinkByText(bibleReference, containerSelector = 'body') {
+    return cy.get(containerSelector)
+        .find(LINK_SELECTOR)
+        .contains(exactTextRegex(bibleReference));
+}
+
+/**
+ * Verifies that multiple references are present as links
+ * @param {string[]} bibleReferences The references to verify
+ * @param {string} [containerSelector] The selector of the container to look in
+ */
+function linksMatch(bibleReferences, containerSelector = 'body') {
+    for (const reference of bibleReferences) {
+        linkMatch(reference, containerSelector);
+    }
+}
+
+/**
+ * Verifies the data and href attributes for a rendered bible link
+ * @param {object} options Link assertion options
+ * @param {string} options.text The rendered link text
+ * @param {string} options.book The expected data-bible-book value
+ * @param {string} options.reference The expected data-bible-ref value
+ * @param {string} [options.containerSelector] The selector of the container to look in
+ * @param {string[]} [options.hrefIncludes] Strings that should be included in href
+ * @param {string[]} [options.hrefExcludes] Strings that should not be included in href
+ * @param {RegExp} [options.hrefPattern] Optional regex to match full href
+ */
+function assertLinkAttributes({
+    text,
+    book,
+    reference,
+    containerSelector = 'body',
+    hrefIncludes = [],
+    hrefExcludes = [],
+    hrefPattern,
+}) {
+    getLinkByText(text, containerSelector)
+        .should('have.attr', 'data-bible-book', book)
+        .and('have.attr', 'data-bible-ref', reference);
+
+    getLinkByText(text, containerSelector)
+        .should('have.attr', 'href')
+        .then(href => {
+            if (hrefPattern) {
+                expect(href).to.match(hrefPattern);
+            }
+            for (const includeText of hrefIncludes) {
+                expect(href).to.include(includeText);
+            }
+            for (const excludeText of hrefExcludes) {
+                expect(href).not.to.include(excludeText);
+            }
+        });
 }
 
 context('Link Creation', () => {
@@ -18,30 +99,45 @@ context('Link Creation', () => {
         cy.stubApiRequests();
     });
 
-    it('Should create link for single chapter and single verse', () => linkMatch('John 4:24'));
-    it('Should create link for single chapter and multiple verses', () => linkMatch('Gen 4:24-25'));
-    it('Should create link for multiple chapters and multiple verses', () => linkMatch('Matt 4:24-5:3'));
-    it('Should create link for a list of single verses in the same chapter', () => {
-        linkMatch('Gal 3:5');
-        linkMatch('8');
-    });
-    it('Should create link for a list of multiple verses in the same chapter', () => {
-        linkMatch('Joel 2:4', '.multiple-verse-same-chapter');
-        linkMatch('9-10', '.multiple-verse-same-chapter');
-    });
-    it('Should create link for a list of multiple chapter:verse references in same book', () => {
-        linkMatch('1 Cor 3:6');
-        linkMatch('5:8');
-    });
-    it('Should create link for a reference where the chapter and verse are each 3 digits long', () => {
-        linkMatch('Psalm 119:105');
-    });
-    it('Should create link for a list of multiple chapter:verse range references in same book', () => {
-        linkMatch('Psalm 133:99-100');
-        linkMatch('144:89-200');
-    });
-    it('Should create link for Jude if chapter not provided', () => linkMatch('Jude 6'));
-    it('Should create link for Jude if chapter is provided', () => linkMatch('Jude 1:7'));
+    const singleReferenceCases = [
+        {name: 'single chapter and single verse', text: 'John 4:24'},
+        {name: 'single chapter and multiple verses', text: 'Gen 4:24-25'},
+        {name: 'multiple chapters and multiple verses', text: 'Matt 4:24-5:3'},
+        {name: '3-digit chapter and verse', text: 'Psalm 119:105'},
+        {name: 'Jude without chapter', text: 'Jude 6'},
+        {name: 'Jude with chapter', text: 'Jude 1:7'},
+        {name: 'roman numeral prefix', text: 'II Tim 3:16', containerSelector: '.roman-prefix-test'},
+        {name: 'word prefix', text: 'First Kings 2:3', containerSelector: '.word-prefix-test'},
+    ];
+
+    for (const testCase of singleReferenceCases) {
+        it(`Should create link for ${testCase.name}`, () => {
+            linkMatch(testCase.text, testCase.containerSelector);
+        });
+    }
+
+    const listReferenceCases = [
+        {name: 'single verses in the same chapter', texts: ['Gal 3:5', '8']},
+        {name: 'multiple verses in the same chapter', texts: ['Joel 2:4', '9-10'], containerSelector: '.multiple-verse-same-chapter'},
+        {name: 'multiple chapter:verse references in same book', texts: ['1 Cor 3:6', '5:8']},
+        {name: 'multiple chapter:verse references split with semicolon', texts: ['2 Cor 3:6', '5:8']},
+        {name: 'multiple chapter:verse range references in same book', texts: ['Psalm 133:99-100', '144:89-200']},
+        {name: 'multiple references for different books', texts: ['Sirach 1:20', 'Song of Songs 4:3']},
+        {
+            name: 'leading chapter number after prior passage',
+            texts: ['Phil. 2:12', '1 Pet. 1:9'],
+            containerSelector: '.following-verse-start-chapter-test'
+        },
+        {name: 'unicode dashes in verse ranges', texts: ['Gen 1:1–3', 'Gen 1:4—5'], containerSelector: '.unicode-dash-test'},
+        {name: 'mixed separators list', texts: ['Rev 1:1', '2-3', '4:5'], containerSelector: '.mixed-separators-test'},
+    ];
+
+    for (const testCase of listReferenceCases) {
+        it(`Should create links for ${testCase.name}`, () => {
+            linksMatch(testCase.texts, testCase.containerSelector);
+        });
+    }
+
     it('Should not overwrite existing links', () => {
         // At least wait until bible links have started appearing
         cy.get(LINK_SELECTOR).should('exist');
@@ -56,14 +152,65 @@ context('Link Creation', () => {
         cy.get('.keep-existing-link-test-with-html').find(LINK_SELECTOR).should('have.length', 1);
         cy.get('.keep-existing-link-test-with-html').find(CONTAINER_SELECTOR).should('have.length', 1);
     });
-    it('Should create separate links for two different books', () => {
-        linkMatch('Sirach 1:20');
-        linkMatch('Song of Songs 4:3');
+
+    it('Should not transform non-reference text', () => {
+        cy.get('.non-reference-test').find(LINK_SELECTOR).should('not.exist');
     });
-    // Makes sure that in the case of something like Phil. 2:12, 1 Pet. 1:9,
-    // the 1 matches to Peter and not to Philippians
-    it('Should create link for bible passage with leading chapter number that follows another passage', () => {
-        linkMatch('Phil. 2:12');
-        linkMatch('1 Pet. 1:9');
+
+    it('Should generate valid href for single-verse link with no encoded newline', () => {
+        assertLinkAttributes({
+            text: 'John 4:24',
+            book: 'JHN',
+            reference: '4:24-4:24',
+            hrefPattern: /^https:\/\/eng\.global\.bible\/bible\/[^/]+\/JHN\.4\?passageId=JHN\.4\.24$/,
+            hrefExcludes: ['%0A', '%0D'],
+        });
+    });
+
+    it('Should map following numeric-prefixed reference to the correct book in attrs and href', () => {
+        assertLinkAttributes({
+            text: '1 Pet. 1:9',
+            containerSelector: '.following-verse-start-chapter-test',
+            book: '1PE',
+            reference: '1:9-1:9',
+            hrefIncludes: ['/1PE.1?passageId=1PE.1.9'],
+            hrefExcludes: ['PHP'],
+        });
+    });
+
+    it('Should carry chapter context in same-reference-list follow-up verses', () => {
+        assertLinkAttributes({
+            text: '8',
+            book: 'GAL',
+            reference: '3:8-3:8',
+            hrefIncludes: ['/GAL.3?passageId=GAL.3.8'],
+        });
+    });
+
+    it('Should carry chapter context for mixed separator list segments', () => {
+        assertLinkAttributes({
+            text: '2-3',
+            containerSelector: '.mixed-separators-test',
+            book: 'REV',
+            reference: '1:2-1:3',
+            hrefIncludes: ['/REV.1?passageId=REV.1.2-REV.1.3'],
+        });
+        assertLinkAttributes({
+            text: '4:5',
+            containerSelector: '.mixed-separators-test',
+            book: 'REV',
+            reference: '4:5-4:5',
+            hrefIncludes: ['/REV.4?passageId=REV.4.5'],
+        });
+    });
+
+    it('Should use the deuterocanonical fallback translation for unsupported translations', () => {
+        assertLinkAttributes({
+            text: 'Sirach 2:1',
+            containerSelector: '.deutero-fallback-test',
+            book: 'SIR',
+            reference: '2:1-2:1',
+            hrefIncludes: [`/bible/${DEFAULT_DEUTERO_TRANS}/SIR.2?passageId=SIR.2.1`],
+        });
     });
 });
