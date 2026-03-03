@@ -3,14 +3,12 @@ const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
 // Runs the script once the page has been fully loaded
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
     if (!/^(?:about|chrome):/.test(tab.url) && info.status === 'complete') {
-        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-            chrome.storage.sync.get(null, settings => {
-                if (settings === undefined) {
-                    settings = {};
-                }
-                settings['url'] = tabs[0].url;
-                chrome.tabs.sendMessage(tabs[0].id, settings);
-            });
+        chrome.storage.sync.get(null, settings => {
+            if (settings === undefined) {
+                settings = {};
+            }
+            settings['url'] = tab.url;
+            chrome.tabs.sendMessage(tabId, settings);
         });
         return true; // Will respond asynchronously.
     }

@@ -224,6 +224,7 @@ function getNodesToTransform(element) {
         {
             acceptNode: function (node) {
                 // Check for a book of the bible, and make sure this text node isn't already in a link
+                bibleRegex.lastIndex = 0;
                 if (bibleRegex.test(node.textContent)
                     && node.parentElement.classList.contains(BIBLE_PREVIEWER_LINK_CLASS) === false
                     && node.parentElement.closest(`.${BIBLE_PREVIEWER_LINK_CLASS}`) === null) {
@@ -300,8 +301,8 @@ function transformBibleReferences(element, trans, language) {
                     linkElement = document.createElement('span');
                 } else {
                     linkElement = document.createElement('a');
-                    linkElement.href = `https://${language}.${BIBLE_DIRECT_URL}${actual_trans}
-/${book}.${previousChap}?passageId=${book}.${startChap}.${startVerse}`;
+                    linkElement.href = `https://${language}.${BIBLE_DIRECT_URL}${actual_trans}/` +
+                        `${book}.${previousChap}?passageId=${book}.${startChap}.${startVerse}`;
                     if (startVerse !== endVerse) {
                         linkElement.href += `-${book}.${endChap}.${endVerse}`;
                     }
