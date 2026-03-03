@@ -12,6 +12,10 @@ permissions:
   # To report GitHub Actions status checks
   statuses: write
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
@@ -24,7 +28,7 @@ jobs:
     steps:
       # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # super-linter needs the full git history to get the
           # list of files that changed across commits
