@@ -1,6 +1,7 @@
 import '../css/biblePreviewer.scss';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional for styling
+import {DASHES_STR, getVerseFromString} from './verseParser.mjs';
 
 
 const LOADING_TEXT = 'Loading';
@@ -64,17 +65,6 @@ const books_start_with_number = `(?:${SAMUEL_REG}|${KINGS_REG}|${CHRON_REG}|${MA
 const firstPrefix = String.raw`(?:1(?:st)?|I|First)\s*`;
 const secondPrefix = String.raw`(?:2(?:nd)?|II|Second)\s*`;
 const thirdPrefix = String.raw`(?:3(?:rd)?|III|Third)\s*`;
-
-/**
- * Contains different dashes that might be used in a bible reference
- *
- * Note: Order matters where this is used, so the Regex parser doesn't interpret a dash as a character range
- */
-const DASHES_STR = '–—-';
-/**
- * @see DASHES_STR
- */
-const DASHES_REG = new RegExp(`[${DASHES_STR}]`);
 
 const JUDE_BOOK_ID = 'Jud';
 
@@ -176,40 +166,6 @@ if (GENERATE_REGEX) {
 } else {
     // eslint-disable-next-line max-len
     bibleRegex = /(Ge?n(?:esis)?|Ex(?:od(?:us)?)?|Le(?:v(?:iticus)?)?|Nu?m(?:b(?:ers)?)?|D(?:t|eut(?:eronomy)?)|Jo(?:s(?:h(?:ua)?)?)?|J(?:dgs?|udg(?:es)?)|Ru?th|(?:1(?:st)?|I|First)\s*Sa?m(?:uel)?|(?:2(?:nd)?|II|Second)\s*Sa?m(?:uel)?|(?:1(?:st)?|I|First)\s*K(?:in)?gs|(?:2(?:nd)?|II|Second)\s*K(?:in)?gs|(?:1(?:st)?|I|First)\s*Chr(?:on(?:icles)?)?|(?:2(?:nd)?|II|Second)\s*Chr(?:on(?:icles)?)?|Ezra?|Ne(?:h(?:emiah)?)?|Tob(?:it|ias)?|J(?:d?th?|udith)|Est(?:h(?:er)?)?|(?:1(?:st)?|I|First)\s*Mac(?:c(?:abees)?)?|(?:2(?:nd)?|II|Second)\s*Mac(?:c(?:abees)?)?|Jo?b|Ps(?:a(?:lms?)?)?|Pro(?:v(?:erbs)?)?|Ecc(?:les?|lesiastes)?|So(?:S|ng(?:\s*of\s*(?:Sol(?:omon)?|Songs?))?)|Wis(?:dom)?(?:\s*of\s*Sol(?:omon)?)?|Sir(?:ach)?|Bar(?:uch)?|Is(?:a(?:iah)?)?|Jer(?:emiah)?|Lam(?:entations)?|Ez(?:e?k?|ekiel)|Da?n(?:iel)?|Hos(?:ea)?|Joel|Amos|Ob(?:ad(?:iah)?)?|Jon(?:ah)?|Mic(?:ah)?|Nah(?:um)?|Hab(?:akkuk)?|Zep(?:h(?:aniah)?)?|Hag(?:gai)?|Zec(?:h(?:ariah)?)?|Mal(?:achi)?|M(?:t|att(?:h(?:ew)?)?)|M(?:k|ark?)|L(?:k|uke?)|Jo?h?n|Acts?|Ro(?:m(?:ans)?)?|(?:1(?:st)?|I|First)\s*Co(?:r(?:inthians?)?)?|(?:2(?:nd)?|II|Second)\s*Co(?:r(?:inthians?)?)?|Gal(?:atians)?|Eph(?:es(?:ians)?)?|Phil(?:ippians)?|Col(?:ossians)?|(?:1(?:st)?|I|First)\s*Thes(?:s(?:alonians)?)?|(?:2(?:nd)?|II|Second)\s*Thes(?:s(?:alonians)?)?|(?:1(?:st)?|I|First)\s*T(?:imothy|im|i|m)|(?:2(?:nd)?|II|Second)\s*T(?:imothy|im|i|m)|Titus|Phil(?:em(?:on)?)?|Heb(?:rews?)?|Ja(?:me)?s|(?:1(?:st)?|I|First)\s*Pe?t(?:er)?|(?:2(?:nd)?|II|Second)\s*Pe?t(?:er)?|(?:1(?:st)?|I|First)\s*Jo?h?n|(?:2(?:nd)?|II|Second)\s*Jo?h?n|(?:3(?:rd)?|III|Third)\s*Jo?h?n|Jude?|R(?:e?v|evelation))\.?\s*(\d{1,3}:\s*\d{1,3}(?:[,;:–—-]\s*\d{1,3}(?!\s*(?:Sa?m(?:uel)?|K(?:in)?gs|Chr(?:on(?:icles)?)?|Mac(?:c(?:abees)?)?|Co(?:r(?:inthians?)?)?|Thes(?:s(?:alonians)?)?|T(?:imothy|im|i|m)|Pe?t(?:er)?|Jo?h?n)))*)|Jude?\s*(\d{1,2}(?:[,;]?\s*\d{1,2})*)/gi;
-}
-
-/**
- * Given a string, gets the verse components and previous chapter (if it exists)
- * @param {string} verseString The verse
- * @param {string} previousChap The previous chapter
- * @returns {Array} Each component of the verse, including start chapter and verse, and end chapter and verse
- */
-function getVerseFromString(verseString, previousChap) {
-    let startChap, startVerse, endChap, endVerse;
-    let [start, end] = verseString.split(DASHES_REG);
-
-    [startChap, startVerse] = start.split(':');
-    if (startVerse === undefined) {
-        startVerse = startChap;
-        startChap = previousChap;
-    } else {
-        previousChap = startChap;
-    }
-
-    if (end === undefined) {
-        endVerse = startVerse;
-        endChap = startChap;
-    } else {
-        [endChap, endVerse] = end.split(':');
-        if (endVerse === undefined) {
-            endVerse = endChap;
-            endChap = startChap;
-        } else {
-            previousChap = endChap;
-        }
-    }
-
-    return [startChap, startVerse, endChap, endVerse, previousChap];
 }
 
 /**
