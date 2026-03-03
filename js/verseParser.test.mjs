@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {getVerseFromString} from './verseParser.mjs';
+import {getVerseFromString, splitReferenceDisplayText, splitVerseList} from './verseParser.mjs';
 
 test('parses single chapter/verse and updates previous chapter', () => {
     assert.deepEqual(getVerseFromString('3:16', ''), ['3', '16', '3', '16', '3']);
@@ -48,4 +48,16 @@ test('maintains chapter context across sequential entries', () => {
     output = getVerseFromString('4:1-2', previousChapter);
 
     assert.deepEqual(output, ['4', '1', '4', '2', '4']);
+});
+
+
+test('splits verse list using commas semicolons and and', () => {
+    assert.deepEqual(splitVerseList('5:11, 6:9-11; 6:18-20 and 7:8-9'), ['5:11', '6:9-11', '6:18-20', '7:8-9']);
+});
+
+test('splits display text for and-separated references', () => {
+    assert.deepEqual(
+        splitReferenceDisplayText('I Corinthians 5:11, 6:9-11, 6:18-20, 7:1-3 and 7:8-9'),
+        ['I Corinthians 5:11', '6:9-11', '6:18-20', '7:1-3', '7:8-9']
+    );
 });

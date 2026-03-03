@@ -130,6 +130,7 @@ context('Link Creation', () => {
         },
         {name: 'unicode dashes in verse ranges', texts: ['Gen 1:1–3', 'Gen 1:4—5'], containerSelector: '.unicode-dash-test'},
         {name: 'mixed separators list', texts: ['Rev 1:1', '2-3', '4:5'], containerSelector: '.mixed-separators-test'},
+        {name: 'and separators list', texts: ['I Corinthians 5:11', '6:9-11', '6:18-20', '7:1-3', '7:8-9'], containerSelector: '.and-separator-test'},
     ];
 
     for (const testCase of listReferenceCases) {
@@ -184,6 +185,17 @@ context('Link Creation', () => {
             book: 'GAL',
             reference: '3:8-3:8',
             hrefIncludes: ['/GAL.3?passageId=GAL.3.8'],
+        });
+    });
+
+
+    it('Should carry chapter context for and-separated list segments', () => {
+        assertLinkAttributes({
+            text: '7:8-9',
+            containerSelector: '.and-separator-test',
+            book: '1CO',
+            reference: '7:8-7:9',
+            hrefIncludes: ['/1CO.7?passageId=1CO.7.8-1CO.7.9'],
         });
     });
 
