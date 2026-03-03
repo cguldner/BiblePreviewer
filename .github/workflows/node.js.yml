@@ -31,7 +31,6 @@ jobs:
   build:
     name: Build code base
     runs-on: ubuntu-latest
-    needs: unit-tests
 
     strategy:
       matrix:
