@@ -131,6 +131,7 @@ context('Link Creation', () => {
         {name: 'unicode dashes in verse ranges', texts: ['Gen 1:1–3', 'Gen 1:4—5'], containerSelector: '.unicode-dash-test'},
         {name: 'mixed separators list', texts: ['Rev 1:1', '2-3', '4:5'], containerSelector: '.mixed-separators-test'},
         {name: 'and separator list', texts: ['I Corinthians 5:11', '6:9-11', '6:18-20', '7:1-3', '7:8-9'], containerSelector: '.and-separator-test'},
+        {name: 'Jude list with and and comma separators', texts: ['Jude 6', '8', '10'], containerSelector: '.jude-list-test'},
     ];
 
     for (const testCase of listReferenceCases) {
@@ -226,6 +227,42 @@ context('Link Creation', () => {
         cy.get('.and-separator-test')
             .find(CONTAINER_SELECTOR)
             .should('have.length', 5);
+    });
+
+    it('Should parse Jude list segments as chapter 1 references', () => {
+        assertLinkAttributes({
+            text: 'Jude 6',
+            containerSelector: '.jude-list-test',
+            book: 'JUD',
+            reference: '1:6-1:6',
+            hrefIncludes: ['/JUD.1?passageId=JUD.1.6'],
+        });
+        assertLinkAttributes({
+            text: '8',
+            containerSelector: '.jude-list-test',
+            book: 'JUD',
+            reference: '1:8-1:8',
+            hrefIncludes: ['/JUD.1?passageId=JUD.1.8'],
+        });
+        assertLinkAttributes({
+            text: '10',
+            containerSelector: '.jude-list-test',
+            book: 'JUD',
+            reference: '1:10-1:10',
+            hrefIncludes: ['/JUD.1?passageId=JUD.1.10'],
+        });
+    });
+
+    it('Should preserve and delimiter in transformed Jude list text', () => {
+        cy.get('.jude-list-test')
+            .invoke('text')
+            .then(text => {
+                expect(text.replace(/\s+/g, ' ').trim()).to.equal('Jude 6 and 8, 10');
+            });
+
+        cy.get('.jude-list-test')
+            .find(CONTAINER_SELECTOR)
+            .should('have.length', 3);
     });
 
     it('Should preserve original delimiters between transformed links', () => {

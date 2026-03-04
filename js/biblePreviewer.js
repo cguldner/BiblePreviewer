@@ -65,7 +65,7 @@ const books_start_with_number = `(?:${SAMUEL_REG}|${KINGS_REG}|${CHRON_REG}|${MA
 const firstPrefix = String.raw`(?:1(?:st)?|I|First)\s*`;
 const secondPrefix = String.raw`(?:2(?:nd)?|II|Second)\s*`;
 const thirdPrefix = String.raw`(?:3(?:rd)?|III|Third)\s*`;
-const VERSE_LIST_CONNECTOR_REG = String.raw`(?:[,:;${DASHES_STR}]|\band\b)`;
+const VERSE_LIST_CONNECTOR_REG = String.raw`(?:[,:;${DASHES_STR}]|\s+and\b)`;
 
 const JUDE_BOOK_ID = 'Jud';
 
@@ -163,7 +163,7 @@ function buildBibleRegex() {
     // But don't match a single verse if it is right before a book that has a number before it
     generatedRegex += `(?!\\s*${books_start_with_number}))*)`;
     // Add Jude separately because Jude only has 1 chapter, so people usually don't put a chapter with the verse
-    generatedRegex += `|${JUDE_REG}\\s*(\\d{1,2}(?:(?:[;,]|\\band\\b)?\\s*\\d{1,2})*)`;
+    generatedRegex += `|${JUDE_REG}\\s*(\\d{1,2}(?:(?:[;,]|\\s+and\\b)?\\s*\\d{1,2})*)`;
     return new RegExp(generatedRegex, 'gi');
 }
 

@@ -86,3 +86,14 @@ test('splits verse lists and preserves mixed punctuation and and delimiters', ()
         delimiters: [' AND ', '; ']
     });
 });
+
+test('splits Jude-style numeric lists and preserves and delimiter', () => {
+    assert.deepEqual(splitVerseListString('6 and 8, 10'), {
+        verses: ['6', '8', '10'],
+        delimiters: [' and ', ', ']
+    });
+});
+
+test('parses Jude chapter-one mapped range correctly', () => {
+    assert.deepEqual(getVerseFromString('1:6-8', ''), ['1', '6', '1', '8', '1']);
+});
