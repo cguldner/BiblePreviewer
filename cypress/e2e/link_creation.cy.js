@@ -104,6 +104,7 @@ context('Link Creation', () => {
         {name: 'single chapter and multiple verses', text: 'Gen 4:24-25'},
         {name: 'multiple chapters and multiple verses', text: 'Matt 4:24-5:3'},
         {name: '3-digit chapter and verse', text: 'Psalm 119:105'},
+        {name: 'case-insensitive book matching', text: 'jOhN 3:16', containerSelector: '.case-insensitive-test'},
         {name: 'Jude without chapter', text: 'Jude 6'},
         {name: 'Jude with chapter', text: 'Jude 1:7'},
         {name: 'roman numeral prefix', text: 'II Tim 3:16', containerSelector: '.roman-prefix-test'},
@@ -132,6 +133,12 @@ context('Link Creation', () => {
         {name: 'mixed separators list', texts: ['Rev 1:1', '2-3', '4:5'], containerSelector: '.mixed-separators-test'},
         {name: 'and separator list', texts: ['I Corinthians 5:11', '6:9-11', '6:18-20', '7:1-3', '7:8-9'], containerSelector: '.and-separator-test'},
         {name: 'Jude list with and and comma separators', texts: ['Jude 6', '8', '10'], containerSelector: '.jude-list-test'},
+        {name: 'third john chapter carryover list', texts: ['3 john 3:16', '18'], containerSelector: '.third-john-list-test'},
+        {
+            name: 'mixed second and third john list',
+            texts: ['2 John 1:6', '3 john 3:16', '18'],
+            containerSelector: '.second-third-john-mixed-list-test'
+        },
     ];
 
     for (const testCase of listReferenceCases) {
@@ -177,6 +184,147 @@ context('Link Creation', () => {
             reference: '1:9-1:9',
             hrefIncludes: ['/1PE.1?passageId=1PE.1.9'],
             hrefExcludes: ['PHP'],
+        });
+    });
+
+    it('Should disambiguate John and 1 John link attributes correctly', () => {
+        assertLinkAttributes({
+            text: 'John 3:16',
+            containerSelector: '.john-disambiguation-test',
+            book: 'JHN',
+            reference: '3:16-3:16',
+            hrefIncludes: ['/JHN.3?passageId=JHN.3.16'],
+            hrefExcludes: ['/1JN.'],
+        });
+
+        assertLinkAttributes({
+            text: '1 John 3:16',
+            containerSelector: '.john-disambiguation-test',
+            book: '1JN',
+            reference: '3:16-3:16',
+            hrefIncludes: ['/1JN.3?passageId=1JN.3.16'],
+            hrefExcludes: ['/JHN.3?passageId=JHN.3.16'],
+        });
+    });
+
+    it('Should map word-prefixed First John to 1JN attrs and href', () => {
+        assertLinkAttributes({
+            text: 'First John 4:8',
+            containerSelector: '.john-disambiguation-test',
+            book: '1JN',
+            reference: '4:8-4:8',
+            hrefIncludes: ['/1JN.4?passageId=1JN.4.8'],
+            hrefExcludes: ['/JHN.4?passageId=JHN.4.8'],
+        });
+    });
+
+    it('Should map 2 John to 2JN attrs and href', () => {
+        assertLinkAttributes({
+            text: '2 John 1:6',
+            containerSelector: '.john-disambiguation-test',
+            book: '2JN',
+            reference: '1:6-1:6',
+            hrefIncludes: ['/2JN.1?passageId=2JN.1.6'],
+            hrefExcludes: ['/JHN.1?passageId=JHN.1.6', '/1JN.1?passageId=1JN.1.6', '/3JN.1?passageId=3JN.1.6'],
+        });
+    });
+
+    it('Should map word-prefixed Third John to 3JN attrs and href', () => {
+        assertLinkAttributes({
+            text: 'Third John 1:4',
+            containerSelector: '.john-disambiguation-test',
+            book: '3JN',
+            reference: '1:4-1:4',
+            hrefIncludes: ['/3JN.1?passageId=3JN.1.4'],
+            hrefExcludes: ['/JHN.1?passageId=JHN.1.4', '/1JN.1?passageId=1JN.1.4', '/2JN.1?passageId=2JN.1.4'],
+        });
+    });
+
+    it('Should keep chapter lookahead boundaries correct across John, 1 John, 2 John, and 3 John', () => {
+        cy.get('.john-lookahead-test').find(CONTAINER_SELECTOR).should('have.length', 4);
+
+        assertLinkAttributes({
+            text: 'John 3:16',
+            containerSelector: '.john-lookahead-test',
+            book: 'JHN',
+            reference: '3:16-3:16',
+            hrefIncludes: ['/JHN.3?passageId=JHN.3.16'],
+            hrefExcludes: ['/1JN.', '/2JN.', '/3JN.'],
+        });
+
+        assertLinkAttributes({
+            text: '1 John 2:3',
+            containerSelector: '.john-lookahead-test',
+            book: '1JN',
+            reference: '2:3-2:3',
+            hrefIncludes: ['/1JN.2?passageId=1JN.2.3'],
+            hrefExcludes: ['/JHN.', '/2JN.', '/3JN.'],
+        });
+
+        assertLinkAttributes({
+            text: '2 John 1:6',
+            containerSelector: '.john-lookahead-test',
+            book: '2JN',
+            reference: '1:6-1:6',
+            hrefIncludes: ['/2JN.1?passageId=2JN.1.6'],
+            hrefExcludes: ['/JHN.', '/1JN.', '/3JN.'],
+        });
+
+        assertLinkAttributes({
+            text: '3 John 1:4',
+            containerSelector: '.john-lookahead-test',
+            book: '3JN',
+            reference: '1:4-1:4',
+            hrefIncludes: ['/3JN.1?passageId=3JN.1.4'],
+            hrefExcludes: ['/JHN.', '/1JN.', '/2JN.'],
+        });
+    });
+
+    it('Should keep chapter context for 3 John list entries', () => {
+        assertLinkAttributes({
+            text: '3 john 3:16',
+            containerSelector: '.third-john-list-test',
+            book: '3JN',
+            reference: '3:16-3:16',
+            hrefIncludes: ['/3JN.3?passageId=3JN.3.16'],
+        });
+
+        assertLinkAttributes({
+            text: '18',
+            containerSelector: '.third-john-list-test',
+            book: '3JN',
+            reference: '3:18-3:18',
+            hrefIncludes: ['/3JN.3?passageId=3JN.3.18'],
+            hrefExcludes: ['/3JN.18?'],
+        });
+    });
+
+    it('Should keep correct book and chapter context in mixed 2 John and 3 John list', () => {
+        assertLinkAttributes({
+            text: '2 John 1:6',
+            containerSelector: '.second-third-john-mixed-list-test',
+            book: '2JN',
+            reference: '1:6-1:6',
+            hrefIncludes: ['/2JN.1?passageId=2JN.1.6'],
+            hrefExcludes: ['/3JN.1?passageId=3JN.1.6'],
+        });
+
+        assertLinkAttributes({
+            text: '3 john 3:16',
+            containerSelector: '.second-third-john-mixed-list-test',
+            book: '3JN',
+            reference: '3:16-3:16',
+            hrefIncludes: ['/3JN.3?passageId=3JN.3.16'],
+            hrefExcludes: ['/2JN.3?passageId=2JN.3.16'],
+        });
+
+        assertLinkAttributes({
+            text: '18',
+            containerSelector: '.second-third-john-mixed-list-test',
+            book: '3JN',
+            reference: '3:18-3:18',
+            hrefIncludes: ['/3JN.3?passageId=3JN.3.18'],
+            hrefExcludes: ['/2JN.3?passageId=2JN.3.18', '/3JN.18?'],
         });
     });
 
