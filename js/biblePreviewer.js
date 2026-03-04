@@ -227,6 +227,8 @@ function createTooltips(element) {
     tippy(element.querySelectorAll(`.${BIBLE_PREVIEWER_LINK_CLASS}`), {
         delay: [250, 750],
         duration: 250,
+        theme: 'bible-previewer',
+        maxWidth: 350,
         arrow: true,
         interactive: true,
         allowHTML: true,
