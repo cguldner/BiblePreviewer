@@ -1,5 +1,6 @@
 const DASHES_STR = '–—-';
 const DASHES_REG = new RegExp(`[${DASHES_STR}]`);
+const VERSE_LIST_DELIMITER_REG = /(?:[;,]\s*|\s+and\s+)/gi;
 
 /**
  * Given a string, gets the verse components and previous chapter (if it exists)
@@ -41,8 +42,11 @@ function getVerseFromString(verseString, previousChap) {
  * @returns {{verses: string[], delimiters: string[]}} Parsed verses and delimiters (in order)
  */
 function splitVerseListString(verseListString) {
-    const delimiters = verseListString.match(/[;,]\s*/g) ?? [];
-    const verses = verseListString.split(/[;,]\s*/g).map(verse => verse.trim());
+    const delimiters = verseListString.match(VERSE_LIST_DELIMITER_REG) ?? [];
+    const verses = verseListString
+        .split(VERSE_LIST_DELIMITER_REG)
+        .map(verse => verse.trim())
+        .filter(Boolean);
 
     return {verses, delimiters};
 }
