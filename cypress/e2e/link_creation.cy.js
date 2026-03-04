@@ -204,6 +204,19 @@ context('Link Creation', () => {
         });
     });
 
+
+    it('Should preserve original delimiters between transformed links', () => {
+        cy.get('.mixed-separators-test')
+            .invoke('text')
+            .then(text => {
+                expect(text.replace(/\s+/g, ' ').trim()).to.equal('Rev 1:1; 2-3, 4:5');
+            });
+
+        cy.get('.mixed-separators-test')
+            .find(CONTAINER_SELECTOR)
+            .should('have.length', 3);
+    });
+
     it('Should use the deuterocanonical fallback translation for unsupported translations', () => {
         assertLinkAttributes({
             text: 'Sirach 2:1',

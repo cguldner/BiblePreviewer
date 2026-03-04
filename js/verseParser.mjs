@@ -35,4 +35,16 @@ function getVerseFromString(verseString, previousChap) {
     return [startChap, startVerse, endChap, endVerse, previousChap];
 }
 
-export {DASHES_STR, getVerseFromString};
+/**
+ * Given a list of verses separated by commas/semicolons, split verses while preserving delimiters.
+ * @param {string} verseListString The verse list string
+ * @returns {{verses: string[], delimiters: string[]}} Parsed verses and delimiters (in order)
+ */
+function splitVerseListString(verseListString) {
+    const delimiters = verseListString.match(/[;,]\s*/g) ?? [];
+    const verses = verseListString.split(/[;,]\s*/g).map(verse => verse.trim());
+
+    return {verses, delimiters};
+}
+
+export {DASHES_STR, getVerseFromString, splitVerseListString};
