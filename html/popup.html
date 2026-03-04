@@ -4,6 +4,32 @@
     <meta charset="UTF-8">
     <title>Options</title>
     <style>
+        body {
+            margin: 0;
+            min-width: 260px;
+            padding: 12px;
+            font: 14px "Segoe UI", Tahoma, sans-serif;
+        }
+
+        .field {
+            margin-bottom: 12px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .field select {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #a9a9a9;
+            border-radius: 4px;
+            background: white;
+        }
+
         .button {
             background: #00c600;
             border-radius: 10px;
@@ -15,12 +41,32 @@
             font: bold 18px "Segoe UI", Tahoma, sans-serif;
         }
 
+        #save-status {
+            margin-bottom: 10px;
+            color: #3d3d3d;
+            font-size: 12px;
+            min-height: 15px;
+        }
+
         #blacklist-button {
             margin-top: 15px;
         }
     </style>
 </head>
 <body>
+<div class="field">
+    <label for="language">Language</label>
+    <select id="language">
+        <option value="eng">English (US)</option>
+    </select>
+</div>
+<div class="field">
+    <label for="bible-version">Bible Version</label>
+    <select disabled id="bible-version">
+        <option disabled selected value>--- Select a version ---</option>
+    </select>
+</div>
+<div id="save-status"></div>
 <div class="button" id="reload-button" title="Click to re-run the link finding">
     Find Verses
 </div>
