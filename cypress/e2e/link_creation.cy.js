@@ -133,7 +133,6 @@ context('Link Creation', () => {
         {name: 'mixed separators list', texts: ['Rev 1:1', '2-3', '4:5'], containerSelector: '.mixed-separators-test'},
         {name: 'and separator list', texts: ['I Corinthians 5:11', '6:9-11', '6:18-20', '7:1-3', '7:8-9'], containerSelector: '.and-separator-test'},
         {name: 'Jude list with and and comma separators', texts: ['Jude 6', '8', '10'], containerSelector: '.jude-list-test'},
-        {name: 'third john chapter carryover list', texts: ['3 john 3:16', '18'], containerSelector: '.third-john-list-test'},
         {
             name: 'mixed second and third john list',
             texts: ['2 John 1:6', '3 john 3:16', '18'],
@@ -277,25 +276,6 @@ context('Link Creation', () => {
             reference: '1:4-1:4',
             hrefIncludes: ['/3JN.1?passageId=3JN.1.4'],
             hrefExcludes: ['/JHN.', '/1JN.', '/2JN.'],
-        });
-    });
-
-    it('Should keep chapter context for 3 John list entries', () => {
-        assertLinkAttributes({
-            text: '3 john 3:16',
-            containerSelector: '.third-john-list-test',
-            book: '3JN',
-            reference: '3:16-3:16',
-            hrefIncludes: ['/3JN.3?passageId=3JN.3.16'],
-        });
-
-        assertLinkAttributes({
-            text: '18',
-            containerSelector: '.third-john-list-test',
-            book: '3JN',
-            reference: '3:18-3:18',
-            hrefIncludes: ['/3JN.3?passageId=3JN.3.18'],
-            hrefExcludes: ['/3JN.18?'],
         });
     });
 
