@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {getVerseFromString} from './verseParser.mjs';
+import {getVerseFromString, splitVerseListString} from './verseParser.mjs';
 
 test('parses single chapter/verse and updates previous chapter', () => {
     assert.deepEqual(getVerseFromString('3:16', ''), ['3', '16', '3', '16', '3']);
@@ -48,4 +48,26 @@ test('maintains chapter context across sequential entries', () => {
     output = getVerseFromString('4:1-2', previousChapter);
 
     assert.deepEqual(output, ['4', '1', '4', '2', '4']);
+});
+
+
+test('splits verse lists and preserves comma delimiters', () => {
+    assert.deepEqual(splitVerseListString('3:16, 18, 20'), {
+        verses: ['3:16', '18', '20'],
+        delimiters: [', ', ', ']
+    });
+});
+
+test('splits verse lists and preserves semicolon delimiters', () => {
+    assert.deepEqual(splitVerseListString('3:16; 18; 20'), {
+        verses: ['3:16', '18', '20'],
+        delimiters: ['; ', '; ']
+    });
+});
+
+test('splits verse lists and preserves mixed delimiters', () => {
+    assert.deepEqual(splitVerseListString('3:16;18, 20'), {
+        verses: ['3:16', '18', '20'],
+        delimiters: [';', ', ']
+    });
 });

@@ -1,7 +1,7 @@
 import '../css/biblePreviewer.scss';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional for styling
-import {DASHES_STR, getVerseFromString} from './verseParser.mjs';
+import {DASHES_STR, getVerseFromString, splitVerseListString} from './verseParser.mjs';
 
 
 const LOADING_TEXT = 'Loading';
@@ -237,17 +237,15 @@ function transformBibleReferences(element, trans, language) {
                 }
             } else {
                 book = JUDE_BOOK_ID;
-                verseListString = judeVerse.split(/[,;]\s*/g);
-                for (let index = 0; index < verseListString.length; index++) {
-                    verseListString[index] = '1:' + verseListString[index];
-                }
-                verseListString = verseListString.join(',');
+                const judeVerseList = splitVerseListString(judeVerse);
+                verseListString = judeVerseList.verses.map(verse => `1:${verse}`).join(',');
             }
 
             let startChap, startVerse, endChap, endVerse, previousChap = '';
             let referenceList = [];
-            const verseList = verseListString.split(/[,;]\s*/g);
+            const {verses: verseList} = splitVerseListString(verseListString);
             const splitText = orig.split(/[,;]/g);
+            const delimiters = orig.match(/[;,]\s*/g) ?? [];
             for (const [index, element] of verseList.entries()) {
                 [startChap, startVerse, endChap, endVerse, previousChap] = getVerseFromString(element, previousChap);
                 book = book.toUpperCase();
@@ -276,7 +274,12 @@ function transformBibleReferences(element, trans, language) {
                 referenceList.push(containerElement.outerHTML);
             }
 
-            return referenceList.join(', ');
+            let rebuiltReference = referenceList[0] ?? '';
+            for (const [index, delimiter] of delimiters.entries()) {
+                rebuiltReference += `${delimiter}${referenceList[index + 1] ?? ''}`;
+            }
+
+            return rebuiltReference;
         });
 
         node.replaceWith(...renderNode.childNodes);
