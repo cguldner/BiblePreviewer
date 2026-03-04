@@ -71,3 +71,18 @@ test('splits verse lists and preserves mixed delimiters', () => {
         delimiters: [';', ', ']
     });
 });
+
+
+test('splits verse lists and preserves and delimiters', () => {
+    assert.deepEqual(splitVerseListString('5:11, 6:9-11 and 6:18-20'), {
+        verses: ['5:11', '6:9-11', '6:18-20'],
+        delimiters: [', ', ' and ']
+    });
+});
+
+test('splits verse lists and preserves mixed punctuation and and delimiters', () => {
+    assert.deepEqual(splitVerseListString('7:1-3 AND 7:8-9; 7:10'), {
+        verses: ['7:1-3', '7:8-9', '7:10'],
+        delimiters: [' AND ', '; ']
+    });
+});

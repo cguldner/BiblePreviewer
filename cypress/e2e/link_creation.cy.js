@@ -130,6 +130,7 @@ context('Link Creation', () => {
         },
         {name: 'unicode dashes in verse ranges', texts: ['Gen 1:1–3', 'Gen 1:4—5'], containerSelector: '.unicode-dash-test'},
         {name: 'mixed separators list', texts: ['Rev 1:1', '2-3', '4:5'], containerSelector: '.mixed-separators-test'},
+        {name: 'and separator list', texts: ['I Corinthians 5:11', '6:9-11', '6:18-20', '7:1-3', '7:8-9'], containerSelector: '.and-separator-test'},
     ];
 
     for (const testCase of listReferenceCases) {
@@ -204,6 +205,28 @@ context('Link Creation', () => {
         });
     });
 
+
+    it('Should carry chapter context for and-separated list segments', () => {
+        assertLinkAttributes({
+            text: '7:8-9',
+            containerSelector: '.and-separator-test',
+            book: '1CO',
+            reference: '7:8-7:9',
+            hrefIncludes: ['/1CO.7?passageId=1CO.7.8-1CO.7.9'],
+        });
+    });
+
+    it('Should preserve and delimiters between transformed links', () => {
+        cy.get('.and-separator-test')
+            .invoke('text')
+            .then(text => {
+                expect(text.replace(/\s+/g, ' ').trim()).to.equal('I Corinthians 5:11, 6:9-11, 6:18-20, 7:1-3 and 7:8-9');
+            });
+
+        cy.get('.and-separator-test')
+            .find(CONTAINER_SELECTOR)
+            .should('have.length', 5);
+    });
 
     it('Should preserve original delimiters between transformed links', () => {
         cy.get('.mixed-separators-test')
