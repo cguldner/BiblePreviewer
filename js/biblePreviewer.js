@@ -3,6 +3,7 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import {getVerseFromString, splitVerseListString} from './verseParser.mjs';
 import {bibleRegex, deuteroBooks, JUDE_BOOK_ID, getMatchedBookId} from './bibleBooks.mjs';
+import {BIBLE_API_BASE_URL, DEFAULT_LANGUAGE, DEFAULT_TRANS} from './settingsShared.js';
 
 
 const LOADING_TEXT = 'Loading';
@@ -10,9 +11,6 @@ const VERSE_NO_EXIST_TEXT = 'Verse does not exist';
 const BAD_REQUEST_TEXT = "Request couldn't be completed, try again later";
 const TRY_AGAIN_TEXT = 'Try again later';
 
-const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
-const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
-const DEFAULT_LANGUAGE = 'eng';
 // The translation to use if the version selected doesn't have the Catholic deuterocannonical books
 const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
 const BIBLE_DIRECT_URL = 'global.bible/bible/';
@@ -39,6 +37,59 @@ const ACTIVE_ZINDEX = 500;
  * Lookup dictionary for verses
  */
 let bibleVerseDict = {};
+
+/**
+ * Resolve the actual translation for a book.
+ * @param {string} book The OSIS book id
+ * @param {string} translation Requested translation
+ * @returns {string} Translation id to use for API/link generation
+ */
+function getTranslationForBook(book, translation) {
+    if (!versions_with_deutero.has(translation) && deuteroBooks.has(book)) {
+        return DEFAULT_DEUTERO_TRANS;
+    }
+    return translation;
+}
+
+/**
+ * Build global.bible href for a verse reference.
+ * @param {string} language Selected language id
+ * @param {string} translation Selected translation id
+ * @param {string} book The OSIS book id
+ * @param {string} reference The reference in start:end-start:end form
+ * @returns {string} Global bible URL
+ */
+function buildBibleLink(language, translation, book, reference) {
+    const [startChap, startVerse, endChap, endVerse] = getVerseFromString(reference, '');
+    let href = `https://${language}.${BIBLE_DIRECT_URL}${translation}/` +
+        `${book}.${startChap}?passageId=${book}.${startChap}.${startVerse}`;
+    if (startVerse !== endVerse || startChap !== endChap) {
+        href += `-${book}.${endChap}.${endVerse}`;
+    }
+    return href;
+}
+
+/**
+ * Update existing transformed links to match current settings.
+ * @param {string} translation Selected translation id
+ * @param {string} language Selected language id
+ */
+function updateExistingLinks(translation, language) {
+    for (const linkElement of document.querySelectorAll(`.${BIBLE_PREVIEWER_LINK_CLASS}`)) {
+        const book = linkElement.getAttribute(BIBLE_BOOK_LINK_PROP);
+        const reference = linkElement.getAttribute(BIBLE_REF_LINK_PROP);
+        if (!book || !reference) {
+            continue;
+        }
+
+        const actualTranslation = getTranslationForBook(book, translation);
+        linkElement.setAttribute(BIBLE_TRANS_LINK_PROP, actualTranslation);
+
+        if (linkElement.tagName === 'A') {
+            linkElement.href = buildBibleLink(language, actualTranslation, book, reference);
+        }
+    }
+}
 
 /**
  * Gets all the document nodes that need to be transformed into a link
@@ -81,28 +132,24 @@ function getNodesToTransform(element) {
  */
 function transformBibleReferences(element, trans, language) {
     let nodeList = getNodesToTransform(element);
-    const translationHasDeuteroBooks = versions_with_deutero.has(trans);
 
     for (const node of nodeList) {
         const renderNode = document.createElement('span');
         renderNode.innerHTML = node.textContent.replace(bibleRegex, function (orig, matchedBook, verseListString, judeVerse) {
             let book = '';
-            let actual_trans = trans;
+            let actualTrans = trans;
             if (judeVerse === undefined) {
                 book = getMatchedBookId(matchedBook);
                 if (book === '') {
                     console.error("Couldn't match " + orig);
                     return orig;
                 }
-                // Change translation if it is a deuterocannonical book and an unsupported translation is selected
-                if (!translationHasDeuteroBooks && deuteroBooks.has(book)) {
-                    actual_trans = DEFAULT_DEUTERO_TRANS;
-                }
             } else {
                 book = JUDE_BOOK_ID;
                 const judeVerseList = splitVerseListString(judeVerse);
                 verseListString = judeVerseList.verses.map(verse => `1:${verse}`).join(',');
             }
+            actualTrans = getTranslationForBook(book, trans);
 
             let startChap, startVerse, endChap, endVerse, previousChap = '';
             let referenceList = [];
@@ -117,7 +164,7 @@ function transformBibleReferences(element, trans, language) {
                     linkElement = document.createElement('span');
                 } else {
                     linkElement = document.createElement('a');
-                    linkElement.href = `https://${language}.${BIBLE_DIRECT_URL}${actual_trans}/` +
+                    linkElement.href = `https://${language}.${BIBLE_DIRECT_URL}${actualTrans}/` +
                         `${book}.${previousChap}?passageId=${book}.${startChap}.${startVerse}`;
                     if (startVerse !== endVerse) {
                         linkElement.href += `-${book}.${endChap}.${endVerse}`;
@@ -131,7 +178,7 @@ function transformBibleReferences(element, trans, language) {
                 linkElement.textContent = splitText[index];
                 linkElement.setAttribute(BIBLE_REF_LINK_PROP, `${startChap}:${startVerse}-${endChap}:${endVerse}`);
                 linkElement.setAttribute(BIBLE_BOOK_LINK_PROP, book);
-                linkElement.setAttribute(BIBLE_TRANS_LINK_PROP, actual_trans);
+                linkElement.setAttribute(BIBLE_TRANS_LINK_PROP, actualTrans);
                 containerElement.append(linkElement);
                 referenceList.push(containerElement.outerHTML);
             }
@@ -241,7 +288,8 @@ function createTooltips(element) {
         content: function (reference) {
             const bibleBook = reference.getAttribute(BIBLE_BOOK_LINK_PROP);
             const bibleReference = reference.getAttribute(BIBLE_REF_LINK_PROP);
-            const fullReference = `${bibleBook} ${bibleReference}`;
+            const bibleTrans = reference.getAttribute(BIBLE_TRANS_LINK_PROP);
+            const fullReference = `${bibleBook} ${bibleReference}|${bibleTrans}`;
             // If there is another link to the same verse on the page, then set that verse text
             return createTooltipContent(bibleVerseDict[fullReference] === undefined ? {text: LOADING_TEXT} : bibleVerseDict[fullReference]);
         },
@@ -253,7 +301,7 @@ function createTooltips(element) {
             const bibleReference = reference.getAttribute(BIBLE_REF_LINK_PROP);
             const bibleTrans = reference.getAttribute(BIBLE_TRANS_LINK_PROP);
 
-            const fullReference = `${bibleBook} ${bibleReference}`;
+            const fullReference = `${bibleBook} ${bibleReference}|${bibleTrans}`;
             if (bibleVerseDict[fullReference] === undefined) {
                 let [startChap, startVerse, endChap, endVerse] = getVerseFromString(bibleReference, '');
                 sendAPIRequestForVerses(bibleBook, startChap, startVerse, endChap, endVerse, bibleTrans,
@@ -303,6 +351,18 @@ function addLinks(element, request) {
 
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.contentScriptQuery === 'clearVerseCache') {
+        bibleVerseDict = {};
+        sendResponse();
+        return;
+    }
+    if (request.contentScriptQuery === 'updateLinkSettings') {
+        bibleVerseDict = {};
+        updateExistingLinks(request.translation, request.language);
+        sendResponse();
+        return;
+    }
+
     if (request.translation === undefined) {
         request.translation = DEFAULT_TRANS;
     }

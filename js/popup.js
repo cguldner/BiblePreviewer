@@ -1,27 +1,19 @@
 import '../css/popup.scss';
+import {
+    appendLanguageOptions,
+    fetchLanguages,
+    fetchVersions,
+    getStoredSettings,
+    populateVersionSelect,
+    saveStoredSettings,
+    broadcastSettingsUpdate
+} from './settingsShared.js';
 
-const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
 const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
-
-const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
-const DEFAULT_LANGUAGE = 'eng';
 
 const versionSelect = document.querySelector('#bible-version');
 const languageSelect = document.querySelector('#language');
 const status = document.querySelector('#save-status');
-
-/**
- * Verify that the response is good from the fetch call
- * @param {Response} response The response object
- * @returns {object} The JSON associated with the response
- * @throws Error if response is bad
- */
-function checkFetchOkResponse(response) {
-    if (!response.ok) {
-        throw new Error(`HTTP status ${response.status}`);
-    }
-    return response.json();
-}
 
 /**
  * Show temporary save status
@@ -35,32 +27,23 @@ function updateStatus(message) {
 }
 
 /**
- * Saves options to chrome.storage
+ * Save popup selections and notify content scripts if settings changed.
  */
-function saveOptions() {
-    chrome.storage.sync.set({
-        'language': languageSelect.options[languageSelect.selectedIndex].value,
-        'translation': versionSelect.options[versionSelect.selectedIndex].value
-    }, function () {
-        updateStatus('Selection saved.');
-    });
-}
+function saveOptionsIfSettingsChanged() {
+    const newSettings = {
+        language: languageSelect.options[languageSelect.selectedIndex].value,
+        translation: versionSelect.options[versionSelect.selectedIndex].value
+    };
 
-/**
- * Populate the version selector
- * @param {object[]} versions The available bible versions
- */
-function populateVersionSelect(versions) {
-    versionSelect.options.length = 0;
-    for (const version of versions) {
-        if (version.name !== '') {
-            let fullName = version.name;
-            if (version.description) {
-                fullName += ` - ${version.description}`;
+    getStoredSettings(function (previousSettings) {
+        saveStoredSettings(newSettings, function () {
+            if (previousSettings.language !== newSettings.language
+                || previousSettings.translation !== newSettings.translation) {
+                broadcastSettingsUpdate(newSettings);
             }
-            versionSelect.add(new Option(fullName, version.id));
-        }
-    }
+            updateStatus('Selection saved.');
+        });
+    });
 }
 
 /**
@@ -68,14 +51,9 @@ function populateVersionSelect(versions) {
  * @param {Function} callback Function to call once the versions have been obtained
  */
 function getVersions(callback) {
-    fetch(`${BIBLE_API_BASE_URL}bibles?language=${languageSelect.options[languageSelect.selectedIndex].value}`, {
-        headers: new Headers({
-            'api-key': BIBLE_API_KEY,
-        }),
-    })
-        .then(checkFetchOkResponse)
-        .then(response => {
-            populateVersionSelect(response.data);
+    fetchVersions(BIBLE_API_KEY, languageSelect.options[languageSelect.selectedIndex].value)
+        .then(versions => {
+            populateVersionSelect(versionSelect, versions);
             versionSelect.removeAttribute('disabled');
             callback();
         })
@@ -89,23 +67,9 @@ function getVersions(callback) {
  * @param {Function} callback Function to call once the languages have been fetched
  */
 function getLanguages(callback) {
-    fetch(`${BIBLE_API_BASE_URL}bibles`, {
-        headers: new Headers({
-            'api-key': BIBLE_API_KEY,
-        }),
-    })
-        .then(checkFetchOkResponse)
-        .then(response => {
-            const separator = ':::';
-            const versions = response.data.map(function (items) {
-                return `${items.language.name}${separator}${items.language.id}`;
-            });
-            for (const version of [...new Set(versions)].sort()) {
-                const [name, id] = version.split(separator);
-                if (id !== 'eng') {
-                    languageSelect.add(new Option(name, id));
-                }
-            }
+    fetchLanguages(BIBLE_API_KEY)
+        .then(languages => {
+            appendLanguageOptions(languageSelect, languages);
             callback();
         })
         .catch(error => {
@@ -118,12 +82,7 @@ function getLanguages(callback) {
  * @param {Function} callback Function to call after the options are loaded
  */
 function restoreOptions(callback) {
-    chrome.storage.sync.get({
-        'language': DEFAULT_LANGUAGE,
-        'translation': DEFAULT_TRANS
-    }, function (settings) {
-        callback(settings);
-    });
+    getStoredSettings(callback);
 }
 
 document.querySelector('#reload-button').addEventListener('click', function () {
@@ -156,9 +115,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     languageSelect.addEventListener('change', function () {
         getVersions(function () {
-            saveOptions();
+            saveOptionsIfSettingsChanged();
         });
     });
 
-    versionSelect.addEventListener('change', saveOptions);
+    versionSelect.addEventListener('change', saveOptionsIfSettingsChanged);
 });
