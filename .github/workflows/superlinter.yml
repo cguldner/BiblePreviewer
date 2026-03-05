@@ -35,6 +35,7 @@ jobs:
           # super-linter needs the full git history to get the
           # list of files that changed across commits
           fetch-depth: 0
+          persist-credentials: false
 
       # Runs the Super-Linter action
       - name: Run Super-Linter
@@ -42,6 +43,7 @@ jobs:
         env:
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: true
           # Don't validate CSS because it is too dumb to find my stylelintrc.json. Covered by the eslint job
           VALIDATE_CSS: false
           # Don't validate javascript, because it can't install packages
@@ -52,4 +54,5 @@ jobs:
           VALIDATE_BASH_EXEC: false
           # Not using biome
           VALIDATE_BIOME: false
+          VALIDATE_BIOME_FORMAT: false
           VALIDATE_BIOME_LINT: false
