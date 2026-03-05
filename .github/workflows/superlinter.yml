@@ -11,6 +11,8 @@ permissions:
   packages: read
   # To report GitHub Actions status checks
   statuses: write
+  pull-requests: write
+  issues: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -50,4 +52,4 @@ jobs:
           VALIDATE_BASH_EXEC: false
           # Not using biome
           VALIDATE_BIOME: false
-          VALIDATE_BIOME_FORMAT: false
+          VALIDATE_BIOME_LINT: false
