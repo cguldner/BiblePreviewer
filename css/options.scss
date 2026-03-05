@@ -1,4 +1,4 @@
-@use './panelShared' as panel;
+@use "./panelShared" as panel;
 @include panel.theme-vars;
 
 body {
@@ -11,7 +11,7 @@ body {
   box-sizing: inherit;
 }
 
-.optionsPanel {
+.options-panel {
   @include panel.panel-card(18px);
 
   max-width: 720px;
@@ -24,7 +24,7 @@ body {
   color: var(--muted);
 }
 
-.fieldGrid {
+.field-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 11px;
@@ -37,7 +37,7 @@ body {
   margin-bottom: 0;
 }
 
-.actionRow {
+.action-row {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -69,7 +69,7 @@ body {
 }
 
 @media (width >= 720px) {
-  .fieldGrid {
+  .field-grid {
     grid-template-columns: 1fr 1fr;
   }
 }

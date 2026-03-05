@@ -1,4 +1,4 @@
-@use './panelShared' as panel;
+@use "./panelShared" as panel;
 @include panel.theme-vars;
 
 body {
