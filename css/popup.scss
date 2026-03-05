@@ -1,0 +1,124 @@
+:root {
+  --surface: #f3f6fb;
+  --card: #fff;
+  --text: #1d2735;
+  --muted: #5f6c80;
+  --border: #d7e0ec;
+  --accent: #2563eb;
+  --accent-strong: #1e4fd8;
+  --ring: rgb(37 99 235 / 25%);
+  --shadow: 0 14px 28px rgb(15 23 42 / 18%);
+  --radius: 14px;
+}
+
+body {
+  margin: 0;
+  min-width: 300px;
+  padding: 14px;
+  font: 14px "Segoe UI", "Noto Sans", Tahoma, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top right, #dbeafe 0%, transparent 55%),
+    radial-gradient(circle at bottom left, #e2e8f0 0%, transparent 45%),
+    var(--surface);
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+.popup {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+.title {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.field {
+  margin-bottom: 11px;
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text);
+  }
+
+  select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    color: var(--text);
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      background: #f8fafc;
+    }
+  }
+}
+
+.button {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  border-radius: 11px;
+  color: white;
+  border: 0;
+  width: 100%;
+  padding: 10px 12px;
+  white-space: nowrap;
+  cursor: pointer;
+  text-align: center;
+  font: 700 15px/1.2 "Segoe UI", "Noto Sans", Tahoma, sans-serif;
+  letter-spacing: 0.01em;
+  transition: transform 110ms ease, box-shadow 140ms ease, filter 120ms ease;
+  box-shadow: 0 8px 16px rgb(37 99 235 / 28%);
+
+  &:hover {
+    filter: brightness(1.03);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 9px rgb(37 99 235 / 25%);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px var(--ring),
+      0 8px 16px rgb(37 99 235 / 28%);
+  }
+}
+
+#save-status {
+  margin: 8px 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  min-height: 16px;
+}
+
+#blacklist-button {
+  margin-top: 15px;
+}

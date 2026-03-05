@@ -1,3 +1,5 @@
+import '../css/popup.scss';
+
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
 const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
 
