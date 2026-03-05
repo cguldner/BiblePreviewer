@@ -1,0 +1,38 @@
+@use "./panelShared" as panel;
+@include panel.theme-vars;
+
+body {
+  @include panel.page-base;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+.popup {
+  @include panel.panel-card;
+}
+
+.title {
+  @include panel.panel-title;
+}
+
+.field {
+  @include panel.form-field;
+}
+
+.button {
+  @include panel.primary-button;
+}
+
+#save-status {
+  @include panel.status-text;
+
+  margin: 8px 0 10px;
+}
+
+#blacklist-button {
+  margin-top: 15px;
+}

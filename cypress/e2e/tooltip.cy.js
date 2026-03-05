@@ -1,4 +1,6 @@
 
+import {DEFAULT_DEUTERO_TRANS, DEFAULT_TRANS} from '../../js/settingsShared.js';
+
 const TEST_FILE = Cypress.expose('testFile');
 const LINK_SELECTOR = Cypress.expose('linkSelector');
 const TOOLTIP_SELECTOR = Cypress.expose('tooltipSelector');
@@ -174,6 +176,22 @@ function verifyErrorTooltipMessage(statusCode, expectedMessage) {
     cy.get(TOOLTIP_TEXT_SELECTOR).should('have.text', expectedMessage);
 }
 
+/**
+ * Dispatches a Cypress test event to update bible link settings in the content script.
+ * @param {string} language The selected language
+ * @param {string} translation The selected translation
+ */
+function dispatchSettingsUpdate(language, translation) {
+    cy.window().then(windowObject => {
+        const payload = {
+            type: 'biblePreviewer:updateLinkSettings',
+            detail: {language, translation}
+        };
+        windowObject.postMessage(payload, '*');
+        windowObject.top.postMessage(payload, '*');
+    });
+}
+
 context('Tooltip', {retries: 1}, () => {
     beforeEach(() => {
         cy.visit(TEST_FILE);
@@ -288,6 +306,54 @@ context('Tooltip', {retries: 1}, () => {
                 body: {statusCode: 500}
             }).as('getRequest');
             verifyRequestCountAfterTwoHovers('John 4:24', 2);
+        });
+    });
+
+    describe('Settings Update Behavior', () => {
+        beforeEach(() => {
+            listenForApiRequests();
+        });
+
+        it('Should update existing link href and translation attribute after settings update', () => {
+            cy.contains(LINK_SELECTOR, /^John 4:24$/)
+                .should('have.attr', 'data-bible-trans', DEFAULT_TRANS)
+                .and('have.attr', 'href')
+                .and('include', 'https://eng.global.bible/bible/');
+
+            dispatchSettingsUpdate('spa', 'custom-trans');
+
+            cy.contains(LINK_SELECTOR, /^John 4:24$/)
+                .should('have.attr', 'data-bible-trans', 'custom-trans')
+                .and('have.attr', 'href')
+                .and('include', 'https://spa.global.bible/bible/custom-trans/');
+        });
+
+        it('Should clear hover cache after settings update and request again for same verse', () => {
+            tooltipShow('John 4:24');
+            cy.wait('@getRequest');
+            unhoverTooltip();
+            cy.get('@getRequest.all').should('have.length', 1);
+
+            dispatchSettingsUpdate('eng', 'custom-trans-2');
+
+            tooltipShow('John 4:24');
+            cy.wait('@getRequest');
+            cy.get('@getRequest.all').its('length').should('be.gte', 2);
+            cy.get('@getRequest.all').then(requests => {
+                const latestRequest = requests.at(-1);
+                expect(latestRequest.request.url).to.include('/bibles/custom-trans-2/');
+            });
+        });
+
+        it('Should keep deuterocanonical fallback translation when settings update uses unsupported translation', () => {
+            dispatchSettingsUpdate('eng', DEFAULT_TRANS);
+
+            cy.get('.deutero-fallback-test')
+                .find(LINK_SELECTOR)
+                .contains(/^Sirach 2:1$/)
+                .should('have.attr', 'data-bible-trans', DEFAULT_DEUTERO_TRANS)
+                .and('have.attr', 'href')
+                .and('include', `/bible/${DEFAULT_DEUTERO_TRANS}/`);
         });
     });
 });
