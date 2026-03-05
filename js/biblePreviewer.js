@@ -73,9 +73,10 @@ function buildBibleLink(language, translation, book, reference) {
  * Update existing transformed links to match current settings.
  * @param {string} translation Selected translation id
  * @param {string} language Selected language id
+ * @param {Document} [rootDocument=document] The document to update
  */
-function updateExistingLinks(translation, language) {
-    for (const linkElement of document.querySelectorAll(`.${BIBLE_PREVIEWER_LINK_CLASS}`)) {
+function updateExistingLinks(translation, language, rootDocument = document) {
+    for (const linkElement of rootDocument.querySelectorAll(`.${BIBLE_PREVIEWER_LINK_CLASS}`)) {
         const book = linkElement.getAttribute(BIBLE_BOOK_LINK_PROP);
         const reference = linkElement.getAttribute(BIBLE_REF_LINK_PROP);
         if (!book || !reference) {
@@ -87,6 +88,24 @@ function updateExistingLinks(translation, language) {
 
         if (linkElement.tagName === 'A') {
             linkElement.href = buildBibleLink(language, actualTranslation, book, reference);
+        }
+    }
+}
+
+/**
+ * Update existing links in the current document and any same-origin child frames.
+ * @param {string} translation Selected translation id
+ * @param {string} language Selected language id
+ */
+function updateExistingLinksEverywhere(translation, language) {
+    updateExistingLinks(translation, language);
+    for (const frame of document.querySelectorAll('iframe')) {
+        try {
+            if (frame.contentWindow && frame.contentWindow.document) {
+                updateExistingLinks(translation, language, frame.contentWindow.document);
+            }
+        } catch {
+            // Ignore cross-origin frames.
         }
     }
 }
@@ -349,6 +368,35 @@ function addLinks(element, request) {
     }
 }
 
+/**
+ * Detect whether this page is currently running under Cypress.
+ * @returns {boolean} True if Cypress runner script is detected
+ */
+function isCypressRuntime() {
+    for (const element of document.scripts) {
+        if (/localhost:\d+\/__cypress\/runner\/cypress_runner.js/.test(element.src)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+window.addEventListener('message', function (event) {
+    if (!isCypressRuntime()) {
+        return;
+    }
+    if (event.data?.type !== 'biblePreviewer:updateLinkSettings') {
+        return;
+    }
+
+    const detail = event.data.detail ?? {};
+    const translation = detail.translation ?? DEFAULT_TRANS;
+    const language = detail.language ?? DEFAULT_LANGUAGE;
+
+    bibleVerseDict = {};
+    updateExistingLinksEverywhere(translation, language);
+});
+
 // Starts the app only once the page has completely finished loading
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.contentScriptQuery === 'clearVerseCache') {
@@ -358,7 +406,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
     if (request.contentScriptQuery === 'updateLinkSettings') {
         bibleVerseDict = {};
-        updateExistingLinks(request.translation, request.language);
+        updateExistingLinksEverywhere(request.translation, request.language);
         sendResponse();
         return;
     }
@@ -370,13 +418,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         request.language = DEFAULT_LANGUAGE;
     }
 
-    let isCypress = false;
-    for (const element of document.scripts) {
-        if (/localhost:\d+\/__cypress\/runner\/cypress_runner.js/.test(element.src)) {
-            isCypress = true;
-            break;
-        }
-    }
+    const isCypress = isCypressRuntime();
 
     addLinks(document.body, request);
 
