@@ -2,45 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Options</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@materializecss/materialize@1.2.2/dist/css/materialize.min.css">
     <link rel="stylesheet" href="../css/options.css">
 </head>
 <body>
-<div class="container">
-    <div class="options">
-        <div class="row">
-            <div class="input-field col s12 m6">
-                <select id="language">
-                    <option value="eng">English (US)</option>
-                </select>
-                <label for="language">Language</label>
-            </div>
+<div class="optionsPanel">
+    <p class="subtitle">Set default language and translation for verse previews.</p>
 
-            <div class="input-field col s12 m6">
-                <select disabled id="bible-version">
-                    <option disabled selected value>--- Select a version ---</option>
-                </select>
-                <label for="bible-version">Bible Version</label>
-            </div>
+    <div class="fieldGrid">
+        <div class="field">
+            <label for="language">Language</label>
+            <select id="language">
+                <option value="eng">English (US)</option>
+            </select>
+        </div>
+        <div class="field">
+            <label for="bible-version">Bible Version</label>
+            <select disabled id="bible-version">
+                <option disabled selected value>--- Select a version ---</option>
+            </select>
         </div>
     </div>
 
-    <footer>
-        <div class="row valign-wrapper">
-            <div class="col s6" id="save-status"></div>
-            <div class="col s6 right-align">
-                <div class="waves-effect waves-light btn disabled" id="save-button">Save</div>
-            </div>
-        </div>
-        <div class="clearfix"></div>
-        <div class="row">
-            Icons made by <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from
-            <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
-            <a href="https://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0
-                BY</a>
-        </div>
-    </footer>
+    <div class="actionRow">
+        <div id="save-status"></div>
+        <button class="button" id="save-button" type="button">Save Settings</button>
+    </div>
+
+    <p class="credits">
+        Icons made by <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from
+        <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+        <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" title="Creative Commons BY 3.0">CC 3.0 BY</a>
+    </p>
 </div>
 
 <script src="../js/options.js"></script>

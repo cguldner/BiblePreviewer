@@ -1,6 +1,3 @@
-/* global M */
-
-import '@materializecss/materialize';
 import '../css/options.scss';
 import {
     appendLanguageOptions,
@@ -27,7 +24,6 @@ function get_languages(callback) {
         .then(languages => {
             appendLanguageOptions(language_select, languages);
             callback();
-            M.FormSelect.init(language_select, {});
         })
         .catch(error => {
             console.error(error);
@@ -36,18 +32,15 @@ function get_languages(callback) {
 
 /**
  * Get the available bible versions based on the selected language
- * @param {boolean} is_event If this is being called in response to an event
- * @param {Function} callback Function to call once the versions have been obtained
+ * @param {Function} [callback] Function to call once the versions have been obtained
  */
-function get_versions(is_event, callback) {
+function get_versions(callback) {
     fetchVersions(BIBLE_API_KEY, language_select.options[language_select.selectedIndex].value)
         .then(versions => {
             populateVersionSelect(version_select, versions);
-            if (!is_event) {
+            if (callback) {
                 callback();
             }
-            // Reinitialize the select to show the new options
-            M.FormSelect.init(version_select, {});
             version_select.removeAttribute('disabled');
         })
         .catch(error => {
@@ -85,7 +78,6 @@ function save_options() {
  */
 function restore_options(callback) {
     getStoredSettings(function (settings) {
-        document.querySelector('#save-button').classList.remove('disabled');
         callback(settings);
     });
 }
@@ -95,14 +87,14 @@ document.querySelector('#save-button').addEventListener('click', save_options);
 document.addEventListener('DOMContentLoaded', function () {
     restore_options(function (settings) {
         get_languages(function () {
-            M.FormSelect.init(language_select, {});
             language_select.value = settings['language'];
-            get_versions(false, function () {
-                M.FormSelect.init(version_select, {});
+            get_versions(function () {
                 version_select.value = settings['translation'];
                 version_select.removeAttribute('disabled');
             });
         });
     });
-    document.querySelector('#language').addEventListener('change', get_versions);
+    document.querySelector('#language').addEventListener('change', function () {
+        get_versions();
+    });
 });

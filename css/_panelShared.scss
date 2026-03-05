@@ -1,0 +1,119 @@
+@mixin theme-vars {
+  :root {
+    --surface: #f3f6fb;
+    --card: #fff;
+    --text: #1d2735;
+    --muted: #5f6c80;
+    --border: #d7e0ec;
+    --accent: #2563eb;
+    --accent-strong: #1e4fd8;
+    --ring: rgb(37 99 235 / 25%);
+    --shadow: 0 14px 28px rgb(15 23 42 / 18%);
+    --radius: 14px;
+  }
+}
+
+@mixin page-base($min-width: 300px, $padding: 14px) {
+  margin: 0;
+  min-width: $min-width;
+  padding: $padding;
+  font: 14px "Segoe UI", "Noto Sans", Tahoma, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top right, #dbeafe 0%, transparent 55%),
+    radial-gradient(circle at bottom left, #e2e8f0 0%, transparent 45%),
+    var(--surface);
+  box-sizing: border-box;
+}
+
+@mixin panel-card($padding: 14px) {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: $padding;
+}
+
+@mixin panel-title($margin-bottom: 14px, $font-size: 16px) {
+  margin: 0 0 $margin-bottom;
+  font-size: $font-size;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+@mixin form-field {
+  margin-bottom: 11px;
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text);
+  }
+
+  select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text);
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      background: #f8fafc;
+    }
+  }
+}
+
+@mixin primary-button($full-width: true) {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  border-radius: 11px;
+  color: #fff;
+  border: 0;
+  padding: 10px 12px;
+  white-space: nowrap;
+  cursor: pointer;
+  text-align: center;
+  font: 700 15px/1.2 "Segoe UI", "Noto Sans", Tahoma, sans-serif;
+  letter-spacing: 0.01em;
+  transition: transform 110ms ease, box-shadow 140ms ease, filter 120ms ease;
+  box-shadow: 0 8px 16px rgb(37 99 235 / 28%);
+  appearance: none;
+
+  @if $full-width {
+    width: 100%;
+  }
+
+  &:hover {
+    filter: brightness(1.03);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 9px rgb(37 99 235 / 25%);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px var(--ring),
+      0 8px 16px rgb(37 99 235 / 28%);
+  }
+}
+
+@mixin status-text {
+  color: var(--muted);
+  font-size: 12px;
+  min-height: 16px;
+}
