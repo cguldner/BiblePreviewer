@@ -1,8 +1,9 @@
 
+import {DEFAULT_DEUTERO_TRANS, DEFAULT_TRANS} from '../../js/settingsShared.js';
+
 const TEST_FILE = Cypress.expose('testFile');
 const LINK_SELECTOR = Cypress.expose('linkSelector');
 const CONTAINER_SELECTOR = Cypress.expose('containerSelector');
-const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
 
 /**
  * Escapes a string so it can be used in a RegExp safely
@@ -170,7 +171,7 @@ context('Link Creation', () => {
             text: 'John 4:24',
             book: 'JHN',
             reference: '4:24-4:24',
-            hrefPattern: /^https:\/\/eng\.global\.bible\/bible\/[^/]+\/JHN\.4\?passageId=JHN\.4\.24$/,
+            hrefPattern: new RegExp(`^https://eng\\.global\\.bible/bible/${DEFAULT_TRANS}/JHN\\.4\\?passageId=JHN\\.4\\.24$`),
             hrefExcludes: ['%0A', '%0D'],
         });
     });

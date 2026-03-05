@@ -1,6 +1,7 @@
 const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
 
 const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
+const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
 const DEFAULT_LANGUAGE = 'eng';
 
 /**
@@ -137,6 +138,7 @@ function broadcastSettingsUpdate(settings) {
 
 export {
     BIBLE_API_BASE_URL,
+    DEFAULT_DEUTERO_TRANS,
     DEFAULT_LANGUAGE,
     DEFAULT_TRANS,
     appendLanguageOptions,

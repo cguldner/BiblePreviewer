@@ -3,7 +3,7 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import {getVerseFromString, splitVerseListString} from './verseParser.mjs';
 import {bibleRegex, deuteroBooks, JUDE_BOOK_ID, getMatchedBookId} from './bibleBooks.mjs';
-import {BIBLE_API_BASE_URL, DEFAULT_LANGUAGE, DEFAULT_TRANS} from './settingsShared.js';
+import {BIBLE_API_BASE_URL, DEFAULT_DEUTERO_TRANS, DEFAULT_LANGUAGE, DEFAULT_TRANS} from './settingsShared.js';
 
 
 const LOADING_TEXT = 'Loading';
@@ -11,8 +11,6 @@ const VERSE_NO_EXIST_TEXT = 'Verse does not exist';
 const BAD_REQUEST_TEXT = "Request couldn't be completed, try again later";
 const TRY_AGAIN_TEXT = 'Try again later';
 
-// The translation to use if the version selected doesn't have the Catholic deuterocannonical books
-const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
 const BIBLE_DIRECT_URL = 'global.bible/bible/';
 
 const versions_with_deutero = new Set([DEFAULT_DEUTERO_TRANS]);

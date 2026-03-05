@@ -1,11 +1,11 @@
 
+import {DEFAULT_DEUTERO_TRANS, DEFAULT_TRANS} from '../../js/settingsShared.js';
+
 const TEST_FILE = Cypress.expose('testFile');
 const LINK_SELECTOR = Cypress.expose('linkSelector');
 const TOOLTIP_SELECTOR = Cypress.expose('tooltipSelector');
 const TOOLTIP_TEXT_SELECTOR = Cypress.expose('tooltipTextSelector');
 const API_ENDPOINT = Cypress.expose('apiEndpoint');
-const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
-const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
 
 /**
  * Escapes a string so it can be used in a RegExp safely
