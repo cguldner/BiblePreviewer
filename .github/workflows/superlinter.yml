@@ -11,6 +11,8 @@ permissions:
   packages: read
   # To report GitHub Actions status checks
   statuses: write
+  pull-requests: write
+  issues: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -33,20 +35,25 @@ jobs:
           # super-linter needs the full git history to get the
           # list of files that changed across commits
           fetch-depth: 0
+          persist-credentials: false
 
       # Runs the Super-Linter action
       - name: Run Super-Linter
-        uses: super-linter/super-linter@v7
+        uses: super-linter/super-linter@v8
         env:
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: true
+          SAVE_SUPER_LINTER_SUMMARY: true
           # Don't validate CSS because it is too dumb to find my stylelintrc.json. Covered by the eslint job
           VALIDATE_CSS: false
-          VALIDATE_HTML_PRETTIER: false
           # Don't validate javascript, because it can't install packages
           VALIDATE_JAVASCRIPT_ES: false
           VALIDATE_JAVASCRIPT_PRETTIER: false
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_JSCPD: false
-          VALIDATE_JSON: false
           VALIDATE_BASH_EXEC: false
+          # Not using biome
+          VALIDATE_BIOME: false
+          VALIDATE_BIOME_FORMAT: false
+          VALIDATE_BIOME_LINT: false

@@ -1,37 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Options</title>
-    <link rel="stylesheet" href="../css/popup.css">
-</head>
-<body>
-<div class="popup">
-    <h1 class="title">Bible Previewer</h1>
+    <link rel="stylesheet" href="../css/popup.css" />
+  </head>
+  <body>
+    <div class="popup">
+      <h1 class="title">Bible Previewer</h1>
 
-    <div class="field">
+      <div class="field">
         <label for="language">Language</label>
         <select id="language">
-            <option value="eng">English (US)</option>
+          <option value="eng">English (US)</option>
         </select>
-    </div>
-    <div class="field">
+      </div>
+      <div class="field">
         <label for="bible-version">Bible Version</label>
         <select disabled id="bible-version">
-            <option disabled selected value>--- Select a version ---</option>
+          <option disabled selected value>--- Select a version ---</option>
         </select>
-    </div>
-    <div id="save-status"></div>
-    <div class="button" id="reload-button" title="Re-run verse link detection on this page">
+      </div>
+      <div id="save-status"></div>
+      <div
+        class="button"
+        id="reload-button"
+        title="Re-run verse link detection on this page"
+      >
         Re-Scan This Page
+      </div>
     </div>
-</div>
-<!--<div class="button" id="blacklist-button" title="Click to prevent the extension from running on this website">-->
-<!--    Blacklist Website-->
-<!--</div>-->
+    <!--<div class="button" id="blacklist-button" title="Click to prevent the extension from running on this website">-->
+    <!--    Blacklist Website-->
+    <!--</div>-->
 
-<script src="../js/popup.js"></script>
-
-</body>
+    <script src="../js/popup.js"></script>
+  </body>
 </html>
