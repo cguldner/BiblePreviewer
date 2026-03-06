@@ -44,6 +44,7 @@ jobs:
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: true
+          SAVE_SUPER_LINTER_SUMMARY: true
           # Don't validate CSS because it is too dumb to find my stylelintrc.json. Covered by the eslint job
           VALIDATE_CSS: false
           # Don't validate javascript, because it can't install packages
