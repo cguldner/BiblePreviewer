@@ -3,6 +3,7 @@ const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
 const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
 const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
 const DEFAULT_LANGUAGE = 'eng';
+const DEFAULT_BLACKLIST = [];
 
 /**
  * Verify that the response is good from the fetch call.
@@ -96,20 +97,28 @@ function populateVersionSelect(versionSelect, versions) {
 function getStoredSettings(callback) {
     chrome.storage.sync.get({
         'language': DEFAULT_LANGUAGE,
-        'translation': DEFAULT_TRANS
+        'translation': DEFAULT_TRANS,
+        'blacklist': DEFAULT_BLACKLIST
     }, callback);
 }
 
 /**
- * Save language/translation settings.
- * @param {{language: string, translation: string}} settings The settings to save
+ * Save extension settings.
+ * @param {{language?: string, translation?: string, blacklist?: string[]}} settings The settings to save
  * @param {Function} callback Callback after save
  */
 function saveStoredSettings(settings, callback) {
-    chrome.storage.sync.set({
-        'language': settings.language,
-        'translation': settings.translation
-    }, callback);
+    const settingsToSave = {};
+    if (settings.language !== undefined) {
+        settingsToSave.language = settings.language;
+    }
+    if (settings.translation !== undefined) {
+        settingsToSave.translation = settings.translation;
+    }
+    if (settings.blacklist !== undefined) {
+        settingsToSave.blacklist = settings.blacklist;
+    }
+    chrome.storage.sync.set(settingsToSave, callback);
 }
 
 /**
@@ -139,6 +148,7 @@ function broadcastSettingsUpdate(settings) {
 export {
     BIBLE_API_BASE_URL,
     DEFAULT_DEUTERO_TRANS,
+    DEFAULT_BLACKLIST,
     DEFAULT_LANGUAGE,
     DEFAULT_TRANS,
     appendLanguageOptions,

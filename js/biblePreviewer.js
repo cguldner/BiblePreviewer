@@ -379,6 +379,31 @@ function isCypressRuntime() {
     return false;
 }
 
+/**
+ * Decide if the current request URL is blacklisted.
+ * @param {object} request The content-script request payload
+ * @returns {boolean} True when this hostname is blacklisted
+ */
+function isBlacklistedRequest(request) {
+    if (!Array.isArray(request.blacklist) || request.blacklist.length === 0) {
+        return false;
+    }
+
+    const requestUrl = request.url ?? window.location.href;
+    let hostname = '';
+    try {
+        const parsedUrl = new URL(requestUrl);
+        if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+            return false;
+        }
+        hostname = parsedUrl.hostname.toLowerCase();
+    } catch {
+        return false;
+    }
+
+    return request.blacklist.some(entry => typeof entry === 'string' && entry.toLowerCase() === hostname);
+}
+
 window.addEventListener('message', function (event) {
     if (!isCypressRuntime()) {
         return;
@@ -414,6 +439,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
     if (request.language === undefined) {
         request.language = DEFAULT_LANGUAGE;
+    }
+    if (isBlacklistedRequest(request)) {
+        sendResponse();
+        return;
     }
 
     const isCypress = isCypressRuntime();

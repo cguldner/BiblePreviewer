@@ -14,6 +14,9 @@ const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
 const versionSelect = document.querySelector('#bible-version');
 const languageSelect = document.querySelector('#language');
 const status = document.querySelector('#save-status');
+const blacklistButton = document.querySelector('#blacklist-button');
+
+let currentSiteHost = '';
 
 /**
  * Show temporary save status
@@ -24,6 +27,72 @@ function updateStatus(message) {
     setTimeout(function () {
         status.textContent = '';
     }, 1500);
+}
+
+/**
+ * Parse a host from a URL string for blacklist matching.
+ * @param {string} url URL to parse
+ * @returns {string} Lowercased hostname or empty string if unsupported
+ */
+function getSiteHost(url) {
+    try {
+        const parsedUrl = new URL(url);
+        if (!['http:', 'https:', 'file:'].includes(parsedUrl.protocol)) {
+            return '';
+        }
+        return parsedUrl.hostname.toLowerCase();
+    } catch {
+        return '';
+    }
+}
+
+/**
+ * Set blacklist button state based on active host and stored blacklist.
+ * @param {string[]} blacklist Stored blacklist hostnames
+ */
+function updateBlacklistButton(blacklist) {
+    if (!currentSiteHost) {
+        blacklistButton.textContent = 'Blacklist Unavailable';
+        blacklistButton.setAttribute('disabled', 'disabled');
+        return;
+    }
+
+    const isBlacklisted = blacklist.includes(currentSiteHost);
+    blacklistButton.removeAttribute('disabled');
+    blacklistButton.textContent = isBlacklisted ? 'Remove Site From Blacklist' : 'Blacklist This Website';
+}
+
+/**
+ * Toggle blacklist state for the active site.
+ */
+function toggleBlacklistForCurrentSite() {
+    if (!currentSiteHost) {
+        return;
+    }
+
+    getStoredSettings(function (settings) {
+        const blacklist = Array.isArray(settings.blacklist) ? settings.blacklist : [];
+        const blacklistSet = new Set(blacklist.map(host => host.toLowerCase()));
+
+        if (blacklistSet.has(currentSiteHost)) {
+            blacklistSet.delete(currentSiteHost);
+            updateStatus('Site removed from blacklist.');
+        } else {
+            blacklistSet.add(currentSiteHost);
+            updateStatus('Site added to blacklist.');
+        }
+
+        const newBlacklist = [...blacklistSet].sort();
+        saveStoredSettings({blacklist: newBlacklist}, function () {
+            updateBlacklistButton(newBlacklist);
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                const activeTab = tabs[0];
+                if (activeTab?.id !== undefined) {
+                    chrome.tabs.reload(activeTab.id);
+                }
+            });
+        });
+    });
 }
 
 /**
@@ -111,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 versionSelect.value = settings.translation;
             });
         });
+
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            const activeTab = tabs[0];
+            currentSiteHost = activeTab?.url ? getSiteHost(activeTab.url) : '';
+            updateBlacklistButton(Array.isArray(settings.blacklist) ? settings.blacklist : []);
+        });
     });
 
     languageSelect.addEventListener('change', function () {
@@ -120,4 +195,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     versionSelect.addEventListener('change', saveOptionsIfSettingsChanged);
+    blacklistButton.addEventListener('click', toggleBlacklistForCurrentSite);
 });
