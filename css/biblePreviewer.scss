@@ -46,26 +46,6 @@ $tooltip-radius: 14px;
     pointer-events: none;
   }
 
-  &[data-placement^="top"] .bpTooltipArrow {
-    border-width: 8px 8px 0;
-    border-top-color: $tooltip-surface;
-  }
-
-  &[data-placement^="bottom"] .bpTooltipArrow {
-    border-width: 0 8px 8px;
-    border-bottom-color: $tooltip-surface;
-  }
-
-  &[data-placement^="left"] .bpTooltipArrow {
-    border-width: 8px 0 8px 8px;
-    border-left-color: $tooltip-surface;
-  }
-
-  &[data-placement^="right"] .bpTooltipArrow {
-    border-width: 8px 8px 8px 0;
-    border-right-color: $tooltip-surface;
-  }
-
   .bpHeaderBar {
     background: linear-gradient(135deg, $tooltip-surface-soft 0%, #eef4fb 100%);
     padding: 8px 14px;
@@ -164,6 +144,26 @@ $tooltip-radius: 14px;
     border-style: solid;
     border-color: transparent;
     pointer-events: none;
+  }
+
+  &[data-placement^="top"] .bpTooltipArrow {
+    border-width: 8px 8px 0;
+    border-top-color: $tooltip-surface;
+  }
+
+  &[data-placement^="bottom"] .bpTooltipArrow {
+    border-width: 0 8px 8px;
+    border-bottom-color: $tooltip-surface;
+  }
+
+  &[data-placement^="left"] .bpTooltipArrow {
+    border-width: 8px 0 8px 8px;
+    border-left-color: $tooltip-surface;
+  }
+
+  &[data-placement^="right"] .bpTooltipArrow {
+    border-width: 8px 8px 8px 0;
+    border-right-color: $tooltip-surface;
   }
 }
 
