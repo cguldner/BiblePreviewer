@@ -9,45 +9,42 @@ $tooltip-radius: 14px;
 
 .biblePreviewerContainer {
   display: inline-block;
+  position: relative;
 }
 
 .biblePreviewerLink {
   cursor: pointer;
 }
 
-.tippy-box[data-theme~="bible-previewer"] {
+.biblePreviewerTooltip {
   border-radius: $tooltip-radius;
   box-shadow: $tooltip-shadow;
-  background-color: transparent;
-
-  &[data-placement^="top"] > .tippy-arrow::before {
-    border-top-color: $tooltip-surface !important;
-  }
-
-  &[data-placement^="bottom"] > .tippy-arrow::before {
-    border-bottom-color: $tooltip-surface !important;
-  }
-
-  &[data-placement^="left"] > .tippy-arrow::before {
-    border-left-color: $tooltip-surface !important;
-  }
-
-  &[data-placement^="right"] > .tippy-arrow::before {
-    border-right-color: $tooltip-surface !important;
-  }
-
-  .tippy-content {
-    background-color: $tooltip-surface !important;
-    padding: 0;
-    color: $tooltip-text !important;
-    border-radius: $tooltip-radius;
-    border: 1px solid $tooltip-border;
-    overflow: hidden;
-  }
-}
-
-.biblePreviewerTooltip {
+  background-color: $tooltip-surface;
+  color: $tooltip-text;
+  border: 1px solid $tooltip-border;
+  overflow: visible;
   font-family: "Segoe UI", "Noto Sans", Arial, sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 250ms ease,
+    visibility 0s linear 250ms;
+
+  &.bpTooltipVisible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+      opacity 250ms ease,
+      visibility 0s linear 0s;
+  }
+
+  &.bpTooltipHidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
 
   .bpHeaderBar {
     background: linear-gradient(135deg, $tooltip-surface-soft 0%, #eef4fb 100%);
@@ -55,6 +52,8 @@ $tooltip-radius: 14px;
     color: $tooltip-text;
     text-align: left;
     border-bottom: 1px solid $tooltip-border;
+    border-top-left-radius: $tooltip-radius;
+    border-top-right-radius: $tooltip-radius;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -140,9 +139,31 @@ $tooltip-radius: 14px;
   .bpTooltipArrow {
     width: 0;
     height: 0;
-    border: 10px solid transparent;
     position: absolute;
     margin: 0;
+    border-style: solid;
+    border-color: transparent;
+    pointer-events: none;
+  }
+
+  &[data-placement^="top"] .bpTooltipArrow {
+    border-width: 8px 8px 0;
+    border-top-color: $tooltip-surface;
+  }
+
+  &[data-placement^="bottom"] .bpTooltipArrow {
+    border-width: 0 8px 8px;
+    border-bottom-color: $tooltip-surface;
+  }
+
+  &[data-placement^="left"] .bpTooltipArrow {
+    border-width: 8px 0 8px 8px;
+    border-left-color: $tooltip-surface;
+  }
+
+  &[data-placement^="right"] .bpTooltipArrow {
+    border-width: 8px 8px 8px 0;
+    border-right-color: $tooltip-surface;
   }
 }
 
