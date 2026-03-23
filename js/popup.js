@@ -1,4 +1,4 @@
-import '../css/popup.scss';
+import '../css/generated/popup.css';
 import {
     appendLanguageOptions,
     fetchLanguages,

@@ -1,4 +1,4 @@
-import '../css/biblePreviewer.scss';
+import '../css/generated/biblePreviewer.css';
 import {getVerseFromString, splitVerseListString} from './verseParser.mjs';
 import {bibleRegex, deuteroBooks, JUDE_BOOK_ID, getMatchedBookId} from './bibleBooks.mjs';
 import {FloatingTooltipController} from './floatingTooltipController.js';
