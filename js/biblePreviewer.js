@@ -1,8 +1,7 @@
 import '../css/biblePreviewer.scss';
-import tippy from 'tippy.js';
-import 'tippy.js/dist/tippy.css'; // optional for styling
 import {getVerseFromString, splitVerseListString} from './verseParser.mjs';
 import {bibleRegex, deuteroBooks, JUDE_BOOK_ID, getMatchedBookId} from './bibleBooks.mjs';
+import {FloatingTooltipController} from './floatingTooltipController.js';
 import {BIBLE_API_BASE_URL, DEFAULT_DEUTERO_TRANS, DEFAULT_LANGUAGE, DEFAULT_TRANS} from './settingsShared.js';
 
 
@@ -21,6 +20,11 @@ const BIBLE_PREVIEWER_LINK_CLASS = 'biblePreviewerLink';
 const BIBLE_REF_LINK_PROP = 'data-bible-ref';
 const BIBLE_BOOK_LINK_PROP = 'data-bible-book';
 const BIBLE_TRANS_LINK_PROP = 'data-bible-trans';
+const TOOLTIP_SHOW_DELAY = 250;
+const TOOLTIP_HIDE_DELAY = 750;
+const TOOLTIP_TRANSITION_DURATION = 250;
+const TOOLTIP_OFFSET = 10;
+const TOOLTIP_MAX_WIDTH = 350;
 
 /**
  * The Z index to give tooltips that are no longer being hovered
@@ -35,6 +39,8 @@ const ACTIVE_ZINDEX = 500;
  * Lookup dictionary for verses
  */
 let bibleVerseDict = {};
+const tooltipControllerMap = new WeakMap();
+const activeTooltipControllers = new Set();
 
 /**
  * Resolve the actual translation for a book.
@@ -249,8 +255,8 @@ function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, end
  * @param {{[key: string]: string}} parameterDict The dictionary of attributes to set
  * @returns {HTMLElement} The HTML element
  */
-function createHtmlElement(elementName, parameterDict) {
-    const element = document.createElement(elementName);
+function createHtmlElement(elementName, parameterDict, ownerDocument = document) {
+    const element = ownerDocument.createElement(elementName);
     for (const [key, value] of Object.entries(parameterDict)) {
         if (['innerHTML', 'innerText'].includes(key)) {
             element[key] = value;
@@ -267,20 +273,31 @@ function createHtmlElement(elementName, parameterDict) {
  * @param {string} [ref.verse] The bible verse (for example 1st Corinthians 1:1)
  * @param {string} ref.text The text of the bible verse
  * @param {string} [ref.translation] The translation of the verse
+ * @param {Document} [ownerDocument=document] Document that should own the nodes
  * @returns {HTMLElement} The html content that the tooltip will use
  */
-function createTooltipContent({verse, text, translation}) {
-    const containerElement = createHtmlElement('div', {'class': 'biblePreviewerTooltip', 'role': 'tooltip'});
+function createTooltipContent({verse, text, translation}, ownerDocument = document) {
+    const containerElement = createHtmlElement('div', {'class': 'biblePreviewerTooltip', 'role': 'tooltip'}, ownerDocument);
     if (verse) {
-        const headerElement = createHtmlElement('div', {'class': 'bpHeaderBar'});
-        headerElement.append(createHtmlElement('div', {'class': 'bpVerse', 'innerText': verse}));
+        const headerElement = createHtmlElement('div', {'class': 'bpHeaderBar'}, ownerDocument);
+        headerElement.append(createHtmlElement('div', {'class': 'bpVerse', 'innerText': verse}, ownerDocument));
         if (translation) {
-            headerElement.append(createHtmlElement('div', {'class': 'bpTranslation', 'innerText': translation}));
+            headerElement.append(createHtmlElement('div', {'class': 'bpTranslation', 'innerText': translation}, ownerDocument));
         }
         containerElement.append(headerElement);
     }
-    containerElement.append(createHtmlElement('div', {'class': 'bpTooltipContent', 'innerHTML': text}));
+    containerElement.append(createHtmlElement('div', {'class': 'bpTooltipContent', 'innerHTML': text}, ownerDocument));
+    containerElement.append(createHtmlElement('div', {'class': 'bpTooltipArrow', 'aria-hidden': 'true'}, ownerDocument));
     return containerElement;
+}
+
+/**
+ * Remove any visible tooltips before cache/settings refreshes.
+ */
+function closeVisibleTooltips() {
+    for (const controller of activeTooltipControllers) {
+        controller.destroyVisibleTooltip();
+    }
 }
 
 /**
@@ -288,68 +305,76 @@ function createTooltipContent({verse, text, translation}) {
  * @param {Element} element The element to search under to create the tooltips for
  */
 function createTooltips(element) {
-    tippy(element.querySelectorAll(`.${BIBLE_PREVIEWER_LINK_CLASS}`), {
-        delay: [250, 750],
-        duration: 250,
-        theme: 'bible-previewer',
-        maxWidth: 350,
-        arrow: true,
-        interactive: true,
-        allowHTML: true,
-        onTrigger: function (instance) {
-            instance.setProps({zIndex: ACTIVE_ZINDEX});
-        },
-        onUntrigger: function (instance) {
-            instance.setProps({zIndex: INACTIVE_ZINDEX});
-        },
-        content: function (reference) {
-            const bibleBook = reference.getAttribute(BIBLE_BOOK_LINK_PROP);
-            const bibleReference = reference.getAttribute(BIBLE_REF_LINK_PROP);
-            const bibleTrans = reference.getAttribute(BIBLE_TRANS_LINK_PROP);
-            const fullReference = `${bibleBook} ${bibleReference}|${bibleTrans}`;
-            // If there is another link to the same verse on the page, then set that verse text
-            return createTooltipContent(bibleVerseDict[fullReference] === undefined ? {text: LOADING_TEXT} : bibleVerseDict[fullReference]);
-        },
-        onShow: function (instance) {
-            instance.setProps({zIndex: ACTIVE_ZINDEX});
+    for (const tooltipReference of element.querySelectorAll(`.${BIBLE_PREVIEWER_LINK_CLASS}`)) {
+        if (!tooltipControllerMap.has(tooltipReference)) {
+            tooltipControllerMap.set(tooltipReference, new FloatingTooltipController(tooltipReference, {
+                activeZIndex: ACTIVE_ZINDEX,
+                hideDelay: TOOLTIP_HIDE_DELAY,
+                inactiveZIndex: INACTIVE_ZINDEX,
+                getTooltipContent(reference, ownerDocument) {
+                    const bibleBook = reference.getAttribute(BIBLE_BOOK_LINK_PROP);
+                    const bibleReference = reference.getAttribute(BIBLE_REF_LINK_PROP);
+                    const bibleTrans = reference.getAttribute(BIBLE_TRANS_LINK_PROP);
+                    const fullReference = `${bibleBook} ${bibleReference}|${bibleTrans}`;
+                    return createTooltipContent(
+                        bibleVerseDict[fullReference] === undefined ? {text: LOADING_TEXT} : bibleVerseDict[fullReference],
+                        ownerDocument
+                    );
+                },
+                getTooltipMount(reference) {
+                    return reference.closest(`.${BIBLE_PREVIEWER_CONTAINER_CLASS}`)?.parentElement
+                        ?? reference.parentElement
+                        ?? reference.ownerDocument.body;
+                },
+                loadTooltipContent({ownerDocument, reference, setTooltipContent, updatePosition}) {
+                    const bibleBook = reference.getAttribute(BIBLE_BOOK_LINK_PROP);
+                    const bibleReference = reference.getAttribute(BIBLE_REF_LINK_PROP);
+                    const bibleTrans = reference.getAttribute(BIBLE_TRANS_LINK_PROP);
+                    const fullReference = `${bibleBook} ${bibleReference}|${bibleTrans}`;
 
-            const reference = instance.reference;
-            const bibleBook = reference.getAttribute(BIBLE_BOOK_LINK_PROP);
-            const bibleReference = reference.getAttribute(BIBLE_REF_LINK_PROP);
-            const bibleTrans = reference.getAttribute(BIBLE_TRANS_LINK_PROP);
-
-            const fullReference = `${bibleBook} ${bibleReference}|${bibleTrans}`;
-            if (bibleVerseDict[fullReference] === undefined) {
-                let [startChap, startVerse, endChap, endVerse] = getVerseFromString(bibleReference, '');
-                sendAPIRequestForVerses(bibleBook, startChap, startVerse, endChap, endVerse, bibleTrans,
-                    function (verseText, verseReference, status) {
-                        if (verseText && status === 200) {
-                            // Store into a dictionary for quick access later
-                            bibleVerseDict[fullReference] = {
-                                text: verseText,
-                                verse: verseReference,
-                                // The translation that comes back from the API is just a hash, so don't display that
-                                translation: ''
-                            };
-                            instance.setContent(createTooltipContent(bibleVerseDict[fullReference]));
-                        } else if (status === 404) {
-                            bibleVerseDict[fullReference] = {text: VERSE_NO_EXIST_TEXT};
-                            instance.setContent(createTooltipContent(bibleVerseDict[fullReference]));
-                        } else if (status === 400) {
-                            instance.setContent(createTooltipContent({text: BAD_REQUEST_TEXT}));
-                            delete bibleVerseDict[fullReference];
-                        } else {
-                            instance.setContent(createTooltipContent({text: TRY_AGAIN_TEXT}));
-                            delete bibleVerseDict[fullReference];
-                        }
+                    if (bibleVerseDict[fullReference] !== undefined) {
+                        setTooltipContent(createTooltipContent(bibleVerseDict[fullReference], ownerDocument));
+                        updatePosition();
+                        return;
                     }
-                );
-            } else {
-                // If there is another link to the same verse on the page, then set that verse text
-                instance.setContent(createTooltipContent(bibleVerseDict[fullReference]));
-            }
+
+                    const [startChap, startVerse, endChap, endVerse] = getVerseFromString(bibleReference, '');
+                    sendAPIRequestForVerses(bibleBook, startChap, startVerse, endChap, endVerse, bibleTrans,
+                        (verseText, verseReference, status) => {
+                            if (verseText && status === 200) {
+                                bibleVerseDict[fullReference] = {
+                                    text: verseText,
+                                    verse: verseReference,
+                                    translation: ''
+                                };
+                                setTooltipContent(createTooltipContent(bibleVerseDict[fullReference], ownerDocument));
+                            } else if (status === 404) {
+                                bibleVerseDict[fullReference] = {text: VERSE_NO_EXIST_TEXT};
+                                setTooltipContent(createTooltipContent(bibleVerseDict[fullReference], ownerDocument));
+                            } else if (status === 400) {
+                                setTooltipContent(createTooltipContent({text: BAD_REQUEST_TEXT}, ownerDocument));
+                                delete bibleVerseDict[fullReference];
+                            } else {
+                                setTooltipContent(createTooltipContent({text: TRY_AGAIN_TEXT}, ownerDocument));
+                                delete bibleVerseDict[fullReference];
+                            }
+                            updatePosition();
+                        }
+                    );
+                },
+                maxWidth: TOOLTIP_MAX_WIDTH,
+                onHide(controller) {
+                    activeTooltipControllers.delete(controller);
+                },
+                onShow(controller) {
+                    activeTooltipControllers.add(controller);
+                },
+                offset: TOOLTIP_OFFSET,
+                showDelay: TOOLTIP_SHOW_DELAY,
+                transitionDuration: TOOLTIP_TRANSITION_DURATION
+            }));
         }
-    });
+    }
 }
 
 /**
@@ -392,6 +417,7 @@ window.addEventListener('message', function (event) {
     const language = detail.language ?? DEFAULT_LANGUAGE;
 
     bibleVerseDict = {};
+    closeVisibleTooltips();
     updateExistingLinksEverywhere(translation, language);
 });
 
@@ -399,11 +425,13 @@ window.addEventListener('message', function (event) {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.contentScriptQuery === 'clearVerseCache') {
         bibleVerseDict = {};
+        closeVisibleTooltips();
         sendResponse();
         return;
     }
     if (request.contentScriptQuery === 'updateLinkSettings') {
         bibleVerseDict = {};
+        closeVisibleTooltips();
         updateExistingLinksEverywhere(request.translation, request.language);
         sendResponse();
         return;

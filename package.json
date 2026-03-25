@@ -14,7 +14,7 @@
     "zip": "rm -rf *.zip && bash scripts/get_versions.sh && python scripts/create_zips.py",
     "watch": "webpack --watch",
     "cypress:gui": "cypress open",
-    "cypress:run": "cypress run --record false --browser chrome-for-testing --headed",
+    "cypress:run": "cypress run --record false --browser chrome --headed",
     "test": "node --test",
     "test:ci": "npm run test && npm run cypress:run",
     "lint": "eslint . --max-warnings 0 --ignore-pattern dist && stylelint **/*.scss",
@@ -59,7 +59,6 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.8",
-    "tippy.js": "^6.3.7"
+    "@floating-ui/dom": "^1.7.6"
   }
 }
