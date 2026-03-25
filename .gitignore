@@ -10,3 +10,4 @@ cypress/screenshots/*
 build_versions.txt
 .env
 chrome
+css/generated
