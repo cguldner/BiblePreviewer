@@ -12,6 +12,7 @@ export class FloatingTooltipController {
      * @param {number} options.hideDelay Delay before hiding in milliseconds
      * @param {number} options.inactiveZIndex Z-index while waiting to hide
      * @param {Function} options.getTooltipContent Returns the current tooltip content element
+     * @param {Function} [options.getTooltipMount] Returns the element to append the tooltip into
      * @param {Function} options.loadTooltipContent Loads async content into the tooltip
      * @param {number} options.maxWidth Maximum tooltip width in pixels
      * @param {Function} [options.onHide] Called after hiding
@@ -179,7 +180,8 @@ export class FloatingTooltipController {
         this.setTooltipContent(this.options.getTooltipContent(this.reference, this.ownerDocument));
 
         if (!tooltipElement.isConnected) {
-            this.ownerDocument.body.append(tooltipElement);
+            const mountElement = this.options.getTooltipMount?.(this.reference) ?? this.ownerDocument.body;
+            mountElement.append(tooltipElement);
         }
         tooltipElement.classList.remove('bpTooltipHidden');
         this.ownerDocument.defaultView.requestAnimationFrame(() => {

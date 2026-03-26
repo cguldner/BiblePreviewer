@@ -321,6 +321,11 @@ function createTooltips(element) {
                         ownerDocument
                     );
                 },
+                getTooltipMount(reference) {
+                    return reference.closest(`.${BIBLE_PREVIEWER_CONTAINER_CLASS}`)?.parentElement
+                        ?? reference.parentElement
+                        ?? reference.ownerDocument.body;
+                },
                 loadTooltipContent({ownerDocument, reference, setTooltipContent, updatePosition}) {
                     const bibleBook = reference.getAttribute(BIBLE_BOOK_LINK_PROP);
                     const bibleReference = reference.getAttribute(BIBLE_REF_LINK_PROP);

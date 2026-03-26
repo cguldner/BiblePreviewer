@@ -16,7 +16,7 @@
     "watch:styles": "node scripts/buildStyles.js --watch",
     "watch": "node scripts/buildStyles.js --watch-and-build",
     "cypress:gui": "cypress open",
-    "cypress:run": "cypress run --record false --browser chrome-for-testing --headed",
+    "cypress:run": "cypress run --record false --browser chrome --headed",
     "test": "node --test",
     "test:ci": "npm run test && npm run cypress:run",
     "lint": "eslint . --max-warnings 0 --ignore-pattern dist && stylelint **/*.scss",
