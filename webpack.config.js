@@ -34,7 +34,7 @@ module.exports = environment => {
         module: {
             rules: [
                 {
-                    test: /\.s?css$/,
+                    test: /\.css$/,
                     use: [
                         MiniCssExtractPlugin.loader,
                         'css-loader',
@@ -48,8 +48,7 @@ module.exports = environment => {
                                     ]
                                 }
                             }
-                        },
-                        'sass-loader'
+                        }
                     ]
                 },
                 {

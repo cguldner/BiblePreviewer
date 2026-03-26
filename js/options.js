@@ -1,4 +1,4 @@
-import '../css/options.scss';
+import '../css/generated/options.css';
 import {
     appendLanguageOptions,
     fetchLanguages,

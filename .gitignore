@@ -2,6 +2,7 @@
 *.zip
 node_modules
 dist
+css/generated
 img
 *.crx
 *.pem
