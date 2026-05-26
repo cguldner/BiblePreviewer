@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {existsSync} from 'node:fs';
 import {BIBLE_API_BASE_URL, DEFAULT_TRANS, buildVerseApiUrl} from './bibleApi.mjs';
 
-if (typeof process.loadEnvFile === 'function') {
+if (typeof process.loadEnvFile === 'function' && existsSync('.env')) {
     process.loadEnvFile();
 }
 
