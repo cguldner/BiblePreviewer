@@ -21,6 +21,7 @@ jobs:
   unit-tests:
     name: Unit tests
     runs-on: ubuntu-latest
+    environment: development
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -35,6 +36,8 @@ jobs:
         run: npm ci
       - name: Run unit tests
         run: npm test
+        env:
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
 
   build:
     name: Build and run Cypress tests

@@ -1,8 +1,9 @@
-const BIBLE_API_BASE_URL = 'https://api.scripture.api.bible/v1/';
-
-const DEFAULT_TRANS = '9879dbb7cfe39e4d-04';
-const DEFAULT_DEUTERO_TRANS = '9879dbb7cfe39e4d-02';
-const DEFAULT_LANGUAGE = 'eng';
+import {
+    BIBLE_API_BASE_URL,
+    DEFAULT_DEUTERO_TRANS,
+    DEFAULT_LANGUAGE,
+    DEFAULT_TRANS
+} from './bibleApi.mjs';
 
 /**
  * Verify that the response is good from the fetch call.
