@@ -69,6 +69,7 @@ jobs:
           headed: true
         env:
           CYPRESS_CHROME_BINARY: ${{ steps.setup-chrome.outputs.chrome-path }}
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
 
   zip:
     name: Create releasable zips
