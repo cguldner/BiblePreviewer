@@ -39,6 +39,7 @@ jobs:
   build:
     name: Build and run Cypress tests
     runs-on: ubuntu-latest
+    environment: development
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -72,6 +73,7 @@ jobs:
   zip:
     name: Create releasable zips
     runs-on: ubuntu-latest
+    environment: development
     needs: [unit-tests, build]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
