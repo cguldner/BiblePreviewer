@@ -57,7 +57,9 @@ jobs:
         with:
           chrome-version: stable
       - name: Build development bundle
-        run: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
+        run: npm run build:dev
+        env:
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
       - name: Run Cypress tests
         uses: cypress-io/github-action@v7
         with:
@@ -85,7 +87,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build development bundle
-        run: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
+        run: npm run build:dev
+        env:
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
       - name: Create zip files
         run: npm run zip
       - name: Upload zip files
