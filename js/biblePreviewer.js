@@ -1,8 +1,8 @@
 import '../css/generated/biblePreviewer.css';
 import {getVerseFromString, splitVerseListString} from './verseParser.mjs';
+import {buildVerseApiUrl, DEFAULT_DEUTERO_TRANS, DEFAULT_LANGUAGE, DEFAULT_TRANS} from './bibleApi.mjs';
 import {bibleRegex, deuteroBooks, JUDE_BOOK_ID, getMatchedBookId} from './bibleBooks.mjs';
 import {FloatingTooltipController} from './floatingTooltipController.js';
-import {BIBLE_API_BASE_URL, DEFAULT_DEUTERO_TRANS, DEFAULT_LANGUAGE, DEFAULT_TRANS} from './settingsShared.js';
 
 
 const LOADING_TEXT = 'Loading';
@@ -231,7 +231,7 @@ function transformBibleReferences(element, trans, language) {
  * @param {Function} callback - What to do after the API returns the verse
  */
 function sendAPIRequestForVerses(book, startChapter, startVerse, endChapter, endVerse, translation, callback) {
-    let requestLink = `${BIBLE_API_BASE_URL}bibles/${translation}/verses/${book}.${startChapter}.${startVerse}-${book}.${endChapter}.${endVerse}`;
+    let requestLink = buildVerseApiUrl(book, startChapter, startVerse, endChapter, endVerse, translation);
 
     let xhr = new XMLHttpRequest();
     xhr.open('GET', requestLink, true);

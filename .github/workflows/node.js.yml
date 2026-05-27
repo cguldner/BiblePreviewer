@@ -21,6 +21,7 @@ jobs:
   unit-tests:
     name: Unit tests
     runs-on: ubuntu-latest
+    environment: development
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -35,10 +36,13 @@ jobs:
         run: npm ci
       - name: Run unit tests
         run: npm test
+        env:
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
 
   build:
     name: Build and run Cypress tests
     runs-on: ubuntu-latest
+    environment: development
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -57,7 +61,9 @@ jobs:
         with:
           chrome-version: stable
       - name: Build development bundle
-        run: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
+        run: npm run build:dev
+        env:
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
       - name: Run Cypress tests
         uses: cypress-io/github-action@v7
         with:
@@ -66,10 +72,12 @@ jobs:
           headed: true
         env:
           CYPRESS_CHROME_BINARY: ${{ steps.setup-chrome.outputs.chrome-path }}
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
 
   zip:
     name: Create releasable zips
     runs-on: ubuntu-latest
+    environment: development
     needs: [unit-tests, build]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
@@ -85,7 +93,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build development bundle
-        run: npm run build:dev -- --env BIBLE_API_KEY=${{ secrets.BIBLE_API_KEY }}
+        run: npm run build:dev
+        env:
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
       - name: Create zip files
         run: npm run zip
       - name: Upload zip files
