@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
-import {BIBLE_API_BASE_URL, DEFAULT_TRANS, buildVerseApiUrl} from './bibleApi.mjs';
+import {BIBLE_API_BASE_URL, DEFAULT_TRANS, buildVerseApiUrl, fetchBibleApi} from './bibleApi.mjs';
 
 if (typeof process.loadEnvFile === 'function' && existsSync('.env')) {
     process.loadEnvFile();
@@ -17,12 +17,13 @@ test('buildVerseApiUrl builds the expected verse lookup URL', () => {
 test('Bible API returns content for a known verse lookup', {
     skip: !process.env.BIBLE_API_KEY,
 }, async () => {
-    const response = await fetch(buildVerseApiUrl('JHN', '3', '16', '3', '16', DEFAULT_TRANS), {
-        headers: new Headers({
-            'api-key': process.env.BIBLE_API_KEY,
-        }),
-        signal: AbortSignal.timeout(10_000),
-    });
+    const response = await fetchBibleApi(
+        buildVerseApiUrl('JHN', '3', '16', '3', '16', DEFAULT_TRANS),
+        process.env.BIBLE_API_KEY,
+        {
+            signal: AbortSignal.timeout(10_000),
+        }
+    );
 
     const responseBody = await response.json();
     assert.equal(response.ok, true, `Bible API request failed with status ${response.status}`);

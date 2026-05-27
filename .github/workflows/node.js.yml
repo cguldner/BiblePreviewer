@@ -48,16 +48,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - name: Debug secret presence
-        run: |
-          if [ -z "$BIBLE_API_KEY" ]; then
-            echo "SECRET MISSING"
-            exit 1
-          else
-            echo "SECRET EXISTS"
-          fi
-        env:
-          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
       - name: Set up Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v6
         with:

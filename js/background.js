@@ -1,3 +1,5 @@
+import {fetchBibleApi} from './bibleApi.mjs';
+
 const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
 
 // Runs the script once the page has been fully loaded
@@ -16,11 +18,7 @@ chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.contentScriptQuery === 'getVerses') {
-        fetch(request.url, {
-            headers: new Headers({
-                'api-key': BIBLE_API_KEY,
-            }),
-        })
+        fetchBibleApi(request.url, BIBLE_API_KEY)
             .then(response => response.text())
             .then(response => sendResponse(response))
             .catch(error => {

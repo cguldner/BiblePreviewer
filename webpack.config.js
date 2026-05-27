@@ -12,8 +12,9 @@ const distributionFolder = 'dist';
 // eslint-disable-next-line jsdoc/require-jsdoc
 module.exports = environment => {
     let environmentPlugin;
-    if (environment.BIBLE_API_KEY !== undefined) {
-        environmentPlugin = new webpack.EnvironmentPlugin({'BIBLE_API_KEY': environment.BIBLE_API_KEY});
+    const bibleApiKey = environment?.BIBLE_API_KEY ?? process.env.BIBLE_API_KEY;
+    if (bibleApiKey !== undefined) {
+        environmentPlugin = new webpack.EnvironmentPlugin({'BIBLE_API_KEY': bibleApiKey});
     }
     let developmentMode = environment === undefined || environment.NODE_ENV !== 'production';
 
