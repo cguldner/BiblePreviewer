@@ -5,6 +5,8 @@ import {
     DEFAULT_TRANS
 } from './bibleApi.mjs';
 
+const BIBLE_API_KEY = process.env.BIBLE_API_KEY;
+
 /**
  * Verify that the response is good from the fetch call.
  * @param {Response} response The response object
@@ -73,6 +75,19 @@ function appendLanguageOptions(languageSelect, languages) {
 }
 
 /**
+ * Fetch languages and append them to a select element.
+ * @param {string} apiKey The bible API key
+ * @param {HTMLSelectElement} languageSelect The language select element
+ * @returns {Promise<void>}
+ */
+function loadLanguageOptions(apiKey, languageSelect) {
+    return fetchLanguages(apiKey)
+        .then(languages => {
+            appendLanguageOptions(languageSelect, languages);
+        });
+}
+
+/**
  * Populate the version selector.
  * @param {HTMLSelectElement} versionSelect The version select element
  * @param {object[]} versions The available bible versions
@@ -91,6 +106,34 @@ function populateVersionSelect(versionSelect, versions) {
 }
 
 /**
+ * Fetch versions for the selected language and populate a select element.
+ * @param {string} apiKey The bible API key
+ * @param {HTMLSelectElement} languageSelect The language select element
+ * @param {HTMLSelectElement} versionSelect The version select element
+ * @returns {Promise<void>}
+ */
+function loadVersionOptions(apiKey, languageSelect, versionSelect) {
+    return fetchVersions(apiKey, languageSelect.value)
+        .then(versions => {
+            populateVersionSelect(versionSelect, versions);
+            versionSelect.removeAttribute('disabled');
+        });
+}
+
+/**
+ * Read the current language and version selections from the UI.
+ * @param {HTMLSelectElement} languageSelect The language select element
+ * @param {HTMLSelectElement} versionSelect The version select element
+ * @returns {{language: string, translation: string}} The current settings
+ */
+function getSelectedSettings(languageSelect, versionSelect) {
+    return {
+        language: languageSelect.value,
+        translation: versionSelect.value
+    };
+}
+
+/**
  * Load saved language/translation settings.
  * @param {Function} callback Callback receiving settings
  */
@@ -99,6 +142,28 @@ function getStoredSettings(callback) {
         'language': DEFAULT_LANGUAGE,
         'translation': DEFAULT_TRANS
     }, callback);
+}
+
+/**
+ * Restore saved settings and initialize the language/version selectors.
+ * @param {string} apiKey The bible API key
+ * @param {HTMLSelectElement} languageSelect The language select element
+ * @param {HTMLSelectElement} versionSelect The version select element
+ */
+function initializeVersionSelectors(apiKey, languageSelect, versionSelect) {
+    getStoredSettings(function (settings) {
+        loadLanguageOptions(apiKey, languageSelect)
+            .then(function () {
+                languageSelect.value = settings.language;
+                return loadVersionOptions(apiKey, languageSelect, versionSelect);
+            })
+            .then(function () {
+                versionSelect.value = settings.translation;
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+    });
 }
 
 /**
@@ -137,7 +202,33 @@ function broadcastSettingsUpdate(settings) {
     });
 }
 
+/**
+ * Save the currently selected settings, notify tabs if they changed,
+ * and show a temporary saved status message.
+ * @param {HTMLSelectElement} languageSelect The language select element
+ * @param {HTMLSelectElement} versionSelect The version select element
+ * @param {string} statusSelector Query selector for the save status element
+ */
+function saveSelectedSettings(languageSelect, versionSelect, statusSelector) {
+    const newSettings = getSelectedSettings(languageSelect, versionSelect);
+    const statusElement = document.querySelector(statusSelector);
+
+    getStoredSettings(function (previousSettings) {
+        saveStoredSettings(newSettings, function () {
+            if (previousSettings.language !== newSettings.language
+                || previousSettings.translation !== newSettings.translation) {
+                broadcastSettingsUpdate(newSettings);
+            }
+            statusElement.textContent = 'Selection saved.';
+            setTimeout(function () {
+                statusElement.textContent = '';
+            }, 2000);
+        });
+    });
+}
+
 export {
+    BIBLE_API_KEY,
     BIBLE_API_BASE_URL,
     DEFAULT_DEUTERO_TRANS,
     DEFAULT_LANGUAGE,
@@ -145,8 +236,13 @@ export {
     appendLanguageOptions,
     fetchLanguages,
     fetchVersions,
+    getSelectedSettings,
     getStoredSettings,
+    initializeVersionSelectors,
+    loadLanguageOptions,
+    loadVersionOptions,
     populateVersionSelect,
+    saveSelectedSettings,
     saveStoredSettings,
     broadcastSettingsUpdate
 };
