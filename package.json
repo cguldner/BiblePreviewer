@@ -52,7 +52,7 @@
     "husky": "^9.1.7",
     "mini-css-extract-plugin": "^2.7.6",
     "postcss": "^8.4.49",
-    "postcss-loader": "^7.3.3",
+    "postcss-loader": "^8.2.1",
     "sass": "^1.81.0",
     "start-server-and-test": "^2.0.3",
     "stylelint": "^16.10.0",
