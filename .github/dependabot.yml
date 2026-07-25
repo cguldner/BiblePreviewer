@@ -20,5 +20,12 @@ updates:
       npm:
         patterns:
           - "*"
+    ignore:
+      # Hold these until eslint-plugin-import supports ESLint 10; otherwise npm ci fails with a peer dependency conflict.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      # eslint-plugin-unicorn 72 requires ESLint 10, so keep it paired with the current ESLint 9 toolchain.
+      - dependency-name: "eslint-plugin-unicorn"
+        update-types: ["version-update:semver-major"]
     cooldown:
       default-days: 7
