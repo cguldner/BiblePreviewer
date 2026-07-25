@@ -17,8 +17,7 @@ updates:
       interval: "weekly"
 
     groups:
-      npm-security:
-        applies-to: security-updates
+      npm:
         patterns:
           - "*"
     cooldown:
